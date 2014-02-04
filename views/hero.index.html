@@ -1,0 +1,371 @@
+{% extends 'layout.html' %}
+
+{% block title %} HERO {% endblock %}
+
+{% block head %}
+  {% parent %}
+  <style>
+  .log {
+    border: 1px solid #CCC;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="col-md-12">
+    <h1>HERO</h1>
+    <hr />
+    <div class="col-md-3 heros">
+      <h4>HEROS</h4>
+      <!-- PANEL-GROUP -->
+      <div class="panel-group">
+        <!-- HERO -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-name="제드" data-toggle="collapse" data-parent="#accordion" href="#hero-01">
+                제드
+                <div style="color: #BBB" class="pull-right">Assassin</div>
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" id="hero-01">
+            <div class="panel-body">
+              <div class="hero">
+                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <h4>STATS</h4>
+                <div class="row">
+                  <div class="col-xs-4">체력</div>
+                  <div class="col-xs-8">250/250</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">경험치</div>
+                  <div class="col-xs-8">0/1000</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">공속</div>
+                  <div class="col-xs-8">0.5/sec</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">물리</div>
+                  <div class="col-xs-8">100</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">마법</div>
+                  <div class="col-xs-8">50</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">방어</div>
+                  <div class="col-xs-8">10</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">저항</div>
+                  <div class="col-xs-8">10</div>
+                </div>
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬1</skill>
+                  </div>
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬2</skill>
+                  </div>
+                </div>
+              </div>
+              <div class="inventory">
+                <h4>INVENTORY</h4>
+                <item class="btn btn-block btn-default">칼</item>
+                <item class="btn btn-block btn-default">방패</item>
+              </div>
+            </div>
+          </div>
+        </div><!-- HERO -->
+        <!-- HERO -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-name="트린다미어" data-toggle="collapse" data-parent="#accordion" href="#hero-02">
+                트린다미어
+                <div style="color: #BBB" class="pull-right">Fighter</div>
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" id="hero-02">
+            <div class="panel-body">
+              <div class="hero">
+                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <h4>STATS</h4>
+                <div class="row">
+                  <div class="col-xs-4">체력</div>
+                  <div class="col-xs-8">500/500</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">경험치</div>
+                  <div class="col-xs-8">0/1000</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">공속</div>
+                  <div class="col-xs-8">0.5/sec</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">물리</div>
+                  <div class="col-xs-8">100</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">마법</div>
+                  <div class="col-xs-8">0</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">방어</div>
+                  <div class="col-xs-8">20</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">저항</div>
+                  <div class="col-xs-8">20</div>
+                </div>
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬1</skill>
+                  </div>
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬2</skill>
+                  </div>
+                </div>
+              </div>
+              <div class="inventory">
+                <h4>INVENTORY</h4>
+                <item class="btn btn-block btn-default">칼</item>
+                <item class="btn btn-block btn-default">방패</item>
+              </div>
+            </div>
+          </div>
+        </div><!-- HERO -->
+        <!-- HERO -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-name="블리츠" data-toggle="collapse" data-parent="#accordion" href="#hero-03">
+                블리츠
+                <div style="color: #BBB" class="pull-right">Support</div>
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" id="hero-03">
+            <div class="panel-body">
+              <div class="hero">
+                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <h4>STATS</h4>
+                <div class="row">
+                  <div class="col-xs-4">체력</div>
+                  <div class="col-xs-8">500/500</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">경험치</div>
+                  <div class="col-xs-8">0/1000</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">공속</div>
+                  <div class="col-xs-8">0.5/sec</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">물리</div>
+                  <div class="col-xs-8">50</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">마법</div>
+                  <div class="col-xs-8">0</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">방어</div>
+                  <div class="col-xs-8">20</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">저항</div>
+                  <div class="col-xs-8">30</div>
+                </div>
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬1</skill>
+                  </div>
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬2</skill>
+                  </div>
+                </div>
+              </div>
+              <div class="inventory">
+                <h4>INVENTORY</h4>
+                <item class="btn btn-block btn-default">칼</item>
+                <item class="btn btn-block btn-default">방패</item>
+              </div>
+            </div>
+          </div>
+        </div><!-- HERO -->
+        <!-- HERO -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-name="베인" data-toggle="collapse" data-parent="#accordion" href="#hero-04">
+                베인
+                <div style="color: #BBB" class="pull-right">Archer</div>
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" id="hero-04">
+            <div class="panel-body">
+              <div class="hero">
+                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <h4>STATS</h4>
+                <div class="row">
+                  <div class="col-xs-4">체력</div>
+                  <div class="col-xs-8">250/250</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">경험치</div>
+                  <div class="col-xs-8">0/1000</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">공속</div>
+                  <div class="col-xs-8">0.75/sec</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">물리</div>
+                  <div class="col-xs-8">100</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">마법</div>
+                  <div class="col-xs-8">0</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">방어</div>
+                  <div class="col-xs-8">5</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">저항</div>
+                  <div class="col-xs-8">15</div>
+                </div>
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬1</skill>
+                  </div>
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬2</skill>
+                  </div>
+                </div>
+              </div>
+              <div class="inventory">
+                <h4>INVENTORY</h4>
+                <item class="btn btn-block btn-default">칼</item>
+                <item class="btn btn-block btn-default">방패</item>
+              </div>
+            </div>
+          </div>
+        </div><!-- HERO -->
+        <!-- HERO -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-name="아리" data-toggle="collapse" data-parent="#accordion" href="#hero-05">
+                아리
+                <div style="color: #BBB" class="pull-right">Magician</div>
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" id="hero-05">
+            <div class="panel-body">
+              <div class="hero">
+                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <h4>STATS</h4>
+                <div class="row">
+                  <div class="col-xs-4">체력</div>
+                  <div class="col-xs-8">250/250</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">경험치</div>
+                  <div class="col-xs-8">0/1000</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">공속</div>
+                  <div class="col-xs-8">0.25/sec</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">물리</div>
+                  <div class="col-xs-8">0</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">마법</div>
+                  <div class="col-xs-8">75</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">방어</div>
+                  <div class="col-xs-8">10</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">저항</div>
+                  <div class="col-xs-8">20</div>
+                </div>
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬1</skill>
+                  </div>
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬2</skill>
+                  </div>
+                </div>
+              </div>
+              <div class="inventory">
+                <h4>INVENTORY</h4>
+                <item class="btn btn-block btn-default">칼</item>
+                <item class="btn btn-block btn-default">방패</item>
+              </div>
+            </div>
+          </div>
+        </div><!-- HERO -->
+      </div><!-- PANEL-GROUP -->
+    </div>
+
+    <div class="col-md-3">
+      <div class="mission">
+        <h4>MISSION</h4>
+        <mission class="btn btn-block btn-default">
+          <div style="background-color: red; width: 50%;">
+            미션 50/100
+          </div>
+        </mission>
+      </div>
+      <div class="raid">
+        <h4>RAID</h4>
+        <raid class="btn btn-block btn-default">
+          <div style="background-color: red; width: 75%;">
+            고블린 75/100
+          </div>
+        </raid>
+        <raid class="btn btn-block btn-default">
+          <div style="background-color: red; width: 10%;">
+            트롤 10/100
+          </div>
+        </raid>
+      </div>
+      <div class="shop">
+        <h4>SHOP</h4>
+        <shop class="btn btn-block btn-default">레오나 | 15,000 Pts</shop>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h4>LOG</h4>
+      <div class="log">
+        싸웁니다.
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+  $(document).ready(function (){
+    var $a = $('img').parent().parent().parent().prev().find('a');
+    $a.each(function () {
+      console.log($(this).data('name'));
+    });
+  });
+  </script>
+{% endblock %}
