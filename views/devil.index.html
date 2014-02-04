@@ -4,14 +4,133 @@
 
 {% block head %}
   {% parent %}
-
+  <style>
+  .log {
+    border: 1px solid #CCC;
+    padding: 10px;
+    border-radius: 5px;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
   <div class="col-md-12">
     <h1>DEVIL</h1>
     <hr />
-    DEVIL!
+    <div class="col-md-3">
+      <!-- DEVIL -->
+      <h4>KINGDOM</h4>
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-name="제드" data-toggle="collapse" data-parent="#accordion" href="#devil">
+                마왕
+                <div style="color: #BBB" class="pull-right">Devil</div>
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" id="devil">
+            <div class="panel-body">
+              <div class="devil">
+                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬1</skill>
+                  </div>
+                  <div class="btn-group">
+                    <skill type="button" class="btn btn-default">스킬2</skill>
+                  </div>
+                </div>
+                <h4>STATS</h4>
+                <div class="row">
+                  <div class="col-xs-4">체력</div>
+                  <div class="col-xs-8">750/750</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">경험치</div>
+                  <div class="col-xs-8">0/1000</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">공속</div>
+                  <div class="col-xs-8">0.5/sec</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">물리</div>
+                  <div class="col-xs-8">100</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">마법</div>
+                  <div class="col-xs-8">100</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">방어</div>
+                  <div class="col-xs-8">20</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">저항</div>
+                  <div class="col-xs-8">20</div>
+                </div>
+              </div>
+              <div class="inventory">
+                <h4>INVENTORY</h4>
+                <item class="btn btn-block btn-default">칼</item>
+                <item class="btn btn-block btn-default">방패</item>
+              </div>
+            </div>
+          </div>
+        </div><!-- DEVIL -->
+      </div>
+      <h4>STATS</h4>
+      <button class="btn btn-block btn-default">돈</button>
+      <button class="btn btn-block btn-default">거주지</button>
+      <button class="btn btn-block btn-default">레벨</button>
+    </div>
+
+    <div class="col-md-3">
+      <h4>MONSTERS</h4>
+      <monster class="btn btn-block btn-default">오크</monster>
+      <monster class="btn btn-block btn-default">발록</monster>
+      <monster class="btn btn-block btn-default">트롤</monster>
+      <monster class="btn btn-block btn-default">고블린</monster>
+      <h4>UPGRADE</h4>
+      <button class="btn btn-block btn-default">돈</button>
+      <h4>SHOP</h4>
+      <button class="btn btn-block btn-default">돈</button>
+    </div>
+
+    <div class="col-md-6">
+      <h4>DUNGEONS</h4>
+      <div class="row">
+        <div class="col-xs-2">
+          <button class="btn btn-block btn-default">오크</button>
+          <button class="btn btn-block btn-default">오크</button>
+        </div>
+        <div class="col-xs-2">
+          <button class="btn btn-block btn-default">트롤</button>
+          <button class="btn btn-block btn-default">오크</button>
+          <button class="btn btn-block btn-default">트롤</button>
+        </div>
+        <div class="col-xs-2">
+          <button class="btn btn-block btn-default">데몬</button>
+        </div>
+        <div class="col-xs-2">
+          <button class="btn btn-block btn-default">고블린</button>
+          <button class="btn btn-block btn-default">고블린</button>
+        </div>
+        <div class="col-xs-2">
+          <button class="btn btn-block btn-default">데몬</button>
+          <button class="btn btn-block btn-default">오우거</button>
+        </div>
+        <div class="col-xs-2">
+          <button class="btn btn-block btn-default">발록</button>
+        </div>
+      </div>
+      <h4>LOG</h4>
+      <div class="log">
+        로그
+      </div>
+    </div>
   </div>
 
 {% endblock %}
