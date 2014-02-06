@@ -10,12 +10,28 @@
     padding: 10px;
     border-radius: 5px;
   }
+  .gauge {
+    border: 1px solid black;
+    margin: 15px 0 15px 0;
+    height: 30px;
+  }
+  .gauge > .bar {
+    background-color: #CCF;
+    height: 100%;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
   <div class="col-md-12">
-    <h1>DEVIL</h1>
+    <div class="row">
+      <div class="col-md-2">
+        <h1>DEVIL</h1>
+      </div>
+      <div class="col-md-10">
+        <h1><div class="pull-right" id="timer">TIMER: 60</div></h1>
+      </div>
+    </div>
     <hr />
     <div class="col-md-3">
       <!-- DEVIL -->
@@ -24,7 +40,7 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a data-name="제드" data-toggle="collapse" data-parent="#accordion" href="#devil">
+              <a data-toggle="collapse" data-parent="#accordion" href="#devil">
                 마왕
                 <div style="color: #BBB" class="pull-right">Devil</div>
               </a>
@@ -72,15 +88,12 @@
                   <div class="col-xs-8">20</div>
                 </div>
               </div>
-              <div class="inventory">
-                <h4>INVENTORY</h4>
-                <item class="btn btn-block btn-default">칼</item>
-                <item class="btn btn-block btn-default">방패</item>
-              </div>
             </div>
           </div>
         </div><!-- DEVIL -->
       </div>
+      <h4>COLONIES</h4>
+      <colony class="btn btn-block btn-default">옹</colony>
       <h4>STATS</h4>
       <button class="btn btn-block btn-default">돈</button>
       <button class="btn btn-block btn-default">거주지</button>
@@ -88,49 +101,270 @@
     </div>
 
     <div class="col-md-3">
+      {% if cities.length %}
+      <h4>CITIES</h4>
+      <div class="panel-group">
+      {% for city in cities %}
+        <!-- CITY -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#city-{{ city.id }}">
+                {{ city.name }}
+                <div style="color: #BBB" class="pull-right">{{ city.level }}</div>
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" id="city-{{ city.id }}">
+            <div class="panel-body">
+              <div>
+                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <div class="gauge">
+                  <div class="bar" style="width: 100%"></div>
+                </div>
+                <h4>STATS</h4>
+                <div class="row">
+                  <div class="col-xs-4">인구</div>
+                  <div class="col-xs-8">{{ city.population }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">경제력</div>
+                  <div class="col-xs-8">{{ city.level }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">병력</div>
+                  <div data-type="soldiers" class="col-xs-8">{{ city.soldiers }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">군사력</div>
+                  <div class="col-xs-8">{{ city.military_power }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">방어도</div>
+                  <div class="col-xs-8">{{ city.city_wall }}</div>
+                </div>
+              </div>
+              <hr />
+              <attack class="btn btn-block btn-default">공격</attack>
+            </div>
+          </div>
+        </div><!-- CITY -->
+      {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if cities.length %}
       <h4>MONSTERS</h4>
-      <monster class="btn btn-block btn-default">오크</monster>
-      <monster class="btn btn-block btn-default">발록</monster>
-      <monster class="btn btn-block btn-default">트롤</monster>
-      <monster class="btn btn-block btn-default">고블린</monster>
+      <div class="panel-group">
+      {% for monster in monsters %}
+        <!-- MONSTER -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#monster-{{ monster.id }}">
+                {{ monster.name }}
+                <div style="color: #BBB" class="pull-right">{{ city.level }}</div>
+              </a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" id="monster-{{ monster.id }}">
+            <div class="panel-body">
+              <div>
+                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <div class="gauge">
+                  <div class="bar" style="width: 60%"></div>
+                </div>
+                <h4>STATS</h4>
+                <div class="row">
+                  <div class="col-xs-4">HP</div>
+                  <div class="col-xs-8">{{ monster.health_point }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">공속</div>
+                  <div class="col-xs-8">{{ monster.attack_speed }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">물리공격</div>
+                  <div class="col-xs-8">{{ monster.physical_damage }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">마법공격</div>
+                  <div class="col-xs-8">{{ monster.magic_damage }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">방어력</div>
+                  <div class="col-xs-8">{{ monster.armor }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">마법저항</div>
+                  <div class="col-xs-8">{{ monster.magic_resist }}</div>
+                </div>
+              </div>
+              <hr />
+              <button class="btn btn-block btn-default">공격</button>
+            </div>
+          </div>
+        </div><!-- MONSTER -->
+      {% endfor %}
+      </div>
+      {% endif %}
+
       <h4>UPGRADE</h4>
-      <button class="btn btn-block btn-default">돈</button>
+      <upgrade class="btn btn-block btn-default">돈</upgrade>
       <h4>SHOP</h4>
-      <button class="btn btn-block btn-default">돈</button>
+      <shop class="btn btn-block btn-default">돈</shop>
     </div>
 
     <div class="col-md-6">
       <h4>DUNGEONS</h4>
       <div class="row">
         <div class="col-xs-2">
-          <button class="btn btn-block btn-default">오크</button>
-          <button class="btn btn-block btn-default">오크</button>
+          <keeper class="btn btn-block btn-default">
+            <div style="background-color: red; width: 50%;">
+              오크
+            </div>
+          </keeper>
+          <keeper class="btn btn-block btn-default">
+            <div style="background-color: red; width: 50%;">
+              오크
+            </div>
+          </keeper>
         </div>
         <div class="col-xs-2">
-          <button class="btn btn-block btn-default">트롤</button>
-          <button class="btn btn-block btn-default">오크</button>
-          <button class="btn btn-block btn-default">트롤</button>
+          <keeper class="btn btn-block btn-default">트롤</keeper>
+          <keeper class="btn btn-block btn-default">오크</keeper>
+          <keeper class="btn btn-block btn-default">트롤</keeper>
         </div>
         <div class="col-xs-2">
-          <button class="btn btn-block btn-default">데몬</button>
+          <keeper class="btn btn-block btn-default">데몬</keeper>
         </div>
         <div class="col-xs-2">
-          <button class="btn btn-block btn-default">고블린</button>
-          <button class="btn btn-block btn-default">고블린</button>
+          <keeper class="btn btn-block btn-default">고블린</keeper>
+          <keeper class="btn btn-block btn-default">고블린</keeper>
         </div>
         <div class="col-xs-2">
-          <button class="btn btn-block btn-default">데몬</button>
-          <button class="btn btn-block btn-default">오우거</button>
+          <keeper class="btn btn-block btn-default">데몬</keeper>
+          <keeper class="btn btn-block btn-default">오우거</keeper>
         </div>
         <div class="col-xs-2">
-          <button class="btn btn-block btn-default">발록</button>
+          <keeper class="btn btn-block btn-default">발록</keeper>
         </div>
       </div>
       <h4>LOG</h4>
-      <div class="log">
-        로그
+      <div id="log" class="log">
       </div>
     </div>
   </div>
+  <script type="text/javascript">
+  $(document).ready(function(){
 
+    var isBattleOnGoing = false;
+
+    $(document).on('click', 'attack', function () {
+      battle();
+    });
+
+    var clock = 60;
+    var $timer = $('#timer');
+    var $log = $('#log');
+
+    /* setInterval(function() {
+      clock--;
+      $timer.html('TIMER: ' + clock);
+
+      if ( clock === 0 ) clock = 60;
+    }, 1000); */
+
+    var battle = function () {
+      if ( isBattleOnGoing ) {
+        alert('지금 배틀중입니다.');
+        return;
+      }
+
+      isBattleOnGoing = true;
+
+      var turn = 0;
+
+      var devil = {
+        'class': 'DEVIL',
+        'name': '마왕',
+        'health_point': 750,
+        'attack_speed': 0.5,
+        'physical_damage': 100,
+        'magic_damage': 100,
+        'armor': 20,
+        'magic_resist': 20,
+        'skills': [ '파이어볼', '분신' ]
+      };
+
+      var hero = {
+        "_id": "52f2277cef118ab5468c3087",
+        "armor": 10,
+        "attack_speed_per_sec": 0.5,
+        "class": "Assassin",
+        "health_point": 250,
+        "job": "Assassin",
+        "magic_damage": 100,
+        "magic_resist": 10,
+        "name": "Zed",
+        "physical_damage": 100,
+        "skills": [
+          "Fierce Stab",
+          "Keen Sense"
+        ]
+      };
+
+      var battleInterval;
+
+      var devilAttack = function () {
+        var phy_damage = devil.physical_damage - hero.armor;
+        var mag_damage = devil.magic_damage - hero.magic_resist;
+        var total_damage = phy_damage + mag_damage;
+        hero.health_point -= total_damage;
+
+        logger('마왕 -> 용사 : ' + total_damage);
+      };
+
+      var heroAttack = function () {
+        var phy_damage = hero.physical_damage - devil.armor;
+        var mag_damage = hero.magic_damage - devil.magic_resist;
+        var total_damage = phy_damage + mag_damage;
+        devil.health_point -= total_damage;
+
+        logger('용사 -> 마왕 : ' + total_damage);
+      };
+
+      var logger = function (logMessage) {
+        turn++;
+        var $message = $('<p></p>');
+        $message.text(turn+': '+logMessage);
+        $log.append($message);
+      };
+
+      logger('배틀 시작!');
+
+      battleInterval = setInterval(function battleLoop () {
+        devilAttack();
+
+        if ( hero.health_point <= 0 ) {
+          logger('마왕이 승리하였습니다.');
+
+          clearInterval(battleInterval);
+          isBattleOnGoing = false;
+          return;
+        }
+
+        heroAttack();
+
+        if ( devil.health_point <= 0 ) {
+          logger('용사가 승리하였습니다.');
+
+          clearInterval(battleInterval);
+          isBattleOnGoing = false;
+          return;
+        }
+      }, 1000);
+    };
+  });
+  </script>
 {% endblock %}

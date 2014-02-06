@@ -10,6 +10,7 @@ var routes = require('./routes');
 var account = require('./routes/account');
 var hero = require('./routes/hero');
 var devil = require('./routes/devil');
+var admin = require('./routes/admin');
 
 // Utilities
 var config = require('./config');
@@ -54,6 +55,15 @@ db.once('open', function callback () {
 
   // DEVIL
   app.get('/devil', devil.index);
+
+  // ADMIN
+  app.get('/admin', admin.index);
+  app.get('/admin/hero', admin.hero.index);
+  app.get('/admin/hero/view/:id', admin.hero.view);
+  app.get('/admin/hero/edit/:id', admin.hero.edit);
+  app.post('/admin/hero/edit/:id', admin.hero.add);
+  app.get('/admin/hero/delete/:id', admin.hero.delete);
+  app.post('/admin/hero', admin.hero.add);
 
   http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

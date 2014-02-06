@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+
+{% block title %} HERO {% endblock %}
+
+{% block head %}
+  {% parent %}
+{% endblock %}
+
+{% block content %}
+  <div class="col-md-12">
+    <h4>HERO MANAGER</h4>
+    <hr />
+    <!-- HERO FORM -->
+    <form role="form-horizontal" method="POST">
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Class</label>
+          <div class="col-sm-10">
+            <select name="class" class="form-control">
+              <option>Assassin</option>
+              <option>Fighter</option>
+              <option>Magician</option>
+              <option>Range</option>
+              <option>Support</option>
+              <option>Tank</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="name" placeholder="Zed" value="{{ hero.name }}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Health Point</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" name="health_point" placeholder="250" value="{{ hero.health_point }}">
+          </div>
+        </div>
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Attack Speed</label>
+          <div class="col-sm-10">
+            <input type="number" step="any" class="form-control" name="attack_speed_per_sec" placeholder="0.5" value="{{ hero.attack_speed_per_sec }}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Physical Damage</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" name="physical_damage" placeholder="100" value="{{ hero.physical_damage }}">
+          </div>
+        </div>
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Magic Damage</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" name="magic_damage" placeholder="100" value="{{ hero.magic_damage }}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Armor</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" name="armor" placeholder="25" value="{{ hero.armor }}">
+          </div>
+        </div>
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Magic Resist</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" name="magic_resist" placeholder="25" value="{{ hero.magic_resist }}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Skill #1</label>
+          <div class="col-sm-10">
+            <input type="name" class="form-control" name="skills[]" placeholder="Thunder Grab" value="{{ hero.skills[0] }}">
+          </div>
+        </div>
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Skill #2</label>
+          <div class="col-sm-10">
+            <input type="name" class="form-control" name="skills[]" placeholder="Invincible" value="{{ hero.skills[1] }}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label class="col-sm-2">Tags</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="tags" placeholder="Fighter, Range, Ninja" value="{{ hero.tags }}">
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+    </form><!-- HERO FORM -->
+  </div>
+
+  <script type="text/javascript">
+  var $class = $('select[name="class"]');
+  $class.val('{{ hero.class }}');
+  </script>
+{% endblock %}

@@ -1,21 +1,15 @@
 //////////////////////////////////////////////////
 //
-//  grouple - util.js
+//  grouple - admin.js
 //
 //  Purpose: Utliities
 //  Created: 2013.12.03
 //
 //////////////////////////////////////////////////
 
-var test = require('../lib/test.js');
+exports.hero = require('./admin/hero');
 
 exports.index = function (req, res) {
-
-  var result = {
-    'cities': test.cities,
-    'monsters': test.monsters
-  };
-
-  res.render('devil.index.html', result);
+  res.render('admin.index.html');
   return;
 };
