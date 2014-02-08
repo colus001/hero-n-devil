@@ -47,7 +47,6 @@ mongoose.connect('mongodb://localhost/heroNdevil');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
-  console.log('-- routes --');
   app.get('/', routes.index);
 
   // HERO
@@ -58,12 +57,30 @@ db.once('open', function callback () {
 
   // ADMIN
   app.get('/admin', admin.index);
+
+  // ADMIN - HERO
   app.get('/admin/hero', admin.hero.index);
+  app.post('/admin/hero', admin.hero.create);
   app.get('/admin/hero/view/:id', admin.hero.view);
   app.get('/admin/hero/edit/:id', admin.hero.edit);
-  app.post('/admin/hero/edit/:id', admin.hero.add);
+  app.post('/admin/hero/edit/:id', admin.hero.create);
   app.get('/admin/hero/delete/:id', admin.hero.delete);
-  app.post('/admin/hero', admin.hero.add);
+
+  // ADMIN - CITY
+  app.get('/admin/city', admin.city.index);
+  app.post('/admin/city', admin.city.create);
+  app.get('/admin/city/view/:id', admin.city.view);
+  app.get('/admin/city/edit/:id', admin.city.edit);
+  // app.post('/admin/city/edit/:id', admin.city.create);
+  app.get('/admin/city/delete/:id', admin.city.delete);
+
+  // ADMIN - MONSTER
+  app.get('/admin/monster', admin.monster.index);
+  app.post('/admin/monster', admin.monster.create);
+  app.get('/admin/monster/view/:id', admin.monster.view);
+  app.get('/admin/monster/edit/:id', admin.monster.edit);
+  // app.post('/admin/monster/edit/:id', admin.monster.create);
+  app.get('/admin/monster/delete/:id', admin.monster.delete);
 
   http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

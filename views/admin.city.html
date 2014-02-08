@@ -1,0 +1,121 @@
+{% extends 'layout.html' %}
+
+{% block title %} DEVIL {% endblock %}
+
+{% block head %}
+  {% parent %}
+{% endblock %}
+
+{% block content %}
+  <div class="col-md-12">
+    <h4>CITY MANAGER</h4>
+    <!-- CITY FORM -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#form">
+              Add New City
+            </a>
+          </h4>
+        </div>
+        <div class="panel-collapse collapse in" id="form">
+          <div class="panel-body">
+            <form role="form-horizontal" method="POST">
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Name</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="name" placeholder="머나먼왕국">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Defense</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="defense" placeholder="10">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Population</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="population" placeholder="100">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Economy Level</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="economy_level" placeholder="1">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Soldiers</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="soldiers" placeholder="1">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Army Level</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="army_level" placeholder="1">
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div><!-- CITY FORM -->
+    <hr>
+    <h4>LIST</h4>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <td>#</td>
+          <td>Name</td>
+          <td>Defense</td>
+          <td>Population</td>
+          <td>Economy Level</td>
+          <td>Soliders</td>
+          <td>Army Level</td>
+          <td>Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for city in cities %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ city.name }}</td>
+          <td>{{ city.defense }}</td>
+          <td>{{ city.population }}</td>
+          <td>{{ city.economy_level }}</td>
+          <td>{{ city.soldiers }}</td>
+          <td>{{ city.army_level }}</td>
+          <td>
+            <a href="/admin/city/view/{{ city.id }}" class="btn btn-xs btn-info">View</a>
+            <a href="/admin/city/edit/{{ city.id }}" class="btn btn-xs btn-warning">Edit</a>
+            <a href="/admin/city/delete/{{ city.id }}" class="btn btn-xs btn-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="col-sm-12">
+      <ul class="pagination">
+        <li><a href="#">&laquo;</a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">&raquo;</a></li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

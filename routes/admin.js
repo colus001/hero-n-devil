@@ -8,6 +8,9 @@
 //////////////////////////////////////////////////
 
 exports.hero = require('./admin/hero');
+exports.devil = require('./admin/devil');
+exports.city = require('./admin/city');
+exports.monster = require('./admin/monster');
 
 exports.index = function (req, res) {
   res.render('admin.index.html');

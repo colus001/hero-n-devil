@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} HERO {% endblock %}
+{% block title %} DEVIL {% endblock %}
 
 {% block head %}
   {% parent %}
@@ -8,14 +8,14 @@
 
 {% block content %}
   <div class="col-md-12">
-    <h4>HERO MANAGER</h4>
-    <!-- HERO FORM -->
+    <h4>MONSTER MANAGER</h4>
+    <!-- MONSTER FORM -->
     <div class="panel-group">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion" href="#form">
-              Add New Hero
+              Add New Monster
             </a>
           </h4>
         </div>
@@ -24,30 +24,23 @@
             <form role="form-horizontal" method="POST">
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Class</label>
-                  <div class="col-sm-10">
-                    <select name="class" class="form-control">
-                      <option>Assassin</option>
-                      <option>Fighter</option>
-                      <option>Magician</option>
-                      <option>Range</option>
-                      <option>Support</option>
-                      <option>Tank</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group col-sm-6">
                   <label class="col-sm-2">Name</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="name" placeholder="Zed">
+                    <input type="text" class="form-control" name="name" placeholder="슬라임">
                   </div>
                 </div>
+                <!-- <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Defense</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="defense" placeholder="10">
+                  </div>
+                </div> -->
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">Health Point</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="health_point" placeholder="250">
+                    <input type="number" class="form-control" name="health_point" placeholder="50">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
@@ -61,13 +54,13 @@
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">Physical Damage</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="physical_damage" placeholder="100">
+                    <input type="number" class="form-control" name="physical_damage" placeholder="25">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">Magic Damage</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="magic_damage" placeholder="100">
+                    <input type="number" class="form-control" name="magic_damage" placeholder="0">
                   </div>
                 </div>
               </div>
@@ -75,13 +68,13 @@
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">Armor</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="armor" placeholder="25">
+                    <input type="number" class="form-control" name="armor" placeholder="0">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">Magic Resist</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="magic_resist" placeholder="25">
+                    <input type="number" class="form-control" name="magic_resist" placeholder="0">
                   </div>
                 </div>
               </div>
@@ -89,24 +82,15 @@
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">Skill #1</label>
                   <div class="col-sm-10">
-                    <input type="name" class="form-control" name="skills[]" placeholder="Thunder Grab">
+                    <input type="text" class="form-control" name="skills[]" placeholder="Thunder Grab">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">Skill #2</label>
                   <div class="col-sm-10">
-                    <input type="name" class="form-control" name="skills[]" placeholder="Invincible">
+                    <input type="text" class="form-control" name="skills[]" placeholder="Invincible">
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Tags</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" name="tags" placeholder="Fighter, Range, Ninja">
-                  </div>
-                </div>
-                <input type="hidden" name="edit_id">
               </div>
               <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
             </form>
@@ -114,14 +98,13 @@
           </div>
         </div>
       </div>
-    </div><!-- HERO FORM -->
+    </div><!-- MONSTER FORM -->
     <hr>
     <h4>LIST</h4>
     <table class="table table-hover">
       <thead>
         <tr>
           <td>#</td>
-          <td>Class</td>
           <td>Name</td>
           <td>HP</td>
           <td>A.Speed/1s</td>
@@ -134,22 +117,21 @@
         </tr>
       </thead>
       <tbody>
-        {% for hero in heros %}
+        {% for monster in monsters %}
         <tr>
           <td>{{ loop.index }}</td>
-          <td>{{ hero.class }}</td>
-          <td>{{ hero.name }}</td>
-          <td>{{ hero.health_point }}</td>
-          <td>{{ hero.attack_speed_per_sec }}</td>
-          <td>{{ hero.physical_damage }}</td>
-          <td>{{ hero.magic_damage }}</td>
-          <td>{{ hero.armor }}</td>
-          <td>{{ hero.magic_resist }}</td>
-          <td>{{ hero.skills }}</td>
+          <td>{{ monster.name }}</td>
+          <td>{{ monster.health_point }}</td>
+          <td>{{ monster.attack_speed_per_sec }}</td>
+          <td>{{ monster.physical_damage }}</td>
+          <td>{{ monster.magic_damage }}</td>
+          <td>{{ monster.armor }}</td>
+          <td>{{ monster.magic_resist }}</td>
+          <td>{{ monster.skills }}</td>
           <td>
-            <a href="/admin/hero/view/{{ hero.id }}" class="btn btn-xs btn-info">View</a>
-            <a href="/admin/hero/edit/{{ hero.id }}" class="btn btn-xs btn-warning">Edit</a>
-            <a href="/admin/hero/delete/{{ hero.id }}" class="btn btn-xs btn-danger">Delete</a>
+            <a href="/admin/monster/view/{{ monster.id }}" class="btn btn-xs btn-info">View</a>
+            <a href="/admin/monster/edit/{{ monster.id }}" class="btn btn-xs btn-warning">Edit</a>
+            <a href="/admin/monster/delete/{{ monster.id }}" class="btn btn-xs btn-danger">Delete</a>
           </td>
         </tr>
         {% endfor %}

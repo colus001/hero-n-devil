@@ -27,7 +27,7 @@ exports.index = function (req, res) {
   });
 };
 
-exports.add = function (req, res) {
+exports.create = function (req, res) {
   if ( req.params.id ) {
     // EDIT
     Hero.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, hero) {
