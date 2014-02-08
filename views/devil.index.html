@@ -19,6 +19,14 @@
     background-color: #CCF;
     height: 100%;
   }
+  .dungeon {
+    padding: 5px;
+    background-color: #DDD;
+    min-height: 200px;
+  }
+  .placeholder {
+      background-color: red;
+  }
 </style>
 {% endblock %}
 
@@ -92,21 +100,24 @@
           </div>
         </div><!-- DEVIL -->
       </div>
-      <h4>COLONIES</h4>
-      <colony class="btn btn-block btn-default">옹</colony>
+
+      <div id="colonies" class="panel-group">
+        <h4>COLONIES</h4>
+      </div>
+
       <h4>STATS</h4>
       <button class="btn btn-block btn-default">돈</button>
       <button class="btn btn-block btn-default">거주지</button>
       <button class="btn btn-block btn-default">레벨</button>
     </div>
 
+    <!-- CITIES -->
     <div class="col-md-3">
       {% if cities.length %}
       <h4>CITIES</h4>
       <div class="panel-group">
       {% for city in cities %}
-        <!-- CITY -->
-        <div class="panel panel-default">
+        <div data-id="city-{{ city.id }}" class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" data-parent="#accordion" href="#city-{{ city.id }}">
@@ -145,19 +156,20 @@
                 </div>
               </div>
               <hr />
-              <attack class="btn btn-block btn-default">공격</attack>
+              <attack data-target="city-{{ city.id }}" class="btn btn-block btn-default">공격</attack>
             </div>
           </div>
-        </div><!-- CITY -->
+        </div>
       {% endfor %}
       </div>
       {% endif %}
+      <!-- CITIES -->
 
+      <!-- MONSTERS -->
       {% if cities.length %}
       <h4>MONSTERS</h4>
       <div class="panel-group">
       {% for monster in monsters %}
-        <!-- MONSTER -->
         <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
@@ -201,13 +213,14 @@
                 </div>
               </div>
               <hr />
-              <button class="btn btn-block btn-default">공격</button>
+              <button class="btn btn-block btn-default">구입</button>
             </div>
           </div>
-        </div><!-- MONSTER -->
+        </div>
       {% endfor %}
       </div>
       {% endif %}
+      <!-- MONSTERS -->
 
       <h4>UPGRADE</h4>
       <upgrade class="btn btn-block btn-default">돈</upgrade>
@@ -216,38 +229,58 @@
     </div>
 
     <div class="col-md-6">
-      <h4>DUNGEONS</h4>
+      <h4>DUNGEON</h4>
       <div class="row">
         <div class="col-xs-2">
-          <keeper class="btn btn-block btn-default">
-            <div style="background-color: red; width: 50%;">
-              오크
-            </div>
-          </keeper>
-          <keeper class="btn btn-block btn-default">
-            <div style="background-color: red; width: 50%;">
-              오크
-            </div>
-          </keeper>
+          <h5>6F</h5>
         </div>
         <div class="col-xs-2">
+          <h5>5F</h5>
+        </div>
+        <div class="col-xs-2">
+          <h5>4F</h5>
+        </div>
+        <div class="col-xs-2">
+          <h5>3F</h5>
+        </div>
+        <div class="col-xs-2">
+          <h5>2F</h5>
+        </div>
+        <div class="col-xs-2">
+          <h5>1F</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div data-floor="6f" class="col-xs-2 dungeon">
+          <keeper class="btn btn-block btn-default">발록</keeper>
+        </div>
+        <div data-floor="5f" class="col-xs-2 dungeon">
+          <keeper class="btn btn-block btn-default">데몬</keeper>
+          <keeper class="btn btn-block btn-default">오우거</keeper>
+        </div>
+        <div data-floor="4f" class="col-xs-2 dungeon">
+          <keeper class="btn btn-block btn-default">고블린</keeper>
+          <keeper class="btn btn-block btn-default">고블린</keeper>
+        </div>
+        <div data-floor="3f" class="col-xs-2 dungeon">
+          <keeper class="btn btn-block btn-default">데몬</keeper>
+        </div>
+        <div data-floor="2f" class="col-xs-2 dungeon">
           <keeper class="btn btn-block btn-default">트롤</keeper>
           <keeper class="btn btn-block btn-default">오크</keeper>
           <keeper class="btn btn-block btn-default">트롤</keeper>
         </div>
-        <div class="col-xs-2">
-          <keeper class="btn btn-block btn-default">데몬</keeper>
-        </div>
-        <div class="col-xs-2">
-          <keeper class="btn btn-block btn-default">고블린</keeper>
-          <keeper class="btn btn-block btn-default">고블린</keeper>
-        </div>
-        <div class="col-xs-2">
-          <keeper class="btn btn-block btn-default">데몬</keeper>
-          <keeper class="btn btn-block btn-default">오우거</keeper>
-        </div>
-        <div class="col-xs-2">
-          <keeper class="btn btn-block btn-default">발록</keeper>
+        <div data-floor="1f" class="col-xs-2 dungeon">
+          <keeper class="btn btn-block btn-default">
+            <div style="background-color: red; width: 50%;">
+              오크
+            </div>
+          </keeper>
+          <keeper class="btn btn-block btn-default">
+            <div style="background-color: red; width: 50%;">
+              오크
+            </div>
+          </keeper>
         </div>
       </div>
       <h4>LOG</h4>
@@ -256,26 +289,42 @@
     </div>
   </div>
   <script type="text/javascript">
-  $(document).ready(function(){
+  $(document).ready(function() {
 
-    var isBattleOnGoing = false;
+    var cityId;
+    // var colonies = [
+    //   {
+    //     'id': 1
+    //   }
+    // ];
+
+    // for ( var i in colonies ) {
+    //   targetCity = $('[data-id='+'city-'+colonies[i].id+"]");
+    //   targetCity.appendTo('#colonies');
+    // }
 
     $(document).on('click', 'attack', function () {
-      battle();
+      battle($(this).data('target'));
     });
 
+    $('.dungeon').sortable({
+      connectWith: '.dungeon',
+      placeholder: "placeholder btn btn-block"
+    });
+
+    var isBattleOnGoing = false;
     var clock = 60;
     var $timer = $('#timer');
     var $log = $('#log');
 
-    /* setInterval(function() {
+    setInterval(function() {
       clock--;
       $timer.html('TIMER: ' + clock);
 
       if ( clock === 0 ) clock = 60;
-    }, 1000); */
+    }, 1000);
 
-    var battle = function () {
+    var battle = function (target) {
       if ( isBattleOnGoing ) {
         alert('지금 배틀중입니다.');
         return;
@@ -283,6 +332,7 @@
 
       isBattleOnGoing = true;
 
+      $log.html();
       var turn = 0;
 
       var devil = {
@@ -322,7 +372,8 @@
         var total_damage = phy_damage + mag_damage;
         hero.health_point -= total_damage;
 
-        logger('마왕 -> 용사 : ' + total_damage);
+        logger('마왕이 용사를 공격합니다.');
+        logger('마왕이 용사에게 ' + total_damage + '의 데미지를 입혔습니다.');
       };
 
       var heroAttack = function () {
@@ -331,7 +382,8 @@
         var total_damage = phy_damage + mag_damage;
         devil.health_point -= total_damage;
 
-        logger('용사 -> 마왕 : ' + total_damage);
+        logger('용사가 마왕을 공격합니다.');
+        logger('용사가 마왕에게 ' + total_damage + '의 데미지를 입혔습니다.');
       };
 
       var logger = function (logMessage) {
@@ -341,20 +393,30 @@
         $log.append($message);
       };
 
-      logger('배틀 시작!');
+      var logHeatlhPoint = function () {
+        logger('마왕 HP: ' + devil.health_point + ' 용사 HP: ' + hero.health_point);
+        return;
+      }
 
-      battleInterval = setInterval(function battleLoop () {
+      var battleLoop = function () {
+        logger('턴');
+
         devilAttack();
+        logHeatlhPoint();
 
         if ( hero.health_point <= 0 ) {
           logger('마왕이 승리하였습니다.');
 
           clearInterval(battleInterval);
           isBattleOnGoing = false;
+          targetCity = $('[data-id='+target+"]");
+          targetCity.find('.panel-collapse').removeClass('in');
+          targetCity.appendTo('#colonies');
           return;
         }
 
         heroAttack();
+        logHeatlhPoint();
 
         if ( devil.health_point <= 0 ) {
           logger('용사가 승리하였습니다.');
@@ -363,7 +425,11 @@
           isBattleOnGoing = false;
           return;
         }
-      }, 1000);
+      };
+
+      logger('배틀 시작!');
+
+      battleInterval = setInterval(battleLoop, 1000);
     };
   });
   </script>
