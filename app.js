@@ -66,6 +66,14 @@ db.once('open', function callback () {
   app.post('/admin/hero/edit/:id', admin.hero.create);
   app.get('/admin/hero/delete/:id', admin.hero.delete);
 
+  // ADMIN - DEVIL
+  app.get('/admin/devil', admin.devil.index);
+  app.post('/admin/devil', admin.devil.create);
+  app.get('/admin/devil/view/:id', admin.devil.view);
+  app.get('/admin/devil/edit/:id', admin.devil.edit);
+  app.post('/admin/devil/edit/:id', admin.devil.create);
+  app.get('/admin/devil/delete/:id', admin.devil.delete);
+
   // ADMIN - CITY
   app.get('/admin/city', admin.city.index);
   app.post('/admin/city', admin.city.create);

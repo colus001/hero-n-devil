@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////
 //
-//  grouple - admin/devil.js
+//  grouple - admin.js
 //
 //  Purpose: Utliities
 //  Created: 2013.12.03
@@ -12,4 +12,81 @@ var async = require('async');
 
 // Model
 var Devil = require('../../lib/model').Devil;
-var City = require('../../lib/model').City;
+
+exports.index = function (req, res) {
+  Devil.find({}, function (err, devils) {
+    if (err) throw err;
+
+    var result = {
+      'result': 'success',
+      'devils': devils
+    };
+
+    res.render('admin.devil.html', result);
+    return;
+  });
+};
+
+exports.create = function (req, res) {
+  if ( req.params.id ) {
+    // EDIT
+    Devil.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, devil) {
+      if (err) throw err;
+
+      var result = {
+        'result': 'success',
+        'devil': devil
+      };
+
+      console.log('result:', result);
+      res.redirect('/admin/devil');
+      return;
+    });
+  } else {
+    // ADD
+    Devil(req.body).save(function (err, devil) {
+      if (err) throw err;
+
+      var result = {
+        'result': 'success',
+        'devil': devil
+      };
+
+      console.log('result:', result);
+      res.redirect('/admin/devil');
+      return;
+    });
+  }
+};
+
+exports.edit = function (req, res) {
+  Devil.findById(req.params.id, function (err, devil) {
+    if (err) throw err;
+
+    var result = {
+      'result': 'success',
+      'devil': devil
+    };
+
+    res.render('admin.devil.edit.html', result);
+    return;
+  });
+};
+
+exports.view = function (req, res) {
+  Devil.findById(req.params.id, function (err, devil) {
+    if (err) throw err;
+
+    res.json(devil);
+    return;
+  });
+};
+
+exports.delete = function (req, res) {
+  devil.findByIdAndRemove(req.params.id, function (err, devil) {
+    if (err) throw err;
+
+    res.redirect('/admin/devil');
+    return;
+  });
+};
