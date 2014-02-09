@@ -156,7 +156,7 @@
                 </div>
               </div>
               <hr />
-              <attack data-target="city-{{ city.id }}" class="btn btn-block btn-default">공격</attack>
+              <attack data-target="{{ city.id }}" class="btn btn-block btn-default">공격</attack>
             </div>
           </div>
         </div>
@@ -304,7 +304,25 @@
     // }
 
     $(document).on('click', 'attack', function () {
-      battle($(this).data('target'));
+      if ( isBattleOnGoing ) {
+        alert('지금 배틀중입니다.');
+        return;
+      }
+
+      isBattleOnGoing = true;
+
+      $.ajax({
+        type: 'POST',
+        url: '/devil/attack',
+        data: { 'city_id': $(this).data('target') },
+        success: function (data, status) {
+          console.log('data');
+          isBattleOnGoing = false;
+        },
+        error: function (error) {
+          isBattleOnGoing = false;
+        }
+      });
     });
 
     $('.dungeon').sortable({
@@ -325,13 +343,6 @@
     }, 1000);
 
     var battle = function (target) {
-      if ( isBattleOnGoing ) {
-        alert('지금 배틀중입니다.');
-        return;
-      }
-
-      isBattleOnGoing = true;
-
       $log.html();
       var turn = 0;
 

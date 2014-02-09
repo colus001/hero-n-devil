@@ -70,6 +70,7 @@ db.once('open', function callback () {
 
   // DEVIL
   app.get('/devil', checkLogin, devil.index);
+  app.post('/devil/attack', checkLogin, devil.attack)
 
   // ADMIN
   app.get('/admin', admin.index);
