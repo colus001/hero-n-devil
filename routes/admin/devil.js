@@ -14,12 +14,12 @@ var async = require('async');
 var Devil = require('../../lib/model').Devil;
 
 exports.index = function (req, res) {
-  Devil.find({}, function (err, devils) {
+  Devil.findOne({}, function (err, devil) {
     if (err) throw err;
 
     var result = {
       'result': 'success',
-      'devils': devils
+      'devil': devil
     };
 
     res.render('admin.devil.html', result);
@@ -28,64 +28,48 @@ exports.index = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  if ( req.params.id ) {
-    // EDIT
-    Devil.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, devil) {
-      if (err) throw err;
+  req.body.name = 'Devil';
 
-      var result = {
-        'result': 'success',
-        'devil': devil
-      };
+  async.waterfall([
+    function (callback) {
+      Devil.findOne({}, function (err, devil) {
+        if (err) throw err;
 
-      console.log('result:', result);
-      res.redirect('/admin/devil');
-      return;
-    });
-  } else {
-    // ADD
-    Devil(req.body).save(function (err, devil) {
-      if (err) throw err;
+        callback(null, devil);
+        return;
+      });
+    },
 
-      var result = {
-        'result': 'success',
-        'devil': devil
-      };
+    function (devil, callback) {
+      if ( devil ) {
+        Devil.findByIdAndUpdate(devil._id, { $set: req.body }, function (err, devil) {
+          if (err) throw err;
 
-      console.log('result:', result);
-      res.redirect('/admin/devil');
-      return;
-    });
-  }
-};
+          var result = {
+            'result': 'success',
+            'devil': devil
+          };
 
-exports.edit = function (req, res) {
-  Devil.findById(req.params.id, function (err, devil) {
-    if (err) throw err;
+          console.log('result:', result);
+          callback(null);
+          return;
+        });
+      } else {
+        Devil(req.body).save(function (err, devil) {
+          if (err) throw err;
 
-    var result = {
-      'result': 'success',
-      'devil': devil
-    };
+          var result = {
+            'result': 'success',
+            'devil': devil
+          };
 
-    res.render('admin.devil.edit.html', result);
-    return;
-  });
-};
-
-exports.view = function (req, res) {
-  Devil.findById(req.params.id, function (err, devil) {
-    if (err) throw err;
-
-    res.json(devil);
-    return;
-  });
-};
-
-exports.delete = function (req, res) {
-  devil.findByIdAndRemove(req.params.id, function (err, devil) {
-    if (err) throw err;
-
+          console.log('result:', result);
+          callback(null);
+          return;
+        });
+      }
+    }
+  ], function (err, result) {
     res.redirect('/admin/devil');
     return;
   });

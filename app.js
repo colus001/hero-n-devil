@@ -41,13 +41,29 @@ if ('development' == app.get('env')) {
   swig.setDefaults({ cache: false });
 }
 
+var checkLogin = function (req, res, next) {
+  if ( !req.session.account_id ) {
+    res.redirect('/login');
+    return;
+  }
+  next();
+};
+
 // Connect to mongodb
 mongoose.connect('mongodb://localhost/heroNdevil');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
-  app.get('/', routes.index);
+  // INDEX
+  app.get('/', checkLogin, routes.index);
+
+  // ACOUNT
+  app.get('/login', account.index);
+  app.get('/logout', account.logout);
+  app.get('/signup', account.signup);
+  app.post('/login', account.login);
+  app.post('/signup', account.create);
 
   // HERO
   app.get('/hero', hero.index);
@@ -69,10 +85,6 @@ db.once('open', function callback () {
   // ADMIN - DEVIL
   app.get('/admin/devil', admin.devil.index);
   app.post('/admin/devil', admin.devil.create);
-  app.get('/admin/devil/view/:id', admin.devil.view);
-  app.get('/admin/devil/edit/:id', admin.devil.edit);
-  app.post('/admin/devil/edit/:id', admin.devil.create);
-  app.get('/admin/devil/delete/:id', admin.devil.delete);
 
   // ADMIN - CITY
   app.get('/admin/city', admin.city.index);
