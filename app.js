@@ -66,10 +66,10 @@ db.once('open', function callback () {
   app.post('/signup', account.create);
 
   // HERO
-  app.get('/hero', hero.index);
+  app.get('/hero', checkLogin, hero.index);
 
   // DEVIL
-  app.get('/devil', devil.index);
+  app.get('/devil', checkLogin, devil.index);
 
   // ADMIN
   app.get('/admin', admin.index);
