@@ -87,15 +87,31 @@ exports.createPlayer = function (req, res) {
 };
 
 exports.select = function (req, res) {
-  Player.findById(req.params.id, function (err, player) {
-    if (err) throw err;
+  async.waterfall([
+    function getPlayer (callback) {
+      Player.findById(req.params.id, function (err, player) {
+        if (err) throw err;
 
-    if ( !player ) {
-      errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
-      return;
+        if ( !player ) {
+          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          return;
+        }
+
+        req.session.current_player_id = player._id;
+        callback(null, player);
+        return;
+      });
+    },
+
+    function updateCurrentPlayerId (player, callback) {
+      Account.findByIdAndUpdate(req.session.account_id, { 'current_player_id': player._id }, function (err, account) {
+        if (err) throw err;
+
+        callback(null);
+        return;
+      });
     }
-
-    req.session.current_player_id = player._id;
+  ], function (err, result) {
     res.redirect('/');
     return;
   });

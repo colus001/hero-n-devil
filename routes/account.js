@@ -60,6 +60,10 @@ exports.login = function (req, res) {
 
     req.session.account_id = account._id;
 
+    if ( account.current_player_id ) {
+      req.session.current_player_id = account.current_player_id;
+    }
+
     var result = {
       'result': 'success',
       'account': account
