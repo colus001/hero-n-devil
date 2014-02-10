@@ -110,6 +110,7 @@
       </div>
 
       <h4>STATS</h4>
+      <button class="btn btn-block btn-default">활동력</button>
       <button class="btn btn-block btn-default">돈</button>
       <button class="btn btn-block btn-default">거주지</button>
       <button class="btn btn-block btn-default">레벨</button>
@@ -197,7 +198,7 @@
                 </div>
                 <div class="row">
                   <div class="col-xs-4">공속</div>
-                  <div class="col-xs-8">{{ monster.attack_speed }}</div>
+                  <div class="col-xs-8">{{ monster.attack_speed_per_sec }}</div>
                 </div>
                 <div class="row">
                   <div class="col-xs-4">물리공격</div>
@@ -320,7 +321,7 @@
         url: '/devil/attack',
         data: { 'city_id': $(this).data('target') },
         success: function (data, status) {
-          console.log('data');
+          console.log(data);
           isBattleOnGoing = false;
         },
         error: function (error) {

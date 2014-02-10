@@ -212,6 +212,11 @@ exports.attack = function (req, res) {
     'city_id': req.body.city_id
   };
 
+  console.log('attack begins');
+  res.send('attack tried');
+  return;
+
+
   // account -> player -> devil -> city -> hero -> battle
 
   async.waterfall([
