@@ -22,7 +22,11 @@ var Account = require('../lib/model').Account;
 var errorHandler = require('../lib/errorHandler');
 
 exports.index = function (req, res) {
-  Player.find({ 'account_id': req.session.account_id }, function (err, players) {
+  var option = {
+    sort: { created_at: 1 }
+  };
+
+  Player.find({ 'account_id': req.session.account_id }, null, option, function (err, players) {
     if (err) throw err;
 
     if ( players.length === 0 ) {
@@ -77,7 +81,7 @@ exports.createPlayer = function (req, res) {
       });
     }
   ], function (err, result) {
-    res.redirect('/');
+    res.redirect('/player');
     return;
   });
 };

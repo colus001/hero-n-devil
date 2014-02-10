@@ -57,11 +57,11 @@ var checkCurrentPlayer = function (req, res, next) {
   }
 
   if ( !req.session.current_player_id ) {
+    // req.session.redirect = req.path; // 리다이렉트 예시
     res.redirect('/player');
     return;
   }
 
-  console.log('current_player_id:', req.session.current_player_id);
   next();
 };
 
@@ -72,7 +72,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
   // INDEX
-  app.get('/', checkLogin, routes.index);
+  app.get('/', checkCurrentPlayer, routes.index);
 
   // ACOUNT
   app.get('/login', account.index);

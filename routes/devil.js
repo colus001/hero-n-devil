@@ -23,22 +23,27 @@ var errorHandler = require('../lib/errorHandler');
 exports.index = function (req, res) {
   async.waterfall([
     function getPlayer (callback) {
-      Player.find({ 'account_id': req.session.account_id }, function (err, player) {
+      Player.findById(req.session.current_player_id, function (err, player) {
         if (err) throw err;
 
-        if ( player.length === 0 ) {
+        if ( !player ) {
           console.log('NO_PLAYER_FOUND');
           res.redirect('/player');
           return;
         }
 
+        if ( !player.evil.devil._id ) {
+          res.redirect('/devil/select');
+          return;
+        }
+
         console.log('player:', player);
-        callback(null);
+        callback(null, player);
         return;
       });
     },
 
-    function getCities (callback) {
+    function getCities (player, callback) {
       City.find({}, function (err, cities) {
         if (err) throw err;
 
@@ -47,12 +52,12 @@ exports.index = function (req, res) {
           return;
         }
 
-        callback(null, cities);
+        callback(null, player, cities);
         return;
       });
     },
 
-    function getMonsters (cities, callback) {
+    function getMonsters (player, cities, callback) {
       Monster.find({}, function (err, monsters) {
         if (err) throw err;
 
@@ -61,14 +66,15 @@ exports.index = function (req, res) {
           return;
         }
 
-        callback(null, cities, monsters);
+        callback(null, player, cities, monsters);
         return;
       });
     },
 
-    function getResult (cities, monsters, callback) {
+    function getResult (player, cities, monsters, callback) {
       var result = {
         'result': 'success',
+        'devil': player.evil.devil,
         'cities': cities,
         'monsters': monsters
       };
@@ -84,6 +90,25 @@ exports.index = function (req, res) {
 
 exports.select = function (req, res) {
   async.waterfall([
+    function getPlayerAndCheckDevil (callback) {
+      Player.findById(req.session.current_player_id, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          return;
+        }
+
+        if ( player.evil.devil._id ) {
+          res.redirect('/devil');
+          return;
+        }
+
+        callback(null);
+        return;
+      });
+    },
+
     function (callback) {
       Devil.find({}, function (err, devils) {
         if (err) throw err;
@@ -110,21 +135,73 @@ exports.select = function (req, res) {
 
 exports.selectDevil = function (req, res) {
   async.waterfall([
-    function (callback) {
+    function getPlayerAndCheckDevil (callback) {
+      Player.findById(req.session.current_player_id, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          return;
+        }
+
+        if ( player.evil.devil._id ) {
+          res.redirect('/devil');
+          return;
+        }
+
+        callback(null);
+        return;
+      });
+    },
+
+    function getDevil (callback) {
       Devil.findById(req.params.id, function (err, devil) {
         if (err) throw err;
 
         if ( !devil ) {
-          res.sendErrorMessage('NO_DEVIL_FOUND', res);
+          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
           return;
         }
 
-        res.send(devil);
+        callback(null, devil);
+        return;
+      });
+    },
+
+    function updatePlayer (devil, callback) {
+      var update = {
+        'evil': {
+          'devil': {
+            'name': devil.name,
+            'current_health_point': devil.health_point,
+            'health_point': devil.health_point,
+            'attack_speed_per_sec': devil.attack_speed_per_sec,
+            'physical_damage': devil.physical_damage,
+            'magic_damage': devil.magic_damage,
+            'armor': devil.armor,
+            'magic_resist': devil.magic_resist,
+            'skills': devil.skills,
+            '_id': devil._id
+          }
+        }
+      };
+
+      console.log('update:', update);
+
+      Player.findByIdAndUpdate(req.session.current_player_id, update, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          return;
+        }
+
         callback(null);
         return;
       });
     }
   ], function (err, result) {
+    res.redirect('/devil');
     return;
   });
 };
@@ -202,7 +279,7 @@ exports.attack = function (req, res) {
     },
 
     function prepareForBattle (player, city, defenders, callback) {
-      Player.findByIdAndUpdate()
+      Player.findByIdAndUpdate();
     }
   ], function (err, result) {
 
