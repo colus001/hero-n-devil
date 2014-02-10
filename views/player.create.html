@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% block title %} DEVIL {% endblock %}
+
+{% block head %}
+  {% parent %}
+  <style>
+  .log {
+    border: 1px solid #CCC;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .gauge {
+    border: 1px solid black;
+    margin: 15px 0 15px 0;
+    height: 30px;
+  }
+  .gauge > .bar {
+    background-color: #CCF;
+    height: 100%;
+  }
+  .dungeon {
+    padding: 5px;
+    background-color: #DDD;
+    min-height: 200px;
+  }
+  .placeholder {
+      background-color: red;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="col-md-12">
+  <div align="center">
+    <br />
+    <img src="http://lorempixel.com/500/500" alt="로고" class="img-thumbnail">
+  </div>
+  <form role="form-horizontal" method="POST">
+    <div class="row">
+      <div class="form-group col-sm-12">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6" >
+          <h3 align="center">플레이어명 입력</h3>
+          <hr />
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="name" placeholder="나는 플레이어다">
+            <p class="help-block">원하는 플레이어명을 입력하세요. 중복불가능.</p>
+          </div>
+          <div class="col-sm-2">
+            <button class="btn btn-default btn-primary">결정</button>
+          </div>
+        </div>
+        <div class="col-sm-3"></div>
+      </div>
+
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 // Routes
 var routes = require('./routes');
 var account = require('./routes/account');
+var player = require('./routes/player');
 var hero = require('./routes/hero');
 var devil = require('./routes/devil');
 var admin = require('./routes/admin');
@@ -49,6 +50,21 @@ var checkLogin = function (req, res, next) {
   next();
 };
 
+var checkCurrentPlayer = function (req, res, next) {
+  if ( !req.session.account_id ) {
+    res.redirect('/login');
+    return;
+  }
+
+  if ( !req.session.current_player_id ) {
+    res.redirect('/player');
+    return;
+  }
+
+  console.log('current_player_id:', req.session.current_player_id);
+  next();
+};
+
 // Connect to mongodb
 mongoose.connect('mongodb://localhost/heroNdevil');
 
@@ -65,12 +81,20 @@ db.once('open', function callback () {
   app.post('/login', account.login);
   app.post('/signup', account.create);
 
+  // PLAYER
+  app.get('/player', checkLogin, player.index);
+  app.get('/player/select/:id', checkLogin, player.select);
+  app.get('/player/create', checkLogin, player.create);
+  app.post('/player/create', checkLogin, player.createPlayer);
+
   // HERO
   app.get('/hero', checkLogin, hero.index);
 
   // DEVIL
-  app.get('/devil', checkLogin, devil.index);
-  app.post('/devil/attack', checkLogin, devil.attack)
+  app.get('/devil', checkCurrentPlayer, devil.index);
+  app.post('/devil/attack', checkCurrentPlayer, devil.attack);
+  app.get('/devil/select', checkCurrentPlayer, devil.select);
+  app.get('/devil/select/:id', checkCurrentPlayer, devil.selectDevil);
 
   // ADMIN
   app.get('/admin', admin.index);
@@ -86,6 +110,10 @@ db.once('open', function callback () {
   // ADMIN - DEVIL
   app.get('/admin/devil', admin.devil.index);
   app.post('/admin/devil', admin.devil.create);
+  app.get('/admin/devil/view/:id', admin.devil.view);
+  app.get('/admin/devil/edit/:id', admin.devil.edit);
+  app.post('/admin/devil/edit/:id', admin.devil.create);
+  app.get('/admin/devil/delete/:id', admin.devil.delete);
 
   // ADMIN - CITY
   app.get('/admin/city', admin.city.index);

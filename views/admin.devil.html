@@ -16,7 +16,7 @@
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Name</label>
           <div class="col-sm-10">
-            <p class="form-control-static">Devil</p>
+            <input type="text" class="form-control" name="name" placeholder="지옥마왕">
           </div>
         </div>
       </div>
@@ -24,21 +24,13 @@
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Health Point</label>
           <div class="col-sm-10">
-            {% if devil %}
-            <input type="number" class="form-control" name="health_point" value="{{ devil.health_point }}">
-            {% else %}
-            <input type="number" class="form-control" name="health_point" value="750">
-            {% endif %}
+            <input type="number" class="form-control" name="health_point" placeholder="750">
           </div>
         </div>
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Attack Speed</label>
           <div class="col-sm-10">
-            {% if devil %}
-            <input type="number" step="any" class="form-control" name="attack_speed_per_sec" value="{{ devil.attack_speed_per_sec }}">
-            {% else %}
-            <input type="number" step="any" class="form-control" name="attack_speed_per_sec" value="0.5">
-            {% endif %}
+            <input type="number" step="any" class="form-control" name="attack_speed_per_sec" placeholder="0.5">
           </div>
         </div>
       </div>
@@ -46,21 +38,13 @@
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Physical Damage</label>
           <div class="col-sm-10">
-            {% if devil %}
-            <input type="number" class="form-control" name="physical_damage" value="{{ devil.physical_damage }}">
-            {% else %}
-            <input type="number" class="form-control" name="physical_damage" value="100">
-            {% endif %}
+            <input type="number" class="form-control" name="physical_damage" placeholder="100">
           </div>
         </div>
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Magic Damage</label>
           <div class="col-sm-10">
-            {% if devil %}
-            <input type="number" class="form-control" name="magic_damage" value="{{ devil.magic_damage }}">
-            {% else %}
-            <input type="number" class="form-control" name="magic_damage" value="100">
-            {% endif %}
+            <input type="number" class="form-control" name="magic_damage" placeholder="100">
           </div>
         </div>
       </div>
@@ -68,21 +52,13 @@
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Armor</label>
           <div class="col-sm-10">
-            {% if devil %}
-            <input type="number" class="form-control" name="armor" value="{{ devil.armor }}">
-            {% else %}
-            <input type="number" class="form-control" name="armor" value="20">
-            {% endif %}
+            <input type="number" class="form-control" name="armor" placeholder="20">
           </div>
         </div>
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Magic Resist</label>
           <div class="col-sm-10">
-            {% if devil %}
-            <input type="number" class="form-control" name="magic_resist" value="{{ devil.magic_resist }}">
-            {% else %}
-            <input type="number" class="form-control" name="magic_resist" value="20">
-            {% endif %}
+            <input type="number" class="form-control" name="magic_resist" placeholder="20">
           </div>
         </div>
       </div>
@@ -90,25 +66,63 @@
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Skill #1</label>
           <div class="col-sm-10">
-            {% if devil %}
-            <input type="name" class="form-control" name="skills[]" value="{{ devil.skills[0] }}">
-            {% else %}
-            <input type="name" class="form-control" name="skills[]" value="Fireball">
-            {% endif %}
+            <input type="name" class="form-control" name="skills[]" placeholder="Fireball">
           </div>
         </div>
         <div class="form-group col-sm-6">
           <label class="col-sm-2">Skill #2</label>
           <div class="col-sm-10">
-            {% if devil %}
-            <input type="name" class="form-control" name="skills[]" value="{{ devil.skills[1] }}">
-            {% else %}
-            <input type="name" class="form-control" name="skills[]" value="Mirror Image">
-            {% endif %}
+            <input type="name" class="form-control" name="skills[]" placeholder="Mirror Image">
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label class="col-sm-2">Description</label>
+          <textarea name="description" class="form-control" rows="3"></textarea>
+          <br />
         </div>
       </div>
       <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
     </form>
+
+    <hr>
+    <h4>LIST</h4>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>HP</th>
+          <th>A.Speed/1s</th>
+          <th>P.Dmg</th>
+          <th>M.Dmg</th>
+          <th>Armor</th>
+          <th>M.Resist</th>
+          <th>Skills</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for devil in devils %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ devil.name }}</td>
+          <td>{{ devil.health_point }}</td>
+          <td>{{ devil.attack_speed_per_sec }}</td>
+          <td>{{ devil.physical_damage }}</td>
+          <td>{{ devil.magic_damage }}</td>
+          <td>{{ devil.armor }}</td>
+          <td>{{ devil.magic_resist }}</td>
+          <td>{{ devil.skills }}</td>
+          <td>
+            <a href="/admin/devil/view/{{ devil.id }}" class="btn btn-xs btn-info">View</a>
+            <a href="/admin/devil/edit/{{ devil.id }}" class="btn btn-xs btn-warning">Edit</a>
+            <a href="/admin/devil/delete/{{ devil.id }}" class="btn btn-xs btn-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock %}

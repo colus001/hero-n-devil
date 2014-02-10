@@ -12,7 +12,9 @@ var async = require('async');
 
 // Model
 var Hero = require('../lib/model').Hero;
+var Devil = require('../lib/model').Devil;
 var City = require('../lib/model').City;
+var Player = require('../lib/model').Player;
 var Monster = require('../lib/model').Monster;
 
 // Library
@@ -20,7 +22,23 @@ var errorHandler = require('../lib/errorHandler');
 
 exports.index = function (req, res) {
   async.waterfall([
-    function (callback) {
+    function getPlayer (callback) {
+      Player.find({ 'account_id': req.session.account_id }, function (err, player) {
+        if (err) throw err;
+
+        if ( player.length === 0 ) {
+          console.log('NO_PLAYER_FOUND');
+          res.redirect('/player');
+          return;
+        }
+
+        console.log('player:', player);
+        callback(null);
+        return;
+      });
+    },
+
+    function getCities (callback) {
       City.find({}, function (err, cities) {
         if (err) throw err;
 
@@ -34,7 +52,7 @@ exports.index = function (req, res) {
       });
     },
 
-    function (cities, callback) {
+    function getMonsters (cities, callback) {
       Monster.find({}, function (err, monsters) {
         if (err) throw err;
 
@@ -48,7 +66,7 @@ exports.index = function (req, res) {
       });
     },
 
-    function (cities, monsters, callback) {
+    function getResult (cities, monsters, callback) {
       var result = {
         'result': 'success',
         'cities': cities,
@@ -64,11 +82,131 @@ exports.index = function (req, res) {
   });
 };
 
+exports.select = function (req, res) {
+  async.waterfall([
+    function (callback) {
+      Devil.find({}, function (err, devils) {
+        if (err) throw err;
+
+        if ( devils.length === 0 ) {
+          errorHandler.sendErrorMessage('NO_DEVILS_FOUND', res);
+          return;
+        }
+
+        var result = {
+          'result': 'success',
+          'devils': devils
+        };
+
+        callback(null, result);
+        return;
+      });
+    }
+  ], function (err, result) {
+    res.render('devil.select.html', result);
+    return;
+  });
+};
+
+exports.selectDevil = function (req, res) {
+  async.waterfall([
+    function (callback) {
+      Devil.findById(req.params.id, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          res.sendErrorMessage('NO_DEVIL_FOUND', res);
+          return;
+        }
+
+        res.send(devil);
+        callback(null);
+        return;
+      });
+    }
+  ], function (err, result) {
+    return;
+  });
+};
+
 exports.attack = function (req, res) {
   var attack = {
-    'user': req.session.account_id,
+    'account_id': req.session.account_id,
     'city_id': req.body.city_id
   };
+
+  // account -> player -> devil -> city -> hero -> battle
+
+  async.waterfall([
+    function getAccount (callback) {
+      Account.findByIdAndUpdate(req.session.account_id, { 'updated_at': new Date() }, function (err, account) {
+        if (err) throw err;
+
+        if ( !account ) {
+          errorHandler.sendErrorMessage('NO_CITY_FOUND', res);
+          return;
+        }
+
+        callback(null, account);
+        return;
+      });
+    },
+
+    function getPlayer (account, callback) {
+      Player.findByIdAndUpdate(account.players_id[0], { 'updated_at': new Date() }, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          errorHandler.sendErrorMessage('NO_PLAYER_FOUND');
+          return;
+        }
+
+        callback(null, player);
+        return;
+      });
+    },
+
+    function getCity (player, callback) {
+      City.findById(req.body.city_id, function (err, city) {
+        if (err) throw err;
+
+        if ( !city ) {
+          errorHandler.sendErrorMessage('NO_CITY_FOUND', res);
+          return;
+        }
+
+        callback(null, player, city);
+        return;
+      });
+    },
+
+    function getHeroesForCity (player, city, callback) {
+      Hero.find({}, function (err, heroes) {
+        if (err) throw err;
+
+        if ( !heroes ) {
+          errorHandler.sendErrorMessage('NO_HEROES_EXIST', res);
+          return;
+        }
+
+        var defenders = [];
+
+        for ( var i in city.soldiers ) {
+          var random = Math.random() * heroes.length;
+          defenders.push(heroes[random]);
+        }
+
+        callback(null, player, city, defenders);
+        return;
+      });
+    },
+
+    function prepareForBattle (player, city, defenders, callback) {
+      Player.findByIdAndUpdate()
+    }
+  ], function (err, result) {
+
+  });
 
   console.log('attack:', attack);
   res.send(attack);

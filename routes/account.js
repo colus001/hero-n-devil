@@ -71,8 +71,7 @@ exports.login = function (req, res) {
 };
 
 exports.logout = function (req, res) {
-  req.session.account_id = undefined;
-
+  req.session.destroy();
   res.redirect('/login');
   return;
 };
