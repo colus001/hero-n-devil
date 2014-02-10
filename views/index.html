@@ -14,7 +14,7 @@
     <hr />
     <div class="row">
       <div class="col-md-12">
-        <button class="btn btn-info">{{ player.name }}</button>
+        <button data-name="{{ player.name }}" class="btn btn-info">{{ player.name }}</button>
         <a href="/player" class="btn btn-primary pull-right">플레이어 변경</a>
       </div>
     </div>
@@ -27,6 +27,20 @@
         <a href="/devil" class="btn btn-block btn-default">DEVIL</a>
       </div>
     </div>
-
   </div>
+
+  <script type="text/javascript">
+  $(document).ready(function () {
+    $('button').on('click', function () {
+      var $playerName = $(this).text();
+
+      if ( !$playerName ) {
+        return;
+      }
+
+      alert('현재 선택된 플레이어는 [' + $playerName + '] 입니다. 변경하시려면 오른쪽 변경 버튼을 클릭하세요.');
+      return;
+    });
+  });
+  </script>
 {% endblock %}
