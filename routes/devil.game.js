@@ -25,10 +25,6 @@ var errorHandler = require('../lib/errorHandler');
 
 
 exports.attack = function (req, res) {
-  // var attack = {
-  //   'account_id': req.session.account_id,
-  //   'city_id': req.body.city_id
-  // };
   var logs = [];
 
   // player & devil -> city -> heros -> battle
@@ -113,12 +109,25 @@ exports.attack = function (req, res) {
 
       // DEVIL ATTACK
       defender.current_health_point -= getDamage(devil, defender);
+      logs.push(devil.name + '이(가) ' + defender.name + '을(를) 공격하여 ' + getDamage(devil, defender) + '의 데미지를 입혔습니다.');
 
-      // HERO ATTACK
-      if ( city.defenders[0].length > 1 || defender.current_health_point > 0 ) {
-        devil.current_health_point -= getDamage(defender, devil);
-      } else {
+      // CHECK DEFENDER
+      if ( defender.current_health_point <= 0 ) {
+        logs.push(devil.name + '이(가) ' + defender.name + '을(를) 무찔렀습니다.');
         city.defenders.splice(0, 1);
+      }
+
+      // DEFENDER ATTACK
+      if ( city.defenders.length !== 0 ) {
+        for ( var i in city.defenders ) {
+          devil.current_health_point -= getDamage(city.defenders[i], devil);
+          logs.push(city.defenders[i].name + '이(가) ' + devil.name + '을(를) 공격하여 ' + getDamage(city.defenders[i], devil) + '의 데미지를 입혔습니다.');
+        }
+      }
+
+      // CHECK DEVIL
+      if ( devil.current_health_point <= 0 ) {
+        logs.push(defender.name + '이(가) ' + devil.name + '을(를) 무찔렀습니다.');
       }
 
       callback(null, devil, city);
@@ -129,7 +138,8 @@ exports.attack = function (req, res) {
       city = JSON.parse(JSON.stringify(city));
 
       var result = {
-        'result': 'success'
+        'result': 'success',
+        'logs': logs
       };
 
       async.parallel([
