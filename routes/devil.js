@@ -20,6 +20,7 @@ var Monster = require('../lib/model').Monster;
 // Model Prototype
 var ProtoCity = require('../lib/model').ProtoCity;
 var ProtoDevil = require('../lib/model').ProtoDevil;
+var ProtoMonster = require('../lib/model').ProtoMonster;
 
 // Library
 var errorHandler = require('../lib/errorHandler');
@@ -82,7 +83,7 @@ exports.index = function (req, res) {
     },
 
     function getMonsters (player, devil, cities, callback) {
-      Monster.find({ 'player_id': current_player_id }, function (err, monsters) {
+      ProtoMonster.find({ /* 'player_id': current_player_id */ }, function (err, monsters) {
         if (err) throw err;
 
         if ( !monsters ) {
@@ -123,7 +124,16 @@ exports.select = function (req, res) {
           return;
         }
 
-        if ( player.devil_id ) {
+        callback(null, player);
+        return;
+      });
+    },
+
+    function getDevil (player, callback) {
+      Devil.findById(player.devil_id, function (err, devil) {
+        if (err) throw err;
+
+        if ( devil ) {
           res.redirect('/devil');
           return;
         }
@@ -227,7 +237,9 @@ exports.selectDevil = function (req, res) {
         }
 
         var devil = JSON.parse(JSON.stringify(protodevil));
+
         devil.player_id = player._id;
+        devil.current_health_point = devil.health_point;
 
         delete devil.created_at;
         delete devil.updated_at;

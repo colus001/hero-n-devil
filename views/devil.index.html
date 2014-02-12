@@ -322,7 +322,7 @@
         data: { 'city_id': $(this).data('target') },
         success: function (data, status) {
           // 1턴씩 서버에서 처리되도록 하고, 1턴이 완료되어 response 가 넘어오면 제귀호출 하는걸로 개발
-          alert('전투완료: ' + data);
+          console.log('data:', data);
           isBattleOnGoing = false;
         },
         error: function (error) {

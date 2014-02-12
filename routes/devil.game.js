@@ -17,6 +17,9 @@ var City = require('../lib/model').City;
 var Player = require('../lib/model').Player;
 var Monster = require('../lib/model').Monster;
 
+// Model Prototype
+var ProtoHero = require('../lib/model').ProtoHero;
+
 // Library
 var errorHandler = require('../lib/errorHandler');
 
@@ -26,6 +29,7 @@ exports.attack = function (req, res) {
   //   'account_id': req.session.account_id,
   //   'city_id': req.body.city_id
   // };
+  var logs = [];
 
   // player & devil -> city -> heros -> battle
   async.waterfall([
@@ -43,7 +47,21 @@ exports.attack = function (req, res) {
       });
     },
 
-    function getCity (player, callback) {
+    function getDevil (player, callback) {
+      Devil.findByIdAndUpdate(player.devil_id, { 'updated_at': new Date() }, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          errorHandler.sendErrorMessage('NO_DEVIL_FOUND');
+          return;
+        }
+
+        callback(null, devil, player);
+        return;
+      });
+    },
+
+    function getCity (devil, player, callback) {
       City.findById(req.body.city_id, function (err, city) {
         if (err) throw err;
 
@@ -52,117 +70,104 @@ exports.attack = function (req, res) {
           return;
         }
 
-        callback(null, player, city);
+        callback(null, devil, player, city);
         return;
       });
     },
 
-    function getDefenders (player, city, callback) {
-      Hero.find({}, function (err, heroes) {
+    function getDefenders (devil, player, city, callback) {
+      if ( city.defenders.length > 0 ) {
+        callback(null, devil, city);
+        return;
+      }
+
+      ProtoHero.find({}, function summonDefenders (err, heros) {
         if (err) throw err;
 
-        if ( !heroes ) {
-          errorHandler.sendErrorMessage('NO_HEROES_EXIST', res);
+        if ( !heros ) {
+          errorHandler.sendErrorMessage('NO_HEROS_EXIST', res);
           return;
         }
 
         var defenders = [];
 
         for ( var i = 0; i < city.soldiers; i++ ) {
-          var random = Math.floor(Math.random()*heroes.length);
-          defenders.push(heroes[random]);
+          var random = Math.floor(Math.random()*heros.length);
+          var hero = JSON.parse(JSON.stringify(heros[random]));
+          hero.current_health_point = hero.health_point;
+          defenders.push(hero);
         }
 
-        callback(null, player, city, defenders);
-        return;
+        City.findByIdAndUpdate(city._id, { 'defenders': defenders }, function (err, city) {
+          if (err) throw err;
+
+          callback(null, devil, city);
+          return;
+        });
       });
     },
 
-    function startBattle (player, city, defenders, callback) {
-      var log;
+    function startBattle (devil, city, callback) {
+      city = JSON.parse(JSON.stringify(city));
+      var defender = city.defenders[0];
 
-      var devil = player.evil.devil;
+      // DEVIL ATTACK
+      defender.current_health_point -= getDamage(devil, defender);
 
-      // devil attack
-      // defender attack
-      //
+      // HERO ATTACK
+      if ( city.defenders[0].length > 1 || defender.current_health_point > 0 ) {
+        devil.current_health_point -= getDamage(defender, devil);
+      } else {
+        city.defenders.splice(0, 1);
+      }
 
+      callback(null, devil, city);
+      return;
+    },
+
+    function finish (devil, city, callback) {
+      city = JSON.parse(JSON.stringify(city));
+
+      var result = {
+        'result': 'success'
+      };
+
+      async.parallel([
+        function (done) {
+          Devil.findByIdAndUpdate(devil._id, { 'current_health_point': devil.current_health_point }, function (err, devil) {
+            if (err) throw err;
+
+            result.devil = devil;
+            done(null);
+            return;
+          });
+        },
+
+        function (done) {
+          City.findByIdAndUpdate(city._id, { 'defenders': city.defenders }, function (err, city) {
+            if (err) throw err;
+
+            result.city = city;
+            done(null);
+            return;
+          });
+        }
+      ], function (err) {
+        callback(null, result);
+        return;
+      });
     }
   ], function (err, result) {
+    if (err) throw err;
 
+    res.send(result);
+    return;
   });
 };
 
-var battle = function (target) {
-  isBattleOnGoing = true;
+var getDamage = function (attack, defense) {
+  var phy_damage = attack.physical_damage - defense.armor;
+  var mag_damage = attack.magic_damage - defense.magic_resist;
 
-  $log.html();
-  var turn = 0;
-
-  var battleInterval;
-
-  var devilAttack = function () {
-    var phy_damage = devil.physical_damage - hero.armor;
-    var mag_damage = devil.magic_damage - hero.magic_resist;
-    var total_damage = phy_damage + mag_damage;
-    hero.health_point -= total_damage;
-
-    logger('마왕이 용사를 공격합니다.');
-    logger('마왕이 용사에게 ' + total_damage + '의 데미지를 입혔습니다.');
-  };
-
-  var heroAttack = function () {
-    var phy_damage = hero.physical_damage - devil.armor;
-    var mag_damage = hero.magic_damage - devil.magic_resist;
-    var total_damage = phy_damage + mag_damage;
-    devil.health_point -= total_damage;
-
-    logger('용사가 마왕을 공격합니다.');
-    logger('용사가 마왕에게 ' + total_damage + '의 데미지를 입혔습니다.');
-  };
-
-  var logger = function (logMessage) {
-    turn++;
-    var $message = $('<p></p>');
-    $message.text(turn+': '+logMessage);
-    $log.append($message);
-  };
-
-  var logHeatlhPoint = function () {
-    logger('마왕 HP: ' + devil.health_point + ' 용사 HP: ' + hero.health_point);
-    return;
-  };
-
-  var battleLoop = function () {
-    logger('턴');
-
-    devilAttack();
-    logHeatlhPoint();
-
-    if ( hero.health_point <= 0 ) {
-      logger('마왕이 승리하였습니다.');
-
-      clearInterval(battleInterval);
-      isBattleOnGoing = false;
-      targetCity = $('[data-id='+target+"]");
-      targetCity.find('.panel-collapse').removeClass('in');
-      targetCity.appendTo('#colonies');
-      return;
-    }
-
-    heroAttack();
-    logHeatlhPoint();
-
-    if ( devil.health_point <= 0 ) {
-      logger('용사가 승리하였습니다.');
-
-      clearInterval(battleInterval);
-      isBattleOnGoing = false;
-      return;
-    }
-  };
-
-  logger('배틀 시작!');
-
-  battleInterval = setInterval(battleLoop, 1000);
+  return phy_damage + mag_damage;
 };
