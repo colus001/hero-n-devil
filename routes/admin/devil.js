@@ -11,10 +11,10 @@
 var async = require('async');
 
 // Model
-var Devil = require('../../lib/model').Devil;
+var ProtoDevil = require('../../lib/model').ProtoDevil;
 
 exports.index = function (req, res) {
-  Devil.find({}, function (err, devils) {
+  ProtoDevil.find({}, function (err, devils) {
     if (err) throw err;
 
     var result = {
@@ -30,7 +30,7 @@ exports.index = function (req, res) {
 exports.create = function (req, res) {
   if ( req.params.id ) {
     // EDIT
-    Devil.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, devil) {
+    ProtoDevil.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, devil) {
       if (err) throw err;
 
       var result = {
@@ -44,7 +44,7 @@ exports.create = function (req, res) {
     });
   } else {
     // ADD
-    Devil(req.body).save(function (err, devil) {
+    ProtoDevil(req.body).save(function (err, devil) {
       if (err) throw err;
 
       var result = {
@@ -60,7 +60,7 @@ exports.create = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  Devil.findById(req.params.id, function (err, devil) {
+  ProtoDevil.findById(req.params.id, function (err, devil) {
     if (err) throw err;
 
     var result = {
@@ -74,7 +74,7 @@ exports.edit = function (req, res) {
 };
 
 exports.view = function (req, res) {
-  Devil.findById(req.params.id, function (err, devil) {
+  ProtoDevil.findById(req.params.id, function (err, devil) {
     if (err) throw err;
 
     res.json(devil);
@@ -83,7 +83,7 @@ exports.view = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-  Devil.findByIdAndRemove(req.params.id, function (err, devil) {
+  ProtoDevil.findByIdAndRemove(req.params.id, function (err, devil) {
     if (err) throw err;
 
     res.redirect('/admin/devil');

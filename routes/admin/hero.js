@@ -11,10 +11,10 @@
 var async = require('async');
 
 // Model
-var Hero = require('../../lib/model').Hero;
+var ProtoHero = require('../../lib/model').ProtoHero;
 
 exports.index = function (req, res) {
-  Hero.find({}, function (err, heros) {
+  ProtoHero.find({}, function (err, heros) {
     if (err) throw err;
 
     var result = {
@@ -30,7 +30,7 @@ exports.index = function (req, res) {
 exports.create = function (req, res) {
   if ( req.params.id ) {
     // EDIT
-    Hero.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, hero) {
+    ProtoHero.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, hero) {
       if (err) throw err;
 
       var result = {
@@ -44,7 +44,7 @@ exports.create = function (req, res) {
     });
   } else {
     // ADD
-    Hero(req.body).save(function (err, hero) {
+    ProtoHero(req.body).save(function (err, hero) {
       if (err) throw err;
 
       var result = {
@@ -60,7 +60,7 @@ exports.create = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  Hero.findById(req.params.id, function (err, hero) {
+  ProtoHero.findById(req.params.id, function (err, hero) {
     if (err) throw err;
 
     var result = {
@@ -74,7 +74,7 @@ exports.edit = function (req, res) {
 };
 
 exports.view = function (req, res) {
-  Hero.findById(req.params.id, function (err, hero) {
+  ProtoHero.findById(req.params.id, function (err, hero) {
     if (err) throw err;
 
     res.json(hero);
@@ -83,7 +83,7 @@ exports.view = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-  Hero.findByIdAndRemove(req.params.id, function (err, hero) {
+  ProtoHero.findByIdAndRemove(req.params.id, function (err, hero) {
     if (err) throw err;
 
     res.redirect('/admin/hero');

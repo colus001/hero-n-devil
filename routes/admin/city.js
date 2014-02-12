@@ -11,10 +11,10 @@
 var async = require('async');
 
 // Model
-var City = require('../../lib/model').City;
+var ProtoCity = require('../../lib/model').ProtoCity;
 
 exports.index = function (req, res) {
-  City.find({}, function (err, cities) {
+  ProtoCity.find({}, function (err, cities) {
     if (err) throw err;
 
     var result = {
@@ -28,7 +28,7 @@ exports.index = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  City(req.body).save(function (err, city) {
+  ProtoCity(req.body).save(function (err, city) {
     if (err) throw err;
 
     var result = {
@@ -42,7 +42,7 @@ exports.create = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  City.findById(req.params.id, function (err, city) {
+  ProtoCity.findById(req.params.id, function (err, city) {
     if (err) throw err;
 
     var result = {
@@ -56,7 +56,7 @@ exports.edit = function (req, res) {
 };
 
 exports.view = function (req, res) {
-  City.findById(req.params.id, function (err, city) {
+  ProtoCity.findById(req.params.id, function (err, city) {
     if (err) throw err;
 
     res.json(city);
@@ -65,7 +65,7 @@ exports.view = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-  City.findByIdAndRemove(req.params.id, function (err, city) {
+  ProtoCity.findByIdAndRemove(req.params.id, function (err, city) {
     if (err) throw err;
 
     res.redirect('/admin/city');

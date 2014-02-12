@@ -18,6 +18,12 @@ var Player = require('../lib/model').Player;
 var Monster = require('../lib/model').Monster;
 var Account = require('../lib/model').Account;
 
+// Model Prototype
+var ProtoHero = require('../lib/model').ProtoHero;
+var ProtoDevil = require('../lib/model').ProtoDevil;
+var ProtoCity = require('../lib/model').ProtoCity;
+var ProtoMonster = require('../lib/model').ProtoMonster;
+
 // Library
 var errorHandler = require('../lib/errorHandler');
 

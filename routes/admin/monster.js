@@ -11,10 +11,10 @@
 var async = require('async');
 
 // Model
-var Monster = require('../../lib/model').Monster;
+var ProtoMonster = require('../../lib/model').ProtoMonster;
 
 exports.index = function (req, res) {
-  Monster.find({}, function (err, monsters) {
+  ProtoMonster.find({}, function (err, monsters) {
     if (err) throw err;
 
     var result = {
@@ -28,7 +28,7 @@ exports.index = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  Monster(req.body).save(function (err, monster) {
+  ProtoMonster(req.body).save(function (err, monster) {
     if (err) throw err;
 
     var result = {
@@ -42,7 +42,7 @@ exports.create = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  Monster.findById(req.params.id, function (err, monster) {
+  ProtoMonster.findById(req.params.id, function (err, monster) {
     if (err) throw err;
 
     var result = {
@@ -56,7 +56,7 @@ exports.edit = function (req, res) {
 };
 
 exports.view = function (req, res) {
-  Monster.findById(req.params.id, function (err, monster) {
+  ProtoMonster.findById(req.params.id, function (err, monster) {
     if (err) throw err;
 
     res.json(monster);
@@ -65,7 +65,7 @@ exports.view = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-  Monster.findByIdAndRemove(req.params.id, function (err, monster) {
+  ProtoMonster.findByIdAndRemove(req.params.id, function (err, monster) {
     if (err) throw err;
 
     res.redirect('/admin/monster');
