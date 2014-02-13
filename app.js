@@ -96,6 +96,7 @@ db.once('open', function callback () {
   app.get('/devil/select/:id', checkCurrentPlayer, devil.selectDevil);
 
   // DEVIL - GAME
+  app.post('/devil/status', checkCurrentPlayer, devil.game.status);
   app.post('/devil/attack', checkCurrentPlayer, devil.game.attack);
 
   // ADMIN

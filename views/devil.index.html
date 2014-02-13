@@ -58,10 +58,10 @@
               </a>
             </h4>
           </div>
-          <div class="panel-collapse collapse" id="devil">
+          <div class="panel-collapse collapse in" id="devil">
             <div class="panel-body">
               <div class="devil">
-                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <img src="http://lorempixel.com/200/200/people" class="img-thumbnail" />
                 <div style="margin-top: 10px;" class="btn-group btn-group-justified">
                   <div class="btn-group">
                     <skill type="button" class="btn btn-default">{{ devil.skills[0] }}</skill>
@@ -134,7 +134,7 @@
           <div class="panel-collapse collapse" id="city-{{ city.id }}">
             <div class="panel-body">
               <div>
-                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+                <img src="http://lorempixel.com/200/200/city" class="img-thumbnail" />
                 <div class="gauge">
                   <div class="bar" style="width: 100%"></div>
                 </div>
@@ -161,7 +161,7 @@
                 </div>
               </div>
               <hr />
-              <attack data-target="{{ city.id }}" class="btn btn-block btn-default">공격</attack>
+              <attack class="btn btn-block btn-primary" data-city="{{ city.id }}" data-toggle="modal" data-target="#myModal">공격(Modal)</attack>
             </div>
           </div>
         </div>
@@ -289,165 +289,98 @@
         </div>
       </div>
       <h4>LOG</h4>
-      <div id="log" class="log">
+      <!-- <div id="log" class="log"></div> -->
+      <button class="btn btn-default" id="test">TEST</button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">전투</h4>
+        </div>
+        <div class="modal-body">
+          <h5>LOG</h5>
+          <div id="log" class="log"></div>
+          <hr />
+          <attack id="modalAttack" class="btn btn-block btn-primary">공격시작</attack>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
+
   <script type="text/javascript">
   $(document).ready(function() {
-
     var cityId;
-    // var colonies = [
-    //   {
-    //     'id': 1
-    //   }
-    // ];
+    var $log = $('#log');
 
-    // for ( var i in colonies ) {
-    //   targetCity = $('[data-id='+'city-'+colonies[i].id+"]");
-    //   targetCity.appendTo('#colonies');
-    // }
+    $(document).on('click', '#test', function () {
+      $.ajax({
+        type: 'POST',
+        url: '/devil/status',
+        success: function (data, status) {
+          if ( data.result === 'success' ) {
+            console.log('hp:', data.devil.current_health_point);
+            console.log('ap:', data.devil.current_action_point);
+          }
+          return;
+        },
+        error: function (error) {
+          console.log('error:', error);
+        }
+      });
+    });
 
     $(document).on('click', 'attack', function () {
-      if ( isBattleOnGoing ) {
-        alert('지금 배틀중입니다.');
+      var isModalOpenButton = ( $(this).data('toggle') ) ? true : false;
+
+      if ( isModalOpenButton ) {
+        cityId = $(this).data('city');
+        console.log('cityId:', cityId);
         return;
       }
 
-      isBattleOnGoing = true;
+      $p = $('<p></p>').text('전투시작');
+      $log.html('');
+      $log.append($p);
 
-      $.ajax({
-        type: 'POST',
-        url: '/devil/attack',
-        data: { 'city_id': $(this).data('target') },
-        success: function (data, status) {
-          // 1턴씩 서버에서 처리되도록 하고, 1턴이 완료되어 response 가 넘어오면 제귀호출 하는걸로 개발
-          console.log('data:', data);
-          isBattleOnGoing = false;
-        },
-        error: function (error) {
-          isBattleOnGoing = false;
-        }
-      });
+      var turnInterval = setInterval(function () {
+        $.ajax({
+          type: 'POST',
+          url: '/devil/attack',
+          data: { 'city_id': cityId },
+          success: function (data, status) {
+            // 1턴씩 서버에서 처리되도록 하고, 1턴이 완료되어 response 가 넘어오면 제귀호출 하는걸로 개발
+            console.log('data:', data);
+            for ( var i in data.logs ) {
+              $p = $('<p></p>').text(data.logs[i]);
+              $log.append($p);
+            }
+
+            if ( data.conclusion ) {
+              clearInterval(turnInterval);
+              $p = $('<p></p>').text('전투종료');
+              $log.append($p);
+            }
+          },
+          error: function (error) {
+            console.log('error:', error);
+            alert('오류');
+          }
+        });
+      }, 1000);
     });
 
     $('.dungeon').sortable({
       connectWith: '.dungeon',
       placeholder: "placeholder btn btn-block"
     });
-
-    var isBattleOnGoing = false;
-    var clock = 60;
-    var $timer = $('#timer');
-    var $log = $('#log');
-
-    setInterval(function() {
-      clock--;
-      $timer.html('TIMER: ' + clock);
-
-      if ( clock === 0 ) clock = 60;
-    }, 1000);
-
-    var battle = function (target) {
-      $log.html();
-      var turn = 0;
-
-      var devil = {
-        'class': 'DEVIL',
-        'name': '마왕',
-        'health_point': 750,
-        'attack_speed': 0.5,
-        'physical_damage': 100,
-        'magic_damage': 100,
-        'armor': 20,
-        'magic_resist': 20,
-        'skills': [ '파이어볼', '분신' ]
-      };
-
-      var hero = {
-        "_id": "52f2277cef118ab5468c3087",
-        "armor": 10,
-        "attack_speed_per_sec": 0.5,
-        "class": "Assassin",
-        "health_point": 250,
-        "job": "Assassin",
-        "magic_damage": 100,
-        "magic_resist": 10,
-        "name": "Zed",
-        "physical_damage": 100,
-        "skills": [
-          "Fierce Stab",
-          "Keen Sense"
-        ]
-      };
-
-      var battleInterval;
-
-      var devilAttack = function () {
-        var phy_damage = devil.physical_damage - hero.armor;
-        var mag_damage = devil.magic_damage - hero.magic_resist;
-        var total_damage = phy_damage + mag_damage;
-        hero.health_point -= total_damage;
-
-        logger('마왕이 용사를 공격합니다.');
-        logger('마왕이 용사에게 ' + total_damage + '의 데미지를 입혔습니다.');
-      };
-
-      var heroAttack = function () {
-        var phy_damage = hero.physical_damage - devil.armor;
-        var mag_damage = hero.magic_damage - devil.magic_resist;
-        var total_damage = phy_damage + mag_damage;
-        devil.health_point -= total_damage;
-
-        logger('용사가 마왕을 공격합니다.');
-        logger('용사가 마왕에게 ' + total_damage + '의 데미지를 입혔습니다.');
-      };
-
-      var logger = function (logMessage) {
-        turn++;
-        var $message = $('<p></p>');
-        $message.text(turn+': '+logMessage);
-        $log.append($message);
-      };
-
-      var logHeatlhPoint = function () {
-        logger('마왕 HP: ' + devil.health_point + ' 용사 HP: ' + hero.health_point);
-        return;
-      };
-
-      var battleLoop = function () {
-        logger('턴');
-
-        devilAttack();
-        logHeatlhPoint();
-
-        if ( hero.health_point <= 0 ) {
-          logger('마왕이 승리하였습니다.');
-
-          clearInterval(battleInterval);
-          isBattleOnGoing = false;
-          targetCity = $('[data-id='+target+"]");
-          targetCity.find('.panel-collapse').removeClass('in');
-          targetCity.appendTo('#colonies');
-          return;
-        }
-
-        heroAttack();
-        logHeatlhPoint();
-
-        if ( devil.health_point <= 0 ) {
-          logger('용사가 승리하였습니다.');
-
-          clearInterval(battleInterval);
-          isBattleOnGoing = false;
-          return;
-        }
-      };
-
-      logger('배틀 시작!');
-
-      battleInterval = setInterval(battleLoop, 1000);
-    };
   });
   </script>
 {% endblock %}

@@ -23,18 +23,14 @@ var ProtoHero = require('../lib/model').ProtoHero;
 // Library
 var errorHandler = require('../lib/errorHandler');
 
-
-exports.attack = function (req, res) {
-  var logs = [];
-
-  // player & devil -> city -> heros -> battle
+exports.status = function (req, res) {
   async.waterfall([
     function getPlayer (callback) {
-      Player.findByIdAndUpdate(req.session.current_player_id, { 'updated_at': new Date() }, function (err, player) {
+      Player.findById(req.session.current_player_id, function (err, player) {
         if (err) throw err;
 
         if ( !player ) {
-          errorHandler.sendErrorMessage('NO_PLAYER_FOUND');
+          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
           return;
         }
 
@@ -44,11 +40,91 @@ exports.attack = function (req, res) {
     },
 
     function getDevil (player, callback) {
-      Devil.findByIdAndUpdate(player.devil_id, { 'updated_at': new Date() }, function (err, devil) {
+      Devil.findById(player.devil_id, function (err, devil) {
         if (err) throw err;
 
         if ( !devil ) {
-          errorHandler.sendErrorMessage('NO_DEVIL_FOUND');
+          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          return;
+        }
+
+        callback(null, devil, player);
+        return;
+      });
+    },
+
+    function checkTimeGap (devil, player, callback) {
+      var timeGap = Math.floor(( new Date() - devil.recovered_at ) / 1000);
+
+      if ( timeGap < 10 ) {
+        console.log('timeGap:', timeGap);
+        errorHandler.sendErrorMessage('SHOULD_WAIT_MORE', res);
+        return;
+      }
+
+      var multiplier = Math.floor(timeGap/10);
+      callback(null, devil, player, multiplier);
+      return;
+    },
+
+    function recoverPoints (devil, player, multiplier, callback) {
+      var healthPointToUpdate = ( ( multiplier * 10 ) + devil.current_health_point > devil.health_point ) ? devil.health_point-devil.current_health_point : multiplier * 10;
+      var actionPointToUpdate = ( ( multiplier * 1 ) + devil.current_action_point > devil.action_point ) ? devil.action_point-devil.current_action_point : multiplier * 1;
+
+      var update = {
+        $set: {
+          'recovered_at': new Date()
+        },
+        $inc: {
+          'current_health_point': healthPointToUpdate,
+          'current_action_point': actionPointToUpdate
+        }
+      };
+
+      console.log('update:', update);
+
+      Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
+        if (err) throw err;
+
+        callback(null, devil);
+      });
+    }
+  ], function (err, result) {
+    result = {
+      'result': 'success',
+      'devil': result
+    };
+
+    res.send(result);
+    return;
+  });
+};
+
+exports.attack = function (req, res) {
+  var logs = [];
+
+  // player & devil -> city -> heros -> battle
+  async.waterfall([
+    function getPlayer (callback) {
+      Player.findById(req.session.current_player_id, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          return;
+        }
+
+        callback(null, player);
+        return;
+      });
+    },
+
+    function getDevil (player, callback) {
+      Devil.findById(player.devil_id, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
           return;
         }
 
@@ -94,7 +170,7 @@ exports.attack = function (req, res) {
           defenders.push(hero);
         }
 
-        City.findByIdAndUpdate(city._id, { 'defenders': defenders }, function (err, city) {
+        City.findByIdAndUpdate(city._id, { 'updated_at': new Date(), 'defenders': defenders }, function (err, city) {
           if (err) throw err;
 
           callback(null, devil, city);
@@ -117,7 +193,7 @@ exports.attack = function (req, res) {
         city.defenders.splice(0, 1);
       }
 
-      // DEFENDER ATTACK
+      // DEFENDERS ATTACK
       if ( city.defenders.length !== 0 ) {
         for ( var i in city.defenders ) {
           devil.current_health_point -= getDamage(city.defenders[i], devil);
@@ -136,15 +212,22 @@ exports.attack = function (req, res) {
 
     function finish (devil, city, callback) {
       city = JSON.parse(JSON.stringify(city));
-
       var result = {
         'result': 'success',
         'logs': logs
       };
 
+      if ( devil.current_health_point <= 0 ) {
+        result.conclusion = 'win';
+      } else if ( city.defenders.length === 0 ) {
+        result.conclusion = 'lose';
+      }
+
       async.parallel([
         function (done) {
-          Devil.findByIdAndUpdate(devil._id, { 'current_health_point': devil.current_health_point }, function (err, devil) {
+          var healthPointToUpdate = ( devil.current_health_point > 0 ) ? devil.current_health_point : 0;
+
+          Devil.findByIdAndUpdate(devil._id, { 'updated_at': new Date(), 'current_health_point': healthPointToUpdate }, function (err, devil) {
             if (err) throw err;
 
             result.devil = devil;
@@ -154,7 +237,7 @@ exports.attack = function (req, res) {
         },
 
         function (done) {
-          City.findByIdAndUpdate(city._id, { 'defenders': city.defenders }, function (err, city) {
+          City.findByIdAndUpdate(city._id, { 'updated_at': new Date(), 'defenders': city.defenders }, function (err, city) {
             if (err) throw err;
 
             result.city = city;
