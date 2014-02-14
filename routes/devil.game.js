@@ -54,7 +54,7 @@ exports.status = function (req, res) {
     },
 
     function checkTimeGap (devil, player, callback) {
-      var timeGap = Math.floor(( new Date() - devil.recovered_at ) / 1000);
+      var timeGap = Math.floor(( new Date() - devil.updated_at ) / 1000);
 
       if ( timeGap < 10 ) {
         console.log('timeGap:', timeGap);
@@ -73,7 +73,7 @@ exports.status = function (req, res) {
 
       var update = {
         $set: {
-          'recovered_at': new Date()
+          'updated_at': new Date()
         },
         $inc: {
           'current_health_point': healthPointToUpdate,

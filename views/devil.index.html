@@ -37,7 +37,7 @@
         <h1>DEVIL</h1>
       </div>
       <div class="col-md-10">
-        <h1><div class="pull-right" id="timer">TIMER: 60</div></h1>
+        <h1><div class="pull-right" id="timer">TIMER: 0</div></h1>
       </div>
     </div>
     <hr />
@@ -73,7 +73,11 @@
                 <h4>STATS</h4>
                 <div class="row">
                   <div class="col-xs-4">체력</div>
-                  <div class="col-xs-8">{{ devil.current_health_point }}/{{ devil.health_point}}</div>
+                  <div id="hp" class="col-xs-8">{{ devil.current_health_point }}/{{ devil.health_point}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">AP</div>
+                  <div id="ap" class="col-xs-8">{{ devil.current_action_point }}/{{ devil.action_point}}</div>
                 </div>
                 <div class="row">
                   <div class="col-xs-4">경험치</div>
@@ -288,9 +292,10 @@
           </keeper>
         </div>
       </div>
-      <h4>LOG</h4>
-      <!-- <div id="log" class="log"></div> -->
-      <button class="btn btn-default" id="test">TEST</button>
+      <h4>LOG
+        <button id="clearLog" class="btn btn-default btn-sm pull-right">로그 정리</button>
+      </h4>
+      <div id="gameLog" class="log"></div>
     </div>
   </div>
 
@@ -304,7 +309,7 @@
         </div>
         <div class="modal-body">
           <h5>LOG</h5>
-          <div id="log" class="log"></div>
+          <div id="battleLog" class="log"></div>
           <hr />
           <attack id="modalAttack" class="btn btn-block btn-primary">공격시작</attack>
         </div>
@@ -318,16 +323,42 @@
   <script type="text/javascript">
   $(document).ready(function() {
     var cityId;
-    var $log = $('#log');
+    var currentTurn = 0;
+    var isBattle = false;
 
-    $(document).on('click', '#test', function () {
+    var $battleLog = $('#battleLog');
+    var $gameLog = $('#gameLog');
+    var $timer = $('#timer');
+
+    var globalTurn = setInterval(function () {
+      if ( isBattle ) {
+        console.log('전투중');
+        return;
+      }
+
+      currentTurn++;
+      if ( currentTurn >= 60 ) {
+        currentTurn = 0;
+      }
+      $timer.text('TIMER: ' + currentTurn);
+
       $.ajax({
         type: 'POST',
         url: '/devil/status',
         success: function (data, status) {
           if ( data.result === 'success' ) {
-            console.log('hp:', data.devil.current_health_point);
-            console.log('ap:', data.devil.current_action_point);
+            if ( data.devil.current_health_point !== data.devil.health_point ) {
+              $p = $('<p></p>').text('HP가 ' + data.devil.current_health_point + '으로 회복되었습니다.');
+              $gameLog.append($p);
+            }
+
+            if ( data.devil.current_action_point !== data.devil.action_point ) {
+              $p = $('<p></p>').text('AP가 ' + data.devil.current_action_point + '으로 회복되었습니다.');
+              $gameLog.append($p);
+            }
+
+            $('#hp').text(data.devil.current_health_point+'/'+data.devil.health_point);
+            $('#ap').text(data.devil.current_action_point+'/'+data.devil.action_point);
           }
           return;
         },
@@ -335,6 +366,11 @@
           console.log('error:', error);
         }
       });
+    }, 1000);
+
+    $('#clearLog').on('click', function () {
+      $('#gameLog').html('');
+      return;
     });
 
     $(document).on('click', 'attack', function () {
@@ -347,30 +383,33 @@
       }
 
       $p = $('<p></p>').text('전투시작');
-      $log.html('');
-      $log.append($p);
+      $battleLog.html('').append($p);
 
-      var turnInterval = setInterval(function () {
+      var battleTurn = setInterval(function () {
+        isBattle = true;
+
         $.ajax({
           type: 'POST',
           url: '/devil/attack',
           data: { 'city_id': cityId },
           success: function (data, status) {
-            // 1턴씩 서버에서 처리되도록 하고, 1턴이 완료되어 response 가 넘어오면 제귀호출 하는걸로 개발
             console.log('data:', data);
+
             for ( var i in data.logs ) {
               $p = $('<p></p>').text(data.logs[i]);
-              $log.append($p);
+              $battleLog.append($p);
             }
 
             if ( data.conclusion ) {
-              clearInterval(turnInterval);
+              clearInterval(battleTurn);
               $p = $('<p></p>').text('전투종료');
-              $log.append($p);
+              $battleLog.append($p);
+              isBattle = false;
             }
           },
           error: function (error) {
             console.log('error:', error);
+            isBattle = false;
             alert('오류');
           }
         });
