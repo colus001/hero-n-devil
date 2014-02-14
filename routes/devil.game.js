@@ -253,7 +253,7 @@ exports.attack = function (req, res) {
           };
 
           if ( city.defenders.length === 0 ) {
-            update.isColony = true;
+            update.isCaptured = true;
           }
 
           City.findByIdAndUpdate(city._id, update, function (err, city) {

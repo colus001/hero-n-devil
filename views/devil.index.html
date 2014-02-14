@@ -154,8 +154,6 @@
                     <div class="col-xs-8">{{ colony.defense }}</div>
                   </div>
                 </div>
-                <!-- <hr /> -->
-                <!-- <attack class="btn btn-block btn-primary" data-colony="{{ colony.id }}" data-toggle="modal" data-target="#myModal">공격(Modal)</attack> -->
               </div>
             </div>
           </div>
@@ -165,6 +163,7 @@
       </div>
 
       <h4>STATS</h4>
+      <button class="btn btn-block btn-warning" data-toggle="modal" data-target="#levelModal">레벨업(모달)</button>
       <button class="btn btn-block btn-default">돈</button>
       <button class="btn btn-block btn-default">거주지</button>
       <button class="btn btn-block btn-default">레벨</button>
@@ -215,7 +214,7 @@
                 </div>
               </div>
               <hr />
-              <attack class="btn btn-block btn-primary" data-city="{{ city.id }}" data-toggle="modal" data-target="#myModal">공격(Modal)</attack>
+              <attack class="btn btn-block btn-primary" data-city="{{ city.id }}" data-toggle="modal" data-target="#battleModal">공격(Modal)</attack>
             </div>
           </div>
         </div>
@@ -350,18 +349,119 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal fade" id="battleModal" tabindex="-1" role="dialog" aria-labelledby="battle" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">전투</h4>
+          <h4 class="modal-title" id="battle">전투</h4>
         </div>
         <div class="modal-body">
           <h5>LOG</h5>
           <div id="battleLog" class="log"></div>
           <hr />
           <attack id="modalAttack" class="btn btn-block btn-primary">공격시작</attack>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Levelup Modal -->
+  <div class="modal fade" id="levelModal" tabindex="-1" role="dialog" aria-labelledby="level" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="level">레벨업</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-10">
+              <label class="col-sm-6">HP</label>
+              <div class="col-sm-6">
+                <p class="form-control-static">{{ devil.health_point }}</p>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-default btn-sm">+</button>
+              <button class="btn btn-default btn-sm">-</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-10">
+              <label class="col-sm-6">AP</label>
+              <div class="col-sm-6">
+                <p class="form-control-static">{{ devil.action_point }}</p>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-default btn-sm">+</button>
+              <button class="btn btn-default btn-sm">-</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-10">
+              <label class="col-sm-6">공속</label>
+              <div class="col-sm-6">
+                <p class="form-control-static">{{ devil.attack_speed_per_sec }}</p>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-default btn-sm">+</button>
+              <button class="btn btn-default btn-sm">-</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-10">
+              <label class="col-sm-6">물리 공격력</label>
+              <div class="col-sm-6">
+                <p class="form-control-static">{{ devil.physical_damage }}</p>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-default btn-sm">+</button>
+              <button class="btn btn-default btn-sm">-</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-10">
+              <label class="col-sm-6">마법 공격력</label>
+              <div class="col-sm-6">
+                <p class="form-control-static">{{ devil.magic_damage }}</p>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-default btn-sm">+</button>
+              <button class="btn btn-default btn-sm">-</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-10">
+              <label class="col-sm-6">방어력</label>
+              <div class="col-sm-6">
+                <p class="form-control-static">{{ devil.armor }}</p>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-default btn-sm">+</button>
+              <button class="btn btn-default btn-sm">-</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-10">
+              <label class="col-sm-6">마법저항</label>
+              <div class="col-sm-6">
+                <p class="form-control-static">{{ devil.magic_resist }}</p>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-default btn-sm">+</button>
+              <button class="btn btn-default btn-sm">-</button>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -413,20 +513,21 @@
           var hp = {
             'percent': ((data.devil.current_health_point/data.devil.health_point)*100) + '%',
             'text': 'HP:' + data.devil.current_health_point + '/' + data.devil.health_point
-          }
+          };
           var ap = {
             'percent': ((data.devil.current_action_point/data.devil.action_point)*100) + '%',
             'text': 'AP:' + data.devil.current_action_point + '/' + data.devil.action_point
-          }
+          };
 
-          $('#hp').css(hp.percent);
+          $('#hp').css('width', hp.percent);
           $('#hp').text(hp.text);
-          $('#ap').css(ap.percent);
+          $('#ap').css('width', ap.percent);
           $('#ap').text(ap.text);
           return;
         },
         error: function (error) {
           console.log('error:', error);
+          return;
         }
       });
     }, 1000);

@@ -69,7 +69,7 @@ exports.index = function (req, res) {
     },
 
     function getCities (player, devil, callback) {
-      City.find({ 'player_id': current_player_id, 'isColony': false }, function (err, cities) {
+      City.find({ 'player_id': current_player_id, 'isCaptured': false }, function (err, cities) {
         if (err) throw err;
 
         if ( !cities ) {
@@ -83,7 +83,7 @@ exports.index = function (req, res) {
     },
 
     function getColonies (player, devil, cities, callback) {
-      City.find({ 'player_id': current_player_id, 'isColony': true }, function (err, colonies) {
+      City.find({ 'player_id': current_player_id, 'isCaptured': true }, function (err, colonies) {
         if (err) throw err;
 
         if ( !colonies ) {
