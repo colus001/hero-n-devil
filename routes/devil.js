@@ -69,7 +69,7 @@ exports.index = function (req, res) {
     },
 
     function getCities (player, devil, callback) {
-      City.find({ 'player_id': current_player_id }, function (err, cities) {
+      City.find({ 'player_id': current_player_id, 'isColony': false }, function (err, cities) {
         if (err) throw err;
 
         if ( !cities ) {
@@ -82,7 +82,21 @@ exports.index = function (req, res) {
       });
     },
 
-    function getMonsters (player, devil, cities, callback) {
+    function getColonies (player, devil, cities, callback) {
+      City.find({ 'player_id': current_player_id, 'isColony': true }, function (err, colonies) {
+        if (err) throw err;
+
+        if ( !colonies ) {
+          errorHandler.sendErrorMessage('NO_COLONIES_FOUND', res);
+          return;
+        }
+
+        callback(null, player, devil, cities, colonies);
+        return;
+      });
+    },
+
+    function getMonsters (player, devil, cities, colonies, callback) {
       ProtoMonster.find({ /* 'player_id': current_player_id */ }, function (err, monsters) {
         if (err) throw err;
 
@@ -91,16 +105,17 @@ exports.index = function (req, res) {
           return;
         }
 
-        callback(null, player, devil, cities, monsters);
+        callback(null, player, devil, cities, colonies, monsters);
         return;
       });
     },
 
-    function getResult (player, devil, cities, monsters, callback) {
+    function getResult (player, devil, cities, colonies, monsters, callback) {
       var result = {
         'result': 'success',
         'devil': devil,
         'cities': cities,
+        'colonies': colonies,
         'monsters': monsters
       };
 

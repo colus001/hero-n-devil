@@ -71,14 +71,16 @@
                   </div>
                 </div>
                 <h4>STATS</h4>
-                <div class="row">
-                  <div class="col-xs-4">체력</div>
-                  <div id="hp" class="col-xs-8">{{ devil.current_health_point }}/{{ devil.health_point}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">AP</div>
-                  <div id="ap" class="col-xs-8">{{ devil.current_action_point }}/{{ devil.action_point}}</div>
-                </div>
+                <button class="btn btn-block btn-default">
+                  <div id="hp" style="background-color: green; width: {{ (devil.current_health_point/devil.health_point)* 100}}%;">
+                    HP: {{ devil.current_health_point }}/{{ devil.health_point}}
+                  </div>
+                </button>
+                <button class="btn btn-block btn-default">
+                  <div id="ap" style="background-color: green; width: {{ (devil.current_action_point/devil.action_point)* 100}}%;">
+                    AP: {{ devil.current_action_point }}/{{ devil.action_point}}
+                  </div>
+                </button>
                 <div class="row">
                   <div class="col-xs-4">경험치</div>
                   <div class="col-xs-8">{{ devil.current_experience }}/{{ devil.target_experience }}</div>
@@ -111,10 +113,58 @@
 
       <div id="colonies" class="panel-group">
         <h4>COLONIES</h4>
+        {% if colonies.length %}
+        <div class="panel-group">
+        {% for colony in colonies %}
+          <div data-id="colony-{{ colony.id }}" class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#colony-{{ colony.id }}">
+                  {{ colony.name }}
+                  <div style="color: #BBB" class="pull-right">{{ colony.level }}</div>
+                </a>
+              </h4>
+            </div>
+            <div class="panel-collapse collapse" id="colony-{{ colony.id }}">
+              <div class="panel-body">
+                <div>
+                  <img src="http://lorempixel.com/200/200/city" class="img-thumbnail" />
+                  <div class="gauge">
+                    <div class="bar" style="width: 100%"></div>
+                  </div>
+                  <h4>STATS</h4>
+                  <div class="row">
+                    <div class="col-xs-4">인구</div>
+                    <div class="col-xs-8">{{ colony.population }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4">경제력</div>
+                    <div class="col-xs-8">{{ colony.economy_level }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4">병력</div>
+                    <div data-type="soldiers" class="col-xs-8">{{ colony.soldiers }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4">군사력</div>
+                    <div class="col-xs-8">{{ colony.army_level }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4">방어도</div>
+                    <div class="col-xs-8">{{ colony.defense }}</div>
+                  </div>
+                </div>
+                <!-- <hr /> -->
+                <!-- <attack class="btn btn-block btn-primary" data-colony="{{ colony.id }}" data-toggle="modal" data-target="#myModal">공격(Modal)</attack> -->
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+        {% endif %}
       </div>
 
       <h4>STATS</h4>
-      <button class="btn btn-block btn-default">활동력</button>
       <button class="btn btn-block btn-default">돈</button>
       <button class="btn btn-block btn-default">거주지</button>
       <button class="btn btn-block btn-default">레벨</button>
@@ -346,20 +396,33 @@
         type: 'POST',
         url: '/devil/status',
         success: function (data, status) {
-          if ( data.result === 'success' ) {
-            if ( data.devil.current_health_point !== data.devil.health_point ) {
-              $p = $('<p></p>').text('HP가 ' + data.devil.current_health_point + '으로 회복되었습니다.');
-              $gameLog.append($p);
-            }
-
-            if ( data.devil.current_action_point !== data.devil.action_point ) {
-              $p = $('<p></p>').text('AP가 ' + data.devil.current_action_point + '으로 회복되었습니다.');
-              $gameLog.append($p);
-            }
-
-            $('#hp').text(data.devil.current_health_point+'/'+data.devil.health_point);
-            $('#ap').text(data.devil.current_action_point+'/'+data.devil.action_point);
+          if ( data.result !== 'success' ) {
+            return;
           }
+
+          if ( data.devil.current_health_point !== data.devil.health_point ) {
+            $p = $('<p></p>').text('HP가 ' + data.devil.current_health_point + '으로 회복되었습니다.');
+            $gameLog.append($p);
+          }
+
+          if ( data.devil.current_action_point !== data.devil.action_point ) {
+            $p = $('<p></p>').text('AP가 ' + data.devil.current_action_point + '으로 회복되었습니다.');
+            $gameLog.append($p);
+          }
+
+          var hp = {
+            'percent': ((data.devil.current_health_point/data.devil.health_point)*100) + '%',
+            'text': 'HP:' + data.devil.current_health_point + '/' + data.devil.health_point
+          }
+          var ap = {
+            'percent': ((data.devil.current_action_point/data.devil.action_point)*100) + '%',
+            'text': 'AP:' + data.devil.current_action_point + '/' + data.devil.action_point
+          }
+
+          $('#hp').css(hp.percent);
+          $('#hp').text(hp.text);
+          $('#ap').css(ap.percent);
+          $('#ap').text(ap.text);
           return;
         },
         error: function (error) {

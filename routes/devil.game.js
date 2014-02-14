@@ -224,10 +224,20 @@ exports.attack = function (req, res) {
       }
 
       async.parallel([
-        function (done) {
+        function saveDevil (done) {
           var healthPointToUpdate = ( devil.current_health_point > 0 ) ? devil.current_health_point : 0;
+          var update = {
+            $set: {
+              'updated_at': new Date(),
+              'current_health_point': healthPointToUpdate
+            }
+          };
 
-          Devil.findByIdAndUpdate(devil._id, { 'updated_at': new Date(), 'current_health_point': healthPointToUpdate }, function (err, devil) {
+          if ( result.conclusion ) {
+            update.$inc = { 'current_action_point': -1 };
+          }
+
+          Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
             if (err) throw err;
 
             result.devil = devil;
@@ -236,15 +246,24 @@ exports.attack = function (req, res) {
           });
         },
 
-        function (done) {
-          City.findByIdAndUpdate(city._id, { 'updated_at': new Date(), 'defenders': city.defenders }, function (err, city) {
+        function saveCity (done) {
+          var update = {
+            'updated_at': new Date(),
+            'defenders': city.defenders
+          };
+
+          if ( city.defenders.length === 0 ) {
+            update.isColony = true;
+          }
+
+          City.findByIdAndUpdate(city._id, update, function (err, city) {
             if (err) throw err;
 
             result.city = city;
             done(null);
             return;
           });
-        }
+        },
       ], function (err) {
         callback(null, result);
         return;
