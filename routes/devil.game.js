@@ -46,6 +46,7 @@ exports.status = function (req, res) {
 
         if ( !devil ) {
           errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -58,8 +59,8 @@ exports.status = function (req, res) {
       var timeGap = Math.floor(( new Date() - devil.updated_at ) / 1000);
 
       if ( timeGap < 10 ) {
-        console.log('timeGap:', timeGap);
         errorHandler.sendErrorMessage('SHOULD_WAIT_MORE', res);
+        callback('SHOULD_WAIT_MORE');
         return;
       }
 
@@ -82,8 +83,6 @@ exports.status = function (req, res) {
         }
       };
 
-      console.log('update:', update);
-
       Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
         if (err) throw err;
 
@@ -97,6 +96,89 @@ exports.status = function (req, res) {
     };
 
     res.send(result);
+    return;
+  });
+};
+
+exports.levelUp = function (req, res) {
+  async.waterfall([
+    function checkReqeust (callback) {
+      var totalPoint = 0;
+
+      for ( var i in req.body ) {
+        totalPoint += req.body[i];
+      }
+
+      if ( totalPoint > 3 ) {
+        errorHandler.sendErrorMessage('POINT_EXCEEDED_TO_LEVEL_UP', res);
+        callback('POINT_EXCEEDED_TO_LEVEL_UP');
+        return;
+      }
+    },
+
+    function getPlayer (callback) {
+      Player.findById(req.session.current_player_id, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          callback('NO_PLAYER_FOUND');
+          return;
+        }
+
+        callback(null, player);
+        return;
+      });
+    },
+
+    function getDevil (player, callback) {
+      Devil.findById(player.devil_id, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          callback('NO_DEVIL_FOUND');
+          return;
+        }
+
+        callback(null, devil);
+        return;
+      });
+    },
+
+    function updateLevelUp (devil, callback) {
+      var update;
+
+      for ( var i in req.body ) {
+        update[i] = devil[i] * 1.1;
+      }
+
+      if ( update.health_point ) {
+        update.current_health_point = update.health_point;
+      }
+
+      Devil.findByIdAndUpdate(player.devil_id, update, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          callback('NO_DEVIL_FOUND');
+          return;
+        }
+
+        var result = {
+          'result': 'success',
+          'devil': devil
+        };
+
+        callback(null, result);
+        return;
+      });
+    }
+  ], function (err, result) {
+    if (err) throw err;
+
+    res.redirect('/devil');
     return;
   });
 };

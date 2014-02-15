@@ -2,7 +2,7 @@
 //
 //  grouple - devil.js
 //
-//  Purpose: Utliities
+//  Purpose: Display devil
 //  Created: 2013.12.03
 //
 //////////////////////////////////////////////////
