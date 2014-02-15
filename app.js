@@ -126,6 +126,7 @@ db.once('open', function callback () {
   app.get('/admin/city/edit/:id', admin.city.edit);
   // app.post('/admin/city/edit/:id', admin.city.create);
   app.get('/admin/city/delete/:id', admin.city.delete);
+  app.get('/admin/city/apply', admin.city.apply);
 
   // ADMIN - MONSTER
   app.get('/admin/monster', admin.monster.index);
