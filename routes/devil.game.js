@@ -24,6 +24,9 @@ var ProtoSoldier = require('../lib/model').ProtoSoldier;
 // Library
 var errorHandler = require('../lib/errorHandler');
 
+// Constant
+var SECONDS_FOR_A_TURN = 30;
+
 exports.status = function (req, res) {
   async.waterfall([
     function getPlayer (callback) {
@@ -46,7 +49,6 @@ exports.status = function (req, res) {
 
         if ( !devil ) {
           errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
-          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -58,13 +60,12 @@ exports.status = function (req, res) {
     function checkTimeGap (devil, player, callback) {
       var timeGap = Math.floor(( new Date() - devil.updated_at ) / 1000);
 
-      if ( timeGap < 10 ) {
+      if ( timeGap < SECONDS_FOR_A_TURN ) {
         errorHandler.sendErrorMessage('SHOULD_WAIT_MORE', res);
-        callback('SHOULD_WAIT_MORE');
         return;
       }
 
-      var multiplier = Math.floor(timeGap/10);
+      var multiplier = Math.floor(timeGap/SECONDS_FOR_A_TURN);
       callback(null, devil, player, multiplier);
       return;
     },
@@ -86,15 +87,16 @@ exports.status = function (req, res) {
       Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
         if (err) throw err;
 
-        callback(null, devil);
+        var result = {
+          'result': 'success',
+          'devil': devil
+        };
+
+        callback(null, result);
+        return;
       });
     }
   ], function (err, result) {
-    result = {
-      'result': 'success',
-      'devil': result
-    };
-
     res.send(result);
     return;
   });
@@ -111,7 +113,6 @@ exports.levelUp = function (req, res) {
 
       if ( totalPoint > 3 ) {
         errorHandler.sendErrorMessage('POINT_EXCEEDED_TO_LEVEL_UP', res);
-        callback('POINT_EXCEEDED_TO_LEVEL_UP');
         return;
       }
     },
@@ -122,7 +123,6 @@ exports.levelUp = function (req, res) {
 
         if ( !player ) {
           errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
-          callback('NO_PLAYER_FOUND');
           return;
         }
 
@@ -137,7 +137,6 @@ exports.levelUp = function (req, res) {
 
         if ( !devil ) {
           errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
-          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -162,7 +161,6 @@ exports.levelUp = function (req, res) {
 
         if ( !devil ) {
           errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
-          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -185,6 +183,7 @@ exports.levelUp = function (req, res) {
 
 exports.attack = function (req, res) {
   var logs = [];
+  console.log('started');
 
   // player & devil -> city -> heros -> battle
   async.waterfall([
@@ -206,10 +205,30 @@ exports.attack = function (req, res) {
       Devil.findById(player.devil_id, function (err, devil) {
         if (err) throw err;
 
+        console.log('getDevil');
+
         if ( !devil ) {
           errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
           return;
         }
+
+        console.log('PASSED: NO_DEVIL_FOUND');
+
+        if ( devil.current_health_point === 0 ) {
+          console.log('NOT_ENOUGH_HEALTH_POINT');
+          errorHandler.sendErrorMessage('NOT_ENOUGH_HEALTH_POINT', res);
+          return;
+        }
+
+        console.log('PASSED: NOT_ENOUGH_HEALTH_POINT');
+
+        if ( devil.current_action_point === 0 ) {
+          console.log('NOT_ENOUGH_ACTION_POINT');
+          errorHandler.sendErrorMessage('NOT_ENOUGH_ACTION_POINT', res);
+          return;
+        }
+
+        console.log('PASSED: NOT_ENOUGH_ACTION_POINT');
 
         callback(null, devil, player);
         return;
@@ -255,6 +274,7 @@ exports.attack = function (req, res) {
 
         City.findByIdAndUpdate(city._id, { 'updated_at': new Date(), 'defenders': defenders }, function (err, city) {
           if (err) throw err;
+      console.log('getDefenders');
 
           callback(null, devil, city);
           return;
@@ -264,6 +284,23 @@ exports.attack = function (req, res) {
 
     function startBattle (devil, city, callback) {
       city = JSON.parse(JSON.stringify(city));
+
+      // RECOVER CITY DEFENDERS
+      var timeGap = Math.floor(( new Date() - city.updated_at ) / 1000);
+      console.log('city:', city);
+      if ( timeGap > SECONDS_FOR_A_TURN ) {
+        for ( var i in city.defenders ) {
+          city.defenders[i].current_health_point += 10 * Math.floor(timeGap/SECONDS_FOR_A_TURN);
+
+          if ( city.defenders[i].current_health_point > city.defenders[i].health_point ) {
+            city.defenders[i].current_health_point = city.defenders[i].health_point;
+          }
+          console.log(city.defenders[i], 'Recovered');
+        }
+      }
+
+      console.log('city.defenders:', city.defenders);
+
       var defender = city.defenders[0];
 
       // DEVIL ATTACK
@@ -278,9 +315,9 @@ exports.attack = function (req, res) {
 
       // DEFENDERS ATTACK
       if ( city.defenders.length !== 0 ) {
-        for ( var i in city.defenders ) {
-          devil.current_health_point -= getDamage(city.defenders[i], devil);
-          logs.push(city.defenders[i].name + '이(가) ' + devil.name + '을(를) 공격하여 ' + getDamage(city.defenders[i], devil) + '의 데미지를 입혔습니다.');
+        for ( var j in city.defenders ) {
+          devil.current_health_point -= getDamage(city.defenders[j], devil);
+          logs.push(city.defenders[j].name + '이(가) ' + devil.name + '을(를) 공격하여 ' + getDamage(city.defenders[j], devil) + '의 데미지를 입혔습니다.');
         }
       }
 
@@ -299,6 +336,7 @@ exports.attack = function (req, res) {
         'result': 'success',
         'logs': logs
       };
+      console.log('result:', result);
 
       if ( devil.current_health_point <= 0 ) {
         result.conclusion = 'win';
@@ -353,8 +391,6 @@ exports.attack = function (req, res) {
       });
     }
   ], function (err, result) {
-    if (err) throw err;
-
     res.send(result);
     return;
   });

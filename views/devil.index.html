@@ -516,7 +516,7 @@
           return;
         }
       });
-    }, 1000);
+    }, 2000);
 
     $('#clearLog').on('click', function () {
       $('#gameLog').html('');
@@ -556,6 +556,12 @@
           data: { 'city_id': cityId },
           success: function (data, status) {
             console.log('data:', data);
+            if ( data.result === 'error' || data.result === 'fail' ) {
+              alert(data.err_msg);
+              $('#battleModal').modal('hide')
+              window.location = '/devil';
+              return;
+            }
 
             for ( var i in data.logs ) {
               $p = $('<p></p>').text(data.logs[i]);
