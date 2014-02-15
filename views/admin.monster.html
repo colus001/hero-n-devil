@@ -29,12 +29,6 @@
                     <input type="text" class="form-control" name="name" placeholder="슬라임">
                   </div>
                 </div>
-                <!-- <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Defense</label>
-                  <div class="col-sm-10">
-                    <input type="number" class="form-control" name="defense" placeholder="10">
-                  </div>
-                </div> -->
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
@@ -80,6 +74,20 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Price</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="price" placeholder="50">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Experience</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="experience" placeholder="50">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
                   <label class="col-sm-2">Skill #1</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="skills[]" placeholder="Thunder Grab">
@@ -113,6 +121,8 @@
           <th>Armor</th>
           <th>M.Resist</th>
           <th>Skills</th>
+          <th>Price</th>
+          <th>Experience</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -128,6 +138,8 @@
           <td>{{ monster.armor }}</td>
           <td>{{ monster.magic_resist }}</td>
           <td>{{ monster.skills }}</td>
+          <td>{{ monster.price }}</td>
+          <td>{{ monster.experience }}</td>
           <td>
             <a href="/admin/monster/view/{{ monster.id }}" class="btn btn-xs btn-info">View</a>
             <a href="/admin/monster/edit/{{ monster.id }}" class="btn btn-xs btn-warning">Edit</a>

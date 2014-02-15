@@ -78,6 +78,20 @@
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Price</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="price" placeholder="50">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Experience</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="experience" placeholder="50">
+                  </div>
+                </div>
+              </div>
               <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
             </form>
 
@@ -99,6 +113,8 @@
           <th>M.Dmg</th>
           <th>Armor</th>
           <th>M.Resist</th>
+          <th>Price</th>
+          <th>Experience</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -113,6 +129,8 @@
           <td>{{ soldier.magic_damage }}</td>
           <td>{{ soldier.armor }}</td>
           <td>{{ soldier.magic_resist }}</td>
+          <td>{{ soldier.price }}</td>
+          <td>{{ soldier.experience }}</td>
           <td>
             <a href="/admin/soldier/view/{{ soldier.id }}" class="btn btn-xs btn-info">View</a>
             <a href="/admin/soldier/edit/{{ soldier.id }}" class="btn btn-xs btn-warning">Edit</a>
