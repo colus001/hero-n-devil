@@ -164,6 +164,7 @@
 
       <h4>STATS</h4>
       <button class="btn btn-block btn-warning" data-toggle="modal" data-target="#levelModal">레벨업(모달)</button>
+      <button id="testButton" class="btn btn-block btn-default">테스트</button>
       <button class="btn btn-block btn-default">돈</button>
       <button class="btn btn-block btn-default">거주지</button>
       <button class="btn btn-block btn-default">레벨</button>
@@ -348,7 +349,8 @@
     </div>
   </div>
 
-  <!-- Modal -->
+
+  <!-- Battle Modal -->
   <div class="modal fade" id="battleModal" tabindex="-1" role="dialog" aria-labelledby="battle" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -360,10 +362,10 @@
           <h5>LOG</h5>
           <div id="battleLog" class="log"></div>
           <hr />
-          <attack id="modalAttack" class="btn btn-block btn-primary">공격시작</attack>
+          <attack id="modalAttack" class="btn btn-block btn-primary">전투 시작</attack>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button id="closeBattle" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -378,90 +380,68 @@
           <h4 class="modal-title" id="level">레벨업</h4>
         </div>
         <div class="modal-body">
-          <div class="row">
-            <div class="col-xs-10">
-              <label class="col-sm-6">HP</label>
-              <div class="col-sm-6">
-                <p class="form-control-static">{{ devil.health_point }}</p>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <button class="btn btn-default btn-sm">+</button>
-              <button class="btn btn-default btn-sm">-</button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-10">
-              <label class="col-sm-6">AP</label>
-              <div class="col-sm-6">
-                <p class="form-control-static">{{ devil.action_point }}</p>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <button class="btn btn-default btn-sm">+</button>
-              <button class="btn btn-default btn-sm">-</button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-10">
-              <label class="col-sm-6">공속</label>
-              <div class="col-sm-6">
-                <p class="form-control-static">{{ devil.attack_speed_per_sec }}</p>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <button class="btn btn-default btn-sm">+</button>
-              <button class="btn btn-default btn-sm">-</button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-10">
-              <label class="col-sm-6">물리 공격력</label>
-              <div class="col-sm-6">
-                <p class="form-control-static">{{ devil.physical_damage }}</p>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <button class="btn btn-default btn-sm">+</button>
-              <button class="btn btn-default btn-sm">-</button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-10">
-              <label class="col-sm-6">마법 공격력</label>
-              <div class="col-sm-6">
-                <p class="form-control-static">{{ devil.magic_damage }}</p>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <button class="btn btn-default btn-sm">+</button>
-              <button class="btn btn-default btn-sm">-</button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-10">
-              <label class="col-sm-6">방어력</label>
-              <div class="col-sm-6">
-                <p class="form-control-static">{{ devil.armor }}</p>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <button class="btn btn-default btn-sm">+</button>
-              <button class="btn btn-default btn-sm">-</button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-10">
-              <label class="col-sm-6">마법저항</label>
-              <div class="col-sm-6">
-                <p class="form-control-static">{{ devil.magic_resist }}</p>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <button class="btn btn-default btn-sm">+</button>
-              <button class="btn btn-default btn-sm">-</button>
-            </div>
-          </div>
+          <p>레벨업 하실 항목을 선택하세요.</p>
+          <table class="table">
+            <thead></thead>
+            <tbody>
+              <tr>
+                <td>HP</td>
+                <td>{{ devil.health_point }}</td>
+                <td>
+                  <button class="btn btn-default btn-sm">+</button>
+                  <button class="btn btn-default btn-sm">-</button>
+                </td>
+              </tr>
+              <tr>
+                <td>AP</td>
+                <td>{{ devil.action_point }}</td>
+                <td>
+                  <button class="btn btn-default btn-sm">+</button>
+                  <button class="btn btn-default btn-sm">-</button>
+                </td>
+              </tr>
+              <tr>
+                <td>공격속도</td>
+                <td>{{ devil.attack_speed_per_sec }}</td>
+                <td>
+                  <button class="btn btn-default btn-sm">+</button>
+                  <button class="btn btn-default btn-sm">-</button>
+                </td>
+              </tr>
+              <tr>
+                <td>물리 공격력</td>
+                <td>{{ devil.physical_damage }}</td>
+                <td>
+                  <button class="btn btn-default btn-sm">+</button>
+                  <button class="btn btn-default btn-sm">-</button>
+                </td>
+              </tr>
+              <tr>
+                <td>마법 공격력</td>
+                <td>{{ devil.magic_damage }}</td>
+                <td>
+                  <button class="btn btn-default btn-sm">+</button>
+                  <button class="btn btn-default btn-sm">-</button>
+                </td>
+              </tr>
+              <tr>
+                <td>방어력</td>
+                <td>{{ devil.armor }}</td>
+                <td>
+                  <button class="btn btn-default btn-sm">+</button>
+                  <button class="btn btn-default btn-sm">-</button>
+                </td>
+              </tr>
+              <tr>
+                <td>마법저항</td>
+                <td>{{ devil.magic_resist }}</td>
+                <td>
+                  <button class="btn btn-default btn-sm">+</button>
+                  <button class="btn btn-default btn-sm">-</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -535,6 +515,18 @@
     $('#clearLog').on('click', function () {
       $('#gameLog').html('');
       return;
+    });
+
+    $('#closeBattle').on('click', function () {
+      window.location = '/devil';
+      return;
+    });
+
+    $('#testButton').on('click', function () {
+      console.log('clicked');
+
+      var socket = io.connect('http://localhost:3000');
+      socket.emit('attack', { hi: 'hi, hello'});
     });
 
     $(document).on('click', 'attack', function () {

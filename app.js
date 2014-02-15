@@ -4,6 +4,7 @@ var http = require('http');
 var path = require('path');
 var swig = require('swig');
 var mongoose = require('mongoose');
+var socketio = require('socket.io');
 
 // Routes
 var routes = require('./routes');
@@ -134,7 +135,25 @@ db.once('open', function callback () {
   // app.post('/admin/monster/edit/:id', admin.monster.create);
   app.get('/admin/monster/delete/:id', admin.monster.delete);
 
-  http.createServer(app).listen(app.get('port'), function(){
+  // ADMIN - MONSTER
+  app.get('/admin/soldier', admin.soldier.index);
+  app.post('/admin/soldier', admin.soldier.create);
+  app.get('/admin/soldier/view/:id', admin.soldier.view);
+  app.get('/admin/soldier/edit/:id', admin.soldier.edit);
+  // app.post('/admin/soldier/edit/:id', admin.soldier.create);
+  app.get('/admin/soldier/delete/:id', admin.soldier.delete);
+
+
+  var server = http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
   });
+
+  var io = socketio.listen(server);
+  io.sockets.on('connection', function (socket) {
+    socket.on('attack', function (data) {
+      console.log('data:', data);
+      console.log('session:', socket);
+    });
+  });
+
 });

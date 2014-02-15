@@ -19,6 +19,7 @@ var Monster = require('../lib/model').Monster;
 
 // Model Prototype
 var ProtoHero = require('../lib/model').ProtoHero;
+var ProtoSoldier = require('../lib/model').ProtoSoldier;
 
 // Library
 var errorHandler = require('../lib/errorHandler');
@@ -153,21 +154,21 @@ exports.attack = function (req, res) {
         return;
       }
 
-      ProtoHero.find({}, function summonDefenders (err, heros) {
+      ProtoSoldier.find({}, function summonDefenders (err, soldiers) {
         if (err) throw err;
 
-        if ( !heros ) {
-          errorHandler.sendErrorMessage('NO_HEROS_EXIST', res);
+        if ( !soldiers ) {
+          errorHandler.sendErrorMessage('NO_SOLDIERS_EXIST', res);
           return;
         }
 
         var defenders = [];
 
         for ( var i = 0; i < city.soldiers; i++ ) {
-          var random = Math.floor(Math.random()*heros.length);
-          var hero = JSON.parse(JSON.stringify(heros[random]));
-          hero.current_health_point = hero.health_point;
-          defenders.push(hero);
+          var random = Math.floor(Math.random()*soldiers.length);
+          var soldier = JSON.parse(JSON.stringify(soldiers[random]));
+          soldier.current_health_point = soldier.health_point;
+          defenders.push(soldier);
         }
 
         City.findByIdAndUpdate(city._id, { 'updated_at': new Date(), 'defenders': defenders }, function (err, city) {
@@ -246,7 +247,7 @@ exports.attack = function (req, res) {
           });
         },
 
-        function saveCity (done) {
+        function updateCity (done) {
           var update = {
             'updated_at': new Date(),
             'defenders': city.defenders
@@ -280,6 +281,7 @@ exports.attack = function (req, res) {
 var getDamage = function (attack, defense) {
   var phy_damage = attack.physical_damage - defense.armor;
   var mag_damage = attack.magic_damage - defense.magic_resist;
+  var totalDamage = phy_damage + mag_damage;
 
-  return phy_damage + mag_damage;
+  return ( totalDamage > 0 ) ? totalDamage : 10;
 };

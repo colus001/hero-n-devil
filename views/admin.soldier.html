@@ -1,0 +1,138 @@
+{% extends 'layout.html' %}
+
+{% block title %} DEVIL {% endblock %}
+
+{% block head %}
+  {% parent %}
+{% endblock %}
+
+{% block content %}
+  <div class="col-md-12">
+    <h4>SOLDIER MANAGER</h4>
+    <!-- SOLDIER FORM -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#form">
+              Add New Soldier
+            </a>
+          </h4>
+        </div>
+        <div class="panel-collapse collapse in" id="form">
+          <div class="panel-body">
+            <form role="form-horizontal" method="POST">
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Name</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="name" placeholder="박이병">
+                  </div>
+                </div>
+                <!-- <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Defense</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="defense" placeholder="10">
+                  </div>
+                </div> -->
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Health Point</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="health_point" placeholder="50">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Attack Speed</label>
+                  <div class="col-sm-10">
+                    <input type="number" step="any" class="form-control" name="attack_speed_per_sec" placeholder="0.5">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Physical Damage</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="physical_damage" placeholder="50">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Magic Damage</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="magic_damage" placeholder="0">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Armor</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="armor" placeholder="0">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Magic Resist</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="magic_resist" placeholder="0">
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div><!-- SOLDIER FORM -->
+
+    <hr>
+    <h4>LIST</h4>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>HP</th>
+          <th>A.Speed/1s</th>
+          <th>P.Dmg</th>
+          <th>M.Dmg</th>
+          <th>Armor</th>
+          <th>M.Resist</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for soldier in soldiers %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ soldier.name }}</td>
+          <td>{{ soldier.health_point }}</td>
+          <td>{{ soldier.attack_speed_per_sec }}</td>
+          <td>{{ soldier.physical_damage }}</td>
+          <td>{{ soldier.magic_damage }}</td>
+          <td>{{ soldier.armor }}</td>
+          <td>{{ soldier.magic_resist }}</td>
+          <td>
+            <a href="/admin/soldier/view/{{ soldier.id }}" class="btn btn-xs btn-info">View</a>
+            <a href="/admin/soldier/edit/{{ soldier.id }}" class="btn btn-xs btn-warning">Edit</a>
+            <a href="/admin/soldier/delete/{{ soldier.id }}" class="btn btn-xs btn-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="col-sm-12">
+      <ul class="pagination">
+        <li><a href="#">&laquo;</a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">&raquo;</a></li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
