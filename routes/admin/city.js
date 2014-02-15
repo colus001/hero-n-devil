@@ -153,7 +153,8 @@ exports.apply = function (req, res) {
       });
     }
   ], function (err, result) {
-    res.send(result);
+    res.redirect('/admin/city');
+    return;
   });
 
 };
