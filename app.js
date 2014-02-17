@@ -99,6 +99,7 @@ db.once('open', function callback () {
   // DEVIL - GAME
   app.post('/devil/status', checkCurrentPlayer, devil.game.status);
   app.post('/devil/attack', checkCurrentPlayer, devil.game.attack);
+  app.post('/devil/collect', checkCurrentPlayer, devil.game.collect);
 
   // ADMIN
   app.get('/admin', admin.index);

@@ -102,6 +102,125 @@ exports.status = function (req, res) {
   });
 };
 
+exports.collect = function (req, res) {
+  async.waterfall([
+    function getPlayer (callback) {
+      Player.findById(req.session.current_player_id, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          callback('NO_PLAYER_FOUND');
+          return;
+        }
+
+        callback(null, player);
+        return;
+      });
+    },
+
+    function getDevil (player, callback) {
+      Devil.findById(player.devil_id, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          callback('NO_DEVIL_FOUND');
+          return;
+        }
+
+        callback(null, player, devil);
+        return;
+      });
+    },
+
+    function getColonies (player, devil, callback) {
+      City.findById(req.body.colony_id, function (err, colony) {
+        if (err) throw err;
+
+        if ( !colony ) {
+          callback('NO_COLONY_FOUND');
+          return;
+        }
+
+        if ( !colony.isCaptured ) {
+          callback('NOT_CAPTURED');
+          return;
+        }
+
+        var timeGap = Math.floor(( new Date() - colony.updated_at ) / 1000);
+        console.log('timeGap:', timeGap);
+        if ( timeGap < colony.time_to_collect ) {
+          callback('YOU_SHOULD_WAIT_MORE');
+          return;
+        }
+
+        callback(null, player, devil, colony);
+        return;
+      });
+    },
+
+    function collect (player, devil, colony, callback) {
+      async.parallel([
+        function updatePlayer (done) {
+          var update = {
+            $set: {
+              'updated_at': new Date()
+            },
+            $inc: {
+              'money': colony.population *  ( colony.economy_level * 0.5 )
+            }
+          };
+
+          Player.findByIdAndUpdate(player._id, update, function (err, player) {
+            if (err) throw err;
+
+            if ( !player ) {
+              callback('NO_PLAYER_FOUND');
+              return;
+            }
+
+            done(null);
+            return;
+          });
+        },
+
+        function updateColony (done) {
+          City.findByIdAndUpdate(colony._id, { 'updated_at': new Date() }, function (err, city) {
+            if (err) throw err;
+
+            if ( !city ) {
+              callback('NO_CITY_FOUND');
+              return;
+            }
+
+            done(null);
+            return;
+          });
+        }
+      ], function (err) {
+        if (err) throw err;
+
+        var result = {
+          'result': 'success',
+          'player': player,
+          'colony': colony
+        };
+
+        callback(null, result);
+        return;
+      });
+    }
+  ], function (err, result) {
+    if (err) {
+      console.log('error: ', err);
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
+    res.send(result);
+    return;
+  });
+};
+
 exports.levelUp = function (req, res) {
   async.waterfall([
     function checkReqeust (callback) {

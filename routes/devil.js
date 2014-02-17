@@ -113,6 +113,7 @@ exports.index = function (req, res) {
     function getResult (player, devil, cities, colonies, monsters, callback) {
       var result = {
         'result': 'success',
+        'player': player,
         'devil': devil,
         'cities': cities,
         'colonies': colonies,
