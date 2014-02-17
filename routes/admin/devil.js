@@ -91,10 +91,10 @@ exports.delete = function (req, res) {
   });
 };
 
-/* exports.create = function (req, res) {
+exports.publish = function (req, res) {
   async.waterfall([
     function (callback) {
-      Devil.findOne({}, function (err, devil) {
+      ProtoDevil.findById(req.params.id, function (err, devil) {
         if (err) throw err;
 
         callback(null, devil);
@@ -103,36 +103,15 @@ exports.delete = function (req, res) {
     },
 
     function (devil, callback) {
-      if ( devil ) {
-        Devil.findByIdAndUpdate(devil._id, { $set: req.body }, function (err, devil) {
-          if (err) throw err;
+      ProtoDevil.findByIdAndUpdate(req.params.id, { 'published': !devil.published }, function (err, devil) {
+        if (err) throw err;
 
-          var result = {
-            'result': 'success',
-            'devil': devil
-          };
-
-          console.log('result:', result);
-          callback(null);
-          return;
-        });
-      } else {
-        Devil(req.body).save(function (err, devil) {
-          if (err) throw err;
-
-          var result = {
-            'result': 'success',
-            'devil': devil
-          };
-
-          console.log('result:', result);
-          callback(null);
-          return;
-        });
-      }
+        callback(null);
+        return;
+      });
     }
   ], function (err, result) {
     res.redirect('/admin/devil');
     return;
   });
-};*/
+};

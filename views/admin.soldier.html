@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} DEVIL {% endblock %}
+{% block title %} SOLDIER {% endblock %}
 
 {% block head %}
   {% parent %}
@@ -115,6 +115,7 @@
           <th>M.Resist</th>
           <th>Price</th>
           <th>Experience</th>
+          <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -131,6 +132,13 @@
           <td>{{ soldier.magic_resist }}</td>
           <td>{{ soldier.price }}</td>
           <td>{{ soldier.experience }}</td>
+          <td>
+            {% if soldier.published %}
+            <a href="/admin/soldier/publish/{{ soldier.id }}" class="btn btn-xs btn-success">Published</a>
+            {% else %}
+            <a href="/admin/soldier/publish/{{ soldier.id }}" class="btn btn-xs btn-warning">Draft</a>
+            {% endif %}
+          </td>
           <td>
             <a href="/admin/soldier/view/{{ soldier.id }}" class="btn btn-xs btn-info">View</a>
             <a href="/admin/soldier/edit/{{ soldier.id }}" class="btn btn-xs btn-warning">Edit</a>

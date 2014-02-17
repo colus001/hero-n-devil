@@ -329,37 +329,27 @@ exports.attack = function (req, res) {
       Devil.findById(player.devil_id, function (err, devil) {
         if (err) throw err;
 
-        console.log('getDevil');
-
         if ( !devil ) {
           callback('NO_DEVIL_FOUND');
           return;
         }
 
-        console.log('PASSED: NO_DEVIL_FOUND');
-
         if ( devil.current_health_point === 0 ) {
-          console.log('NOT_ENOUGH_HEALTH_POINT');
           callback('NOT_ENOUGH_HEALTH_POINT');
           return;
         }
 
-        console.log('PASSED: NOT_ENOUGH_HEALTH_POINT');
-
         if ( devil.current_action_point === 0 ) {
-          console.log('NOT_ENOUGH_ACTION_POINT');
           callback('NOT_ENOUGH_ACTION_POINT');
           return;
         }
 
-        console.log('PASSED: NOT_ENOUGH_ACTION_POINT');
-
-        callback(null, devil, player);
+        callback(null, player, devil);
         return;
       });
     },
 
-    function getCity (devil, player, callback) {
+    function getCity (player, devil, callback) {
       City.findById(req.body.city_id, function (err, city) {
         if (err) throw err;
 
@@ -368,21 +358,21 @@ exports.attack = function (req, res) {
           return;
         }
 
-        callback(null, devil, player, city);
+        callback(null, player, devil, city);
         return;
       });
     },
 
-    function getDefenders (devil, player, city, callback) {
+    function getDefenders (player, devil, city, callback) {
       if ( city.defenders.length > 0 ) {
         callback(null, devil, city);
         return;
       }
 
-      ProtoSoldier.find({}, function summonDefenders (err, soldiers) {
+      ProtoSoldier.find({ 'published': true }, function summonDefenders (err, soldiers) {
         if (err) throw err;
 
-        if ( !soldiers ) {
+        if ( soldiers.length === 0 ) {
           callback('NO_SOLDIERS_EXIST');
           return;
         }
@@ -398,7 +388,6 @@ exports.attack = function (req, res) {
 
         City.findByIdAndUpdate(city._id, { 'updated_at': new Date(), 'defenders': defenders }, function (err, city) {
           if (err) throw err;
-      console.log('getDefenders');
 
           callback(null, devil, city);
           return;

@@ -72,3 +72,28 @@ exports.delete = function (req, res) {
     return;
   });
 };
+
+exports.publish = function (req, res) {
+  async.waterfall([
+    function (callback) {
+      ProtoMonster.findById(req.params.id, function (err, monster) {
+        if (err) throw err;
+
+        callback(null, monster);
+        return;
+      });
+    },
+
+    function (monster, callback) {
+      ProtoMonster.findByIdAndUpdate(req.params.id, { 'published': !monster.published }, function (err, monster) {
+        if (err) throw err;
+
+        callback(null);
+        return;
+      });
+    }
+  ], function (err, result) {
+    res.redirect('/admin/monster');
+    return;
+  });
+};

@@ -116,10 +116,10 @@
           <td>{{ city.soldiers }}</td>
           <td>{{ city.army_level }}</td>
           <td>
-            {% if city.playable %}
-            <button class="btn btn-xs btn-success">Now Playing</button>
+            {% if city.published %}
+            <button class="btn btn-xs btn-success">Published</button>
             {% else %}
-            <button class="btn btn-xs btn-warning">Apply needed</button>
+            <button class="btn btn-xs btn-warning">Draft</button>
             {% endif %}
           </td>
           <td>

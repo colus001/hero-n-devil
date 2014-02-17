@@ -83,7 +83,7 @@ exports.delete = function (req, res) {
 exports.apply = function (req, res) {
   async.waterfall([
     function getProtocities (callback) {
-      ProtoCity.find({ 'playable': false }, function (err, cities) {
+      ProtoCity.find({ 'published': false }, function (err, cities) {
         if (err) throw err;
 
         if ( cities.length === 0 ) {
@@ -92,7 +92,7 @@ exports.apply = function (req, res) {
           return;
         }
 
-        ProtoCity.update({ 'playable': false }, { 'playable': true }, function (err, updated) {
+        ProtoCity.update({ 'published': false }, { 'published': true }, function (err, updated) {
           if (err) throw err;
 
           if ( updated === 0 ) {

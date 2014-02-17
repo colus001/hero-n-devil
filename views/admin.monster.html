@@ -130,6 +130,7 @@
           <th>Skills</th>
           <th>Price</th>
           <th>Experience</th>
+          <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -147,6 +148,13 @@
           <td>{{ monster.skills }}</td>
           <td>{{ monster.price }}</td>
           <td>{{ monster.experience }}</td>
+          <td>
+            {% if monster.published %}
+            <a href="/admin/monster/publish/{{ monster.id }}" class="btn btn-xs btn-success">Published</a>
+            {% else %}
+            <a href="/admin/monster/publish/{{ monster.id }}" class="btn btn-xs btn-warning">Draft</a>
+            {% endif %}
+          </td>
           <td>
             <a href="/admin/monster/view/{{ monster.id }}" class="btn btn-xs btn-info">View</a>
             <a href="/admin/monster/edit/{{ monster.id }}" class="btn btn-xs btn-warning">Edit</a>

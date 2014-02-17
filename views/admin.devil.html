@@ -100,6 +100,7 @@
           <th>Armor</th>
           <th>M.Resist</th>
           <th>Skills</th>
+          <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -116,8 +117,15 @@
           <td>{{ devil.magic_resist }}</td>
           <td>{{ devil.skills }}</td>
           <td>
+            {% if devil.published %}
+            <a href="/admin/devil/publish/{{ devil.id }}" class="btn btn-xs btn-success">Published</a>
+            {% else %}
+            <a href="/admin/devil/publish/{{ devil.id }}" class="btn btn-xs btn-warning">Draft</a>
+            {% endif %}
+          </td>
+          <td>
             <a href="/admin/devil/view/{{ devil.id }}" class="btn btn-xs btn-info">View</a>
-            <a href="/admin/devil/edit/{{ devil.id }}" class="btn btn-xs btn-warning">Edit</a>
+            <a href="/admin/devil/edit/{{ devil.id }}" class="btn btn-xs btn-primary">Edit</a>
             <a href="/admin/devil/delete/{{ devil.id }}" class="btn btn-xs btn-danger">Delete</a>
           </td>
         </tr>

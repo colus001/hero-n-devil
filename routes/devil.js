@@ -109,7 +109,7 @@ exports.index = function (req, res) {
     },
 
     function getMonsters (player, devil, cities, colonies, monsters, callback) {
-      ProtoMonster.find({ /* 'player_id': current_player_id */ }, function (err, protomonsters) {
+      ProtoMonster.find({ 'published': true }, function (err, protomonsters) {
         if (err) throw err;
 
         if ( !protomonsters ) {
@@ -173,7 +173,7 @@ exports.select = function (req, res) {
     },
 
     function (player, callback) {
-      ProtoDevil.find({}, function (err, devils) {
+      ProtoDevil.find({ 'published': true }, function (err, devils) {
         if (err) throw err;
 
         if ( devils.length === 0 ) {
@@ -203,7 +203,7 @@ exports.selectDevil = function (req, res) {
         if (err) throw err;
 
         if ( !player ) {
-          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          callback('NO_PLAYER_FOUND');
           return;
         }
 
@@ -231,7 +231,7 @@ exports.selectDevil = function (req, res) {
         if (err) throw err;
 
         if ( protocities.length === 0 ) {
-          errorHandler.sendErrorMessage('NO_PROTOTYPE_FOUND', res);
+          callback('NO_PROTOTYPE_FOUND');
           return;
         }
 
@@ -260,8 +260,13 @@ exports.selectDevil = function (req, res) {
       ProtoDevil.findById(req.params.id, function (err, protodevil) {
         if (err) throw err;
 
+        if ( !protodevil.published ) {
+          callback('DEVIL_NOT_PUBLISHED');
+          return;
+        }
+
         if ( !protodevil ) {
-          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -290,7 +295,7 @@ exports.selectDevil = function (req, res) {
         if (err) throw err;
 
         if ( !player ) {
-          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          callback('NO_PLAYER_FOUND');
           return;
         }
 
@@ -299,6 +304,11 @@ exports.selectDevil = function (req, res) {
       });
     },
   ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
     res.redirect('/devil');
     return;
   });

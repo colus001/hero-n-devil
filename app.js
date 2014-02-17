@@ -124,6 +124,7 @@ db.once('open', function callback () {
   app.get('/admin/devil/edit/:id', admin.devil.edit);
   app.post('/admin/devil/edit/:id', admin.devil.create);
   app.get('/admin/devil/delete/:id', admin.devil.delete);
+  app.get('/admin/devil/publish/:id', admin.devil.publish);
 
   // ADMIN - CITY
   app.get('/admin/city', admin.city.index);
@@ -141,14 +142,16 @@ db.once('open', function callback () {
   app.get('/admin/monster/edit/:id', admin.monster.edit);
   // app.post('/admin/monster/edit/:id', admin.monster.create);
   app.get('/admin/monster/delete/:id', admin.monster.delete);
+  app.get('/admin/monster/publish/:id', admin.monster.publish);
 
-  // ADMIN - MONSTER
+  // ADMIN - SOLDIER
   app.get('/admin/soldier', admin.soldier.index);
   app.post('/admin/soldier', admin.soldier.create);
   app.get('/admin/soldier/view/:id', admin.soldier.view);
   app.get('/admin/soldier/edit/:id', admin.soldier.edit);
   // app.post('/admin/soldier/edit/:id', admin.soldier.create);
   app.get('/admin/soldier/delete/:id', admin.soldier.delete);
+  app.get('/admin/soldier/publish/:id', admin.soldier.publish);
 
 
   var server = http.createServer(app).listen(app.get('port'), function(){
