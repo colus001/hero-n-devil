@@ -97,27 +97,37 @@ exports.index = function (req, res) {
     },
 
     function getMonsters (player, devil, cities, colonies, callback) {
-      ProtoMonster.find({ /* 'player_id': current_player_id */ }, function (err, monsters) {
+      Monster.find({ 'player_id': current_player_id }, function (err, monsters) {
         if (err) throw err;
-
-        if ( !monsters ) {
-          errorHandler.sendErrorMessage('NO_MONSTERS_FOUND', res);
-          return;
-        }
 
         callback(null, player, devil, cities, colonies, monsters);
         return;
       });
     },
 
-    function getResult (player, devil, cities, colonies, monsters, callback) {
+    function getMonsters (player, devil, cities, colonies, monsters, callback) {
+      ProtoMonster.find({ /* 'player_id': current_player_id */ }, function (err, protomonsters) {
+        if (err) throw err;
+
+        if ( !protomonsters ) {
+          errorHandler.sendErrorMessage('NO_MONSTER_PROTOTYPE_FOUND', res);
+          return;
+        }
+
+        callback(null, player, devil, cities, colonies, monsters, protomonsters);
+        return;
+      });
+    },
+
+    function getResult (player, devil, cities, colonies, monsters, protomonsters, callback) {
       var result = {
         'result': 'success',
         'player': player,
         'devil': devil,
         'cities': cities,
         'colonies': colonies,
-        'monsters': monsters
+        'monsters': monsters,
+        'protomonsters': protomonsters
       };
 
       callback(null, result);
@@ -292,3 +302,4 @@ exports.selectDevil = function (req, res) {
 };
 
 exports.game = require('./devil.game');
+exports.monster = require('./devil.monster');
