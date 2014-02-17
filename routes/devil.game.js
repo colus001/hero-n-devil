@@ -52,45 +52,38 @@ exports.status = function (req, res) {
           return;
         }
 
-        callback(null, devil, player);
+        callback(null, player, devil);
         return;
       });
     },
 
-    function checkTimeGap (devil, player, callback) {
-      var timeGap = Math.floor(( new Date() - devil.updated_at ) / 1000);
-
-      if ( timeGap < SECONDS_FOR_A_TURN ) {
-        callback('SHOULD_WAIT_MORE');
-        return;
-      }
-
-      var multiplier = Math.floor(timeGap/SECONDS_FOR_A_TURN);
-      callback(null, devil, player, multiplier);
-      return;
-    },
-
-    function recoverPoints (devil, player, multiplier, callback) {
-      var healthPointToUpdate = ( ( multiplier * 10 ) + devil.current_health_point > devil.health_point ) ? devil.health_point-devil.current_health_point : multiplier * 10;
-      var actionPointToUpdate = ( ( multiplier * 1 ) + devil.current_action_point > devil.action_point ) ? devil.action_point-devil.current_action_point : multiplier * 1;
-
-      var update = {
-        $set: {
-          'updated_at': new Date()
-        },
-        $inc: {
-          'current_health_point': healthPointToUpdate,
-          'current_action_point': actionPointToUpdate
-        }
-      };
-
-      Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
+    function getDevil (player, devil, callback) {
+      Monster.find({ 'player_id': player._id }, function (err, monsters) {
         if (err) throw err;
 
-        var result = {
-          'result': 'success',
-          'devil': devil
-        };
+        callback(null, player, devil, monsters);
+        return;
+      });
+    },
+
+    function updateStatus (player, devil, monsters, callback) {
+      var result = {
+        'result': 'success',
+        'monsters': []
+      };
+
+      async.parallel([
+        function DEVIL (done) {
+          recoverDevil(devil, result, done);
+        },
+        function MONSTER (done) {
+          recoverMonsters(monsters, result, done);
+        }
+      ], function (err) {
+        if (err) {
+          errorHandler.sendErrorMessage(err, res);
+          return;
+        }
 
         callback(null, result);
         return;
@@ -100,6 +93,10 @@ exports.status = function (req, res) {
     if (err) {
       errorHandler.sendErrorMessage(err, res);
       return;
+    }
+
+    if ( result.devil ) {
+      console.log('result.devil:', result.devil);
     }
 
     res.send(result);
@@ -154,7 +151,7 @@ exports.collect = function (req, res) {
         var timeGap = Math.floor(( new Date() - colony.updated_at ) / 1000);
         console.log('timeGap:', timeGap);
         if ( timeGap < colony.time_to_collect ) {
-          callback('YOU_SHOULD_WAIT_MORE');
+          callback('SHOULD_WAIT_MORE');
           return;
         }
 
@@ -463,7 +460,6 @@ exports.attack = function (req, res) {
         'result': 'success',
         'logs': logs
       };
-      console.log('result:', result);
 
       if ( devil.current_health_point <= 0 ) {
         result.conclusion = 'win';
@@ -526,6 +522,90 @@ exports.attack = function (req, res) {
     res.send(result);
     return;
   });
+};
+
+var getTimeGap = function (object) {
+  var timeGap = Math.floor(( new Date() - object.updated_at ) / 1000);
+  var multiplier = Math.floor(timeGap/SECONDS_FOR_A_TURN);
+
+  return multiplier;
+};
+
+var recoverDevil = function (devil, result, done) {
+  var multiplier = getTimeGap(devil);
+
+  if ( multiplier <= 0 ) {
+    done('SHOULD_WAIT_MORE');
+    return;
+  }
+
+  var healthPointToUpdate = getPointToUpdate(multiplier * 10, devil.current_health_point, devil.health_point);
+  var actionPointToUpdate = getPointToUpdate(multiplier * 1, devil.current_action_point, devil.action_point);
+
+  console.log('devil:', devil);
+
+  var update = {
+    $set: {
+      'updated_at': new Date()
+    },
+    $inc: {
+      'current_health_point': healthPointToUpdate,
+      'current_action_point': actionPointToUpdate
+    }
+  };
+
+  console.log('update:', update);
+
+  Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
+    if (err) throw err;
+
+    console.log('devil:', devil);
+
+    result.devil = devil;
+    done(null);
+    return;
+  });
+};
+
+var recoverMonsters = function (monsters, result, done) {
+  async.map(monsters, function (monster, next) {
+    var multiplier = getTimeGap(monster);
+
+    if ( multiplier <= 0 ) {
+      next(null);
+      return;
+    }
+
+    var healthPointToUpdate = getPointToUpdate(multiplier * 10, monster.current_health_point, monster.health_point);
+
+    var update = {
+      $set: {
+        'updated_at': new Date()
+      },
+      $inc: {
+        'current_health_point': healthPointToUpdate
+      }
+    };
+
+    Monster.findByIdAndUpdate(monster._id, update, function (err, monster) {
+      if (err) throw err;
+
+      result.monsters.push(monster);
+      next(null, monster);
+      return;
+    });
+  }, function (err) {
+    done(null);
+    return;
+  });
+};
+
+var getPointToUpdate = function (pointToUpdate, currentPoint, maximumPoint) {
+  if ( pointToUpdate + currentPoint > maximumPoint ) {
+    pointToUpdate =  maximumPoint - currentPoint;
+  }
+
+  return pointToUpdate;
 };
 
 var getDamage = function (attack, defense) {

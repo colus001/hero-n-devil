@@ -200,8 +200,8 @@ exports.buildup = function (req, res) {
       });
     },
 
-    function removeMonster (player, devil, callback) {
-      Monster.findOneAndRemove({ '_id': req.body.monster_id, 'player_id': player._id }, function (err, monster) {
+    function getMonster (player, devil, callback) {
+      Monster.findOne({ '_id': req.body.monster_id, 'player_id': player._id }, function (err, monster) {
         if (err) throw err;
 
         var result = {

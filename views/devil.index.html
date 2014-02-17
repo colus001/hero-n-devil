@@ -25,7 +25,13 @@
     min-height: 200px;
   }
   .placeholder {
-      background-color: red;
+    background-color: red;
+  }
+  .gauge-bar {
+    background-color: green;
+    border: 1px solid black;
+    height: 4px;
+    margin-top: 5px;
   }
 </style>
 {% endblock %}
@@ -235,9 +241,9 @@
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" data-parent="#accordion" href="#monster-{{ monster.id }}">
-                <div style="background-color: red; width: {{ (monster.current_health_point/monster.health_point)* 100}}%;">
-                  {{ monster.name }} <div class="pull-right">HP {{ monster.current_health_point }} / {{ monster.health_point }}</div>
-                </div>
+                {{ monster.name }}
+                [<span data-id="monster-hp-text-{{ monster.id }}">{{ monster.current_health_point }}/{{ monster.health_point }}</span>]
+                <div data-id="monster-hp-{{ monster.id }}" class="gauge-bar" style="width: {{ (monster.current_health_point/monster.health_point)* 100}}%;"></div>
               </a>
             </h4>
           </div>
@@ -245,13 +251,10 @@
             <div class="panel-body">
               <div>
                 <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
-                <div class="gauge">
-                  <div class="bar" style="width: {{ (monster.current_health_point/monster.health_point)* 100}}%;"></div>
-                </div>
                 <h4>STATS</h4>
                 <div class="row">
                   <div class="col-xs-4">HP</div>
-                  <div class="col-xs-8">{{ monster.current_health_point }} / {{ monster.health_point }}</div>
+                  <div data-id="monster-hp-text-{{ monster.id }}" class="col-xs-8">{{ monster.current_health_point }}/{{ monster.health_point }}</div>
                 </div>
                 <div class="row">
                   <div class="col-xs-4">공속</div>
@@ -515,7 +518,8 @@
         url: '/devil/monster/buildup',
         data: { 'monster_id': $(this).data('id') },
         success: function (data, status) {
-          window.location = '/devil';
+          console.log('data:', data);
+          // window.location = '/devil';
           return;
         },
         error: function (error) {
@@ -525,7 +529,6 @@
         }
       })
     });
-
 
     $('delete').on('click', function () {
       $.ajax({
@@ -582,6 +585,46 @@
       })
     });
 
+    var updateDevil = function (data) {
+      if ( data.current_health_point !== data.health_point ) {
+        $p = $('<p></p>').text('HP가 ' + data.current_health_point + '으로 회복되었습니다.');
+        $gameLog.append($p);
+      }
+
+      if ( data.current_action_point !== data.action_point ) {
+        $p = $('<p></p>').text('AP가 ' + data.current_action_point + '으로 회복되었습니다.');
+        $gameLog.append($p);
+      }
+
+      var hp = {
+        'percent': ((data.current_health_point/data.health_point)*100) + '%',
+        'text': 'HP:' + data.current_health_point + '/' + data.health_point
+      };
+      var ap = {
+        'percent': ((data.current_action_point/data.action_point)*100) + '%',
+        'text': 'AP:' + data.current_action_point + '/' + data.action_point
+      };
+
+      $('#hp').css('width', hp.percent);
+      $('#hp').text(hp.text);
+      $('#ap').css('width', ap.percent);
+      $('#ap').text(ap.text);
+    };
+
+    var updateMonsters = function (monsters) {
+      for ( var i in monsters ) {
+        var $monster = $('[data-id="monster-hp-'+monsters[i]._id+'"]');
+        var $monsterText = $('[data-id="monster-hp-text-'+monsters[i]._id+'"]');
+
+        var text = monsters[i].current_health_point + '/' + monsters[i].health_point;
+        var percentage = monsters[i].current_health_point/monsters[i].health_point*100;
+
+        $monster.css('width', (percentage+'%'));
+        $monsterText.text(text);
+      }
+
+    };
+
     var globalTurn = setInterval(function () {
       if ( isBattle ) {
         console.log('전투중');
@@ -602,29 +645,14 @@
             return;
           }
 
-          if ( data.devil.current_health_point !== data.devil.health_point ) {
-            $p = $('<p></p>').text('HP가 ' + data.devil.current_health_point + '으로 회복되었습니다.');
-            $gameLog.append($p);
+          if ( data.devil ) {
+            updateDevil(data.devil);
           }
 
-          if ( data.devil.current_action_point !== data.devil.action_point ) {
-            $p = $('<p></p>').text('AP가 ' + data.devil.current_action_point + '으로 회복되었습니다.');
-            $gameLog.append($p);
+          if ( data.monsters.length !== 0 ) {
+            updateMonsters(data.monsters);
           }
 
-          var hp = {
-            'percent': ((data.devil.current_health_point/data.devil.health_point)*100) + '%',
-            'text': 'HP:' + data.devil.current_health_point + '/' + data.devil.health_point
-          };
-          var ap = {
-            'percent': ((data.devil.current_action_point/data.devil.action_point)*100) + '%',
-            'text': 'AP:' + data.devil.current_action_point + '/' + data.devil.action_point
-          };
-
-          $('#hp').css('width', hp.percent);
-          $('#hp').text(hp.text);
-          $('#ap').css('width', ap.percent);
-          $('#ap').text(ap.text);
           return;
         },
         error: function (error) {
