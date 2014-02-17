@@ -34,7 +34,7 @@ exports.status = function (req, res) {
         if (err) throw err;
 
         if ( !player ) {
-          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          callback('NO_PLAYER_FOUND');
           return;
         }
 
@@ -48,7 +48,7 @@ exports.status = function (req, res) {
         if (err) throw err;
 
         if ( !devil ) {
-          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -61,7 +61,7 @@ exports.status = function (req, res) {
       var timeGap = Math.floor(( new Date() - devil.updated_at ) / 1000);
 
       if ( timeGap < SECONDS_FOR_A_TURN ) {
-        errorHandler.sendErrorMessage('SHOULD_WAIT_MORE', res);
+        callback('SHOULD_WAIT_MORE');
         return;
       }
 
@@ -97,6 +97,11 @@ exports.status = function (req, res) {
       });
     }
   ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
     res.send(result);
     return;
   });
@@ -231,7 +236,7 @@ exports.levelUp = function (req, res) {
       }
 
       if ( totalPoint > 3 ) {
-        errorHandler.sendErrorMessage('POINT_EXCEEDED_TO_LEVEL_UP', res);
+        callback('POINT_EXCEEDED_TO_LEVEL_UP');
         return;
       }
     },
@@ -241,7 +246,7 @@ exports.levelUp = function (req, res) {
         if (err) throw err;
 
         if ( !player ) {
-          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          callback('NO_PLAYER_FOUND');
           return;
         }
 
@@ -255,7 +260,7 @@ exports.levelUp = function (req, res) {
         if (err) throw err;
 
         if ( !devil ) {
-          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -279,7 +284,7 @@ exports.levelUp = function (req, res) {
         if (err) throw err;
 
         if ( !devil ) {
-          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -293,7 +298,10 @@ exports.levelUp = function (req, res) {
       });
     }
   ], function (err, result) {
-    if (err) throw err;
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
 
     res.redirect('/devil');
     return;
@@ -311,7 +319,7 @@ exports.attack = function (req, res) {
         if (err) throw err;
 
         if ( !player ) {
-          errorHandler.sendErrorMessage('NO_PLAYER_FOUND', res);
+          callback('NO_PLAYER_FOUND', res);
           return;
         }
 
@@ -327,7 +335,7 @@ exports.attack = function (req, res) {
         console.log('getDevil');
 
         if ( !devil ) {
-          errorHandler.sendErrorMessage('NO_DEVIL_FOUND', res);
+          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -335,7 +343,7 @@ exports.attack = function (req, res) {
 
         if ( devil.current_health_point === 0 ) {
           console.log('NOT_ENOUGH_HEALTH_POINT');
-          errorHandler.sendErrorMessage('NOT_ENOUGH_HEALTH_POINT', res);
+          callback('NOT_ENOUGH_HEALTH_POINT');
           return;
         }
 
@@ -343,7 +351,7 @@ exports.attack = function (req, res) {
 
         if ( devil.current_action_point === 0 ) {
           console.log('NOT_ENOUGH_ACTION_POINT');
-          errorHandler.sendErrorMessage('NOT_ENOUGH_ACTION_POINT', res);
+          callback('NOT_ENOUGH_ACTION_POINT');
           return;
         }
 
@@ -359,7 +367,7 @@ exports.attack = function (req, res) {
         if (err) throw err;
 
         if ( !city ) {
-          errorHandler.sendErrorMessage('NO_CITY_FOUND', res);
+          callback('NO_CITY_FOUND');
           return;
         }
 
@@ -378,7 +386,7 @@ exports.attack = function (req, res) {
         if (err) throw err;
 
         if ( !soldiers ) {
-          errorHandler.sendErrorMessage('NO_SOLDIERS_EXIST', res);
+          callback('NO_SOLDIERS_EXIST');
           return;
         }
 
@@ -510,6 +518,11 @@ exports.attack = function (req, res) {
       });
     }
   ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
     res.send(result);
     return;
   });

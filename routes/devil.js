@@ -25,6 +25,9 @@ var ProtoMonster = require('../lib/model').ProtoMonster;
 // Library
 var errorHandler = require('../lib/errorHandler');
 
+exports.game = require('./devil.game');
+exports.monster = require('./devil.monster');
+
 exports.index = function (req, res) {
   var current_player_id = req.session.current_player_id;
 
@@ -300,6 +303,3 @@ exports.selectDevil = function (req, res) {
     return;
   });
 };
-
-exports.game = require('./devil.game');
-exports.monster = require('./devil.monster');

@@ -13,10 +13,10 @@
   .gauge {
     border: 1px solid black;
     margin: 15px 0 15px 0;
-    height: 30px;
+    height: 5px;
   }
   .gauge > .bar {
-    background-color: #CCF;
+    background-color: red;
     height: 100%;
   }
   .dungeon {
@@ -129,9 +129,6 @@
               <div class="panel-body">
                 <div>
                   <img src="http://lorempixel.com/200/200/city" class="img-thumbnail" />
-                  <div class="gauge">
-                    <div class="bar" style="width: 100%"></div>
-                  </div>
                   <h4>STATS</h4>
                   <div class="row">
                     <div class="col-xs-4">인구</div>
@@ -165,9 +162,9 @@
       </div>
 
       <h4>STATS</h4>
-      <button class="btn btn-block btn-warning" data-toggle="modal" data-target="#levelModal">레벨업(모달)</button>
-      <button id="testButton" class="btn btn-block btn-default">테스트</button>
+      <button class="btn btn-block btn-warning" data-toggle="modal" data-target="#levelModal">레벨업 (테스트)</button>
       <button id="money" class="btn btn-block btn-default">돈: {{ player.money }}</button>
+      <button id="testButton" class="btn btn-block btn-default">테스트</button>
       <button class="btn btn-block btn-default">거주지</button>
       <button class="btn btn-block btn-default">레벨</button>
     </div>
@@ -197,9 +194,6 @@
             <div class="panel-body">
               <div>
                 <img src="http://lorempixel.com/200/200/city" class="img-thumbnail" />
-                <div class="gauge">
-                  <div class="bar" style="width: 100%"></div>
-                </div>
                 <h4>STATS</h4>
                 <div class="row">
                   <div class="col-xs-4">인구</div>
@@ -235,14 +229,15 @@
       <!-- MONSTERS -->
       {% if cities.length %}
       <h4>MONSTERS</h4>
-      <div class="panel-group dungeon">
+      <div class="panel-group space">
       {% for monster in monsters %}
         <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" data-parent="#accordion" href="#monster-{{ monster.id }}">
-                {{ monster.name }}
-                <div style="color: #BBB" class="pull-right">Lv. {{ monster.level }}</div>
+                <div style="background-color: red; width: {{ (monster.current_health_point/monster.health_point)* 100}}%;">
+                  {{ monster.name }} <div class="pull-right">HP {{ monster.current_health_point }} / {{ monster.health_point }}</div>
+                </div>
               </a>
             </h4>
           </div>
@@ -251,12 +246,12 @@
               <div>
                 <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
                 <div class="gauge">
-                  <div class="bar" style="width: 60%"></div>
+                  <div class="bar" style="width: {{ (monster.current_health_point/monster.health_point)* 100}}%;"></div>
                 </div>
                 <h4>STATS</h4>
                 <div class="row">
                   <div class="col-xs-4">HP</div>
-                  <div class="col-xs-8">{{ monster.health_point }}</div>
+                  <div class="col-xs-8">{{ monster.current_health_point }} / {{ monster.health_point }}</div>
                 </div>
                 <div class="row">
                   <div class="col-xs-4">공속</div>
@@ -279,7 +274,9 @@
                   <div class="col-xs-8">{{ monster.magic_resist }}</div>
                 </div>
               </div>
-              <delete data-id="{{ monster.id }}" class="btn btn-block btn-default">삭제</delete>
+              <hr />
+              <buildup data-id="{{ monster.id }}" class="btn btn-block btn-default">강화</buildup>
+              <delete data-id="{{ monster.id }}" class="btn btn-block btn-danger">삭제</delete>
             </div>
           </div>
         </div>
@@ -306,9 +303,6 @@
             <div class="panel-body">
               <div>
                 <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
-                <div class="gauge">
-                  <div class="bar" style="width: 60%"></div>
-                </div>
                 <h4>STATS</h4>
                 <div class="row">
                   <div class="col-xs-4">HP</div>
@@ -336,7 +330,7 @@
                 </div>
               </div>
               <hr />
-              <training data-id="{{ monster.id }}" class="btn btn-block btn-default">훈련</training>
+              <train data-id="{{ monster.id }}" class="btn btn-block btn-default">훈련</train>
             </div>
           </div>
         </div>
@@ -374,26 +368,17 @@
         </div>
       </div>
       <div class="row">
-        <div data-floor="6f" class="col-xs-2 dungeon">
-          <keeper class="btn btn-block btn-default">발록</keeper>
+        <div data-floor="6f" class="col-xs-2 dungeon space">
         </div>
-        <div data-floor="5f" class="col-xs-2 dungeon">
-          <keeper class="btn btn-block btn-default">데몬</keeper>
-          <keeper class="btn btn-block btn-default">오우거</keeper>
+        <div data-floor="5f" class="col-xs-2 dungeon space">
         </div>
-        <div data-floor="4f" class="col-xs-2 dungeon">
-          <keeper class="btn btn-block btn-default">고블린</keeper>
-          <keeper class="btn btn-block btn-default">고블린</keeper>
+        <div data-floor="4f" class="col-xs-2 dungeon space">
         </div>
-        <div data-floor="3f" class="col-xs-2 dungeon">
-          <keeper class="btn btn-block btn-default">데몬</keeper>
+        <div data-floor="3f" class="col-xs-2 dungeon space">
         </div>
-        <div data-floor="2f" class="col-xs-2 dungeon">
-          <keeper class="btn btn-block btn-default">트롤</keeper>
-          <keeper class="btn btn-block btn-default">오크</keeper>
-          <keeper class="btn btn-block btn-default">트롤</keeper>
+        <div data-floor="2f" class="col-xs-2 dungeon space">
         </div>
-        <div data-floor="1f" class="col-xs-2 dungeon">
+        <div data-floor="1f" class="col-xs-2 dungeon space">
           <keeper class="btn btn-block btn-default">
             <div style="background-color: red; width: 50%;">
               오크
@@ -524,7 +509,42 @@
     var $gameLog = $('#gameLog');
     var $timer = $('#timer');
 
-    $('training').on('click', function () {
+    $('buildup').on('click', function () {
+      $.ajax({
+        type: 'POST',
+        url: '/devil/monster/buildup',
+        data: { 'monster_id': $(this).data('id') },
+        success: function (data, status) {
+          window.location = '/devil';
+          return;
+        },
+        error: function (error) {
+          alert(error.err_msg);
+          console.log('error:', error);
+          return;
+        }
+      })
+    });
+
+
+    $('delete').on('click', function () {
+      $.ajax({
+        type: 'POST',
+        url: '/devil/monster/delete',
+        data: { 'monster_id': $(this).data('id') },
+        success: function (data, status) {
+          window.location = '/devil';
+          return;
+        },
+        error: function (error) {
+          alert(error.err_msg);
+          console.log('error:', error);
+          return;
+        }
+      })
+    });
+
+    $('train').on('click', function () {
       $.ajax({
         type: 'POST',
         url: '/devil/monster/purchase',
@@ -534,6 +554,7 @@
           return;
         },
         error: function (error) {
+          alert(error.err_msg);
           console.log('error:', error);
           return;
         }
@@ -679,14 +700,14 @@
       }, 1000);
     });
 
-    $('.dungeon').sortable({
-      connectWith: '.dungeon',
+    $('.space').sortable({
+      connectWith: '.space',
       placeholder: "placeholder btn btn-block"
     });
 
     $monsters = $('[data-type="monster"]');
     $monsters.sortable({
-      connectWith: '.dungeon',
+      connectWith: '.space',
       placeholder: "placeholder btn btn-block"
     });
   });

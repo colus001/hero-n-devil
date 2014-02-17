@@ -50,12 +50,26 @@ exports.purchase = function (req, res) {
           return;
         }
 
-        callback(null, devil, player);
+        callback(null, player, devil);
         return;
       });
     },
 
-    function getProtoMonster (devil, player, callback) {
+    function checkMonsterLimit (player, devil, callback) {
+      Monster.find({ 'player_id': player._id }, function (err, monsters) {
+        if (err) throw err;
+
+        if ( devil.monster_limit <= monsters.length - 1 ) {
+          callback('MONSTER_LIMIT_EXCEEDED');
+          return;
+        }
+
+        callback(null, player, devil);
+        return;
+      });
+    },
+
+    function getProtoMonster (player, devil, callback) {
       ProtoMonster.findById(req.body.monster_id, function (err, protomonster) {
         if (err) throw err;
 
@@ -64,12 +78,12 @@ exports.purchase = function (req, res) {
           return;
         }
 
-        callback(null, devil, player, protomonster);
+        callback(null, player, devil, protomonster);
         return;
       });
     },
 
-    function addToMonster (devil, player, protomonster, callback) {
+    function addToMonster (player, devil, protomonster, callback) {
       var monster = JSON.parse(JSON.stringify(protomonster));
 
       monster.player_id = player._id;
@@ -80,6 +94,114 @@ exports.purchase = function (req, res) {
       delete monster._id;
 
       Monster(monster).save(function (err, monster) {
+        if (err) throw err;
+
+        var result = {
+          'result': 'success',
+          'monster': monster
+        };
+
+        callback(null, result);
+        return;
+      });
+    }
+  ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
+    res.send(result);
+    return;
+  });
+};
+
+exports.delete = function (req, res) {
+  async.waterfall([
+    function getPlayer (callback) {
+      Player.findById(req.session.current_player_id, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          callback('NO_PLAYER_FOUND');
+          return;
+        }
+
+        callback(null, player);
+        return;
+      });
+    },
+
+    function getDevil (player, callback) {
+      Devil.findById(player.devil_id, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          callback('NO_DEVIL_FOUND');
+          return;
+        }
+
+        callback(null, player, devil);
+        return;
+      });
+    },
+
+    function removeMonster (player, devil, callback) {
+      Monster.findOneAndRemove({ '_id': req.body.monster_id, 'player_id': player._id }, function (err, monster) {
+        if (err) throw err;
+
+        var result = {
+          'result': 'success',
+          'monster': monster
+        };
+
+        callback(null, result);
+        return;
+      });
+    }
+  ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
+    res.send(result);
+    return;
+  });
+};
+
+exports.buildup = function (req, res) {
+  async.waterfall([
+    function getPlayer (callback) {
+      Player.findById(req.session.current_player_id, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          callback('NO_PLAYER_FOUND');
+          return;
+        }
+
+        callback(null, player);
+        return;
+      });
+    },
+
+    function getDevil (player, callback) {
+      Devil.findById(player.devil_id, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          callback('NO_DEVIL_FOUND');
+          return;
+        }
+
+        callback(null, player, devil);
+        return;
+      });
+    },
+
+    function removeMonster (player, devil, callback) {
+      Monster.findOneAndRemove({ '_id': req.body.monster_id, 'player_id': player._id }, function (err, monster) {
         if (err) throw err;
 
         var result = {
