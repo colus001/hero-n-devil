@@ -51,70 +51,7 @@
       <!-- DEVIL -->
       <h4>KINGDOM</h4>
       <div class="panel-group">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#devil">
-                {% if devil.aka %}
-                {{ devil.aka }}
-                {% else %}
-                {{ devil.name }}
-                {% endif %}
-                <div style="color: #BBB" class="pull-right">Lv. {{ devil.level }}</div>
-              </a>
-            </h4>
-          </div>
-          <div class="panel-collapse collapse in" id="devil">
-            <div class="panel-body">
-              <div class="devil">
-                <img src="http://lorempixel.com/200/200/people" class="img-thumbnail" />
-                <div style="margin-top: 10px;" class="btn-group btn-group-justified">
-                  <div class="btn-group">
-                    <skill type="button" class="btn btn-default">{{ devil.skills[0] }}</skill>
-                  </div>
-                  <div class="btn-group">
-                    <skill type="button" class="btn btn-default">{{ devil.skills[1] }}</skill>
-                  </div>
-                </div>
-                <h4>STATS</h4>
-                <button class="btn btn-block btn-default">
-                  <div id="hp" style="background-color: green; width: {{ (devil.current_health_point/devil.health_point)* 100}}%;">
-                    HP: {{ devil.current_health_point }}/{{ devil.health_point}}
-                  </div>
-                </button>
-                <button class="btn btn-block btn-default">
-                  <div id="ap" style="background-color: green; width: {{ (devil.current_action_point/devil.action_point)* 100}}%;">
-                    AP: {{ devil.current_action_point }}/{{ devil.action_point}}
-                  </div>
-                </button>
-                <div class="row">
-                  <div class="col-xs-4">경험치</div>
-                  <div class="col-xs-8">{{ devil.current_experience }}/{{ devil.target_experience }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">공속</div>
-                  <div class="col-xs-8">{{ devil.attack_speed_per_sec }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">물리</div>
-                  <div class="col-xs-8">{{ devil.physical_damage }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">마법</div>
-                  <div class="col-xs-8">{{ devil.magic_damage }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">방어</div>
-                  <div class="col-xs-8">{{ devil.armor }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">저항</div>
-                  <div class="col-xs-8">{{ devil.magic_resist }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div><!-- DEVIL -->
+        {% include "devil.template.devil.html" %}
       </div>
 
       <div id="colonies" class="panel-group">
@@ -122,46 +59,7 @@
         {% if colonies.length %}
         <div class="panel-group">
         {% for colony in colonies %}
-          <div data-id="colony-{{ colony.id }}" class="panel panel-default">
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#colony-{{ colony.id }}">
-                  {{ colony.name }}
-                  <div style="color: #BBB" class="pull-right">{{ colony.level }}</div>
-                </a>
-              </h4>
-            </div>
-            <div class="panel-collapse collapse" id="colony-{{ colony.id }}">
-              <div class="panel-body">
-                <div>
-                  <img src="http://lorempixel.com/200/200/city" class="img-thumbnail" />
-                  <h4>STATS</h4>
-                  <div class="row">
-                    <div class="col-xs-4">인구</div>
-                    <div class="col-xs-8">{{ colony.population }}</div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-4">경제력</div>
-                    <div class="col-xs-8">{{ colony.economy_level }}</div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-4">병력</div>
-                    <div data-type="soldiers" class="col-xs-8">{{ colony.soldiers }}</div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-4">군사력</div>
-                    <div class="col-xs-8">{{ colony.army_level }}</div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-4">방어도</div>
-                    <div class="col-xs-8">{{ colony.defense }}</div>
-                  </div>
-                  <hr />
-                  <collect data-id="{{ colony.id }}" class="btn btn-default btn-block">세금징수</collect>
-                </div>
-              </div>
-            </div>
-          </div>
+          {% include "devil.template.colony.html" %}
         {% endfor %}
         </div>
         {% endif %}
@@ -181,52 +79,7 @@
       <h4>CITIES</h4>
       <div class="panel-group">
       {% for city in cities %}
-        <div data-id="city-{{ city.id }}" class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#city-{{ city.id }}">
-                {{ city.name }}
-                <div style="color: #BBB;" class="pull-right">
-                  {% if city.defenders.length > 0 %}
-                  현병력: {{ city.defenders.length }}명
-                  {% else %}
-                  병력불명
-                  {% endif %}
-                </div>
-              </a>
-            </h4>
-          </div>
-          <div class="panel-collapse collapse" id="city-{{ city.id }}">
-            <div class="panel-body">
-              <div>
-                <img src="http://lorempixel.com/200/200/city" class="img-thumbnail" />
-                <h4>STATS</h4>
-                <div class="row">
-                  <div class="col-xs-4">인구</div>
-                  <div class="col-xs-8">{{ city.population }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">경제력</div>
-                  <div class="col-xs-8">{{ city.economy_level }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">병력</div>
-                  <div data-type="soldiers" class="col-xs-8">{{ city.soldiers }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">군사력</div>
-                  <div class="col-xs-8">{{ city.army_level }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">방어도</div>
-                  <div class="col-xs-8">{{ city.defense }}</div>
-                </div>
-              </div>
-              <hr />
-              <attack class="btn btn-block btn-primary" data-city="{{ city.id }}" data-toggle="modal" data-target="#battleModal">공격(Modal)</attack>
-            </div>
-          </div>
-        </div>
+        {% include "devil.template.city.html" %}
       {% endfor %}
       </div>
       {% endif %}
@@ -235,54 +88,9 @@
       <!-- MONSTERS -->
       {% if cities.length %}
       <h4>MONSTERS</h4>
-      <div class="panel-group space" style="min-height: 50px;">
+      <div data-floor="waiting" class="panel-group space" style="min-height: 50px;">
       {% for monster in monsters %}
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#monster-{{ monster.id }}">
-                {{ monster.name }}
-                [<span data-id="monster-hp-text-{{ monster.id }}">{{ monster.current_health_point }}/{{ monster.health_point }}</span>]
-                <div data-id="monster-hp-{{ monster.id }}" class="gauge-bar" style="width: {{ (monster.current_health_point/monster.health_point)* 100}}%;"></div>
-              </a>
-            </h4>
-          </div>
-          <div class="panel-collapse collapse" id="monster-{{ monster.id }}">
-            <div class="panel-body">
-              <div>
-                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
-                <h4>STATS</h4>
-                <div class="row">
-                  <div class="col-xs-4">HP</div>
-                  <div data-id="monster-hp-text-{{ monster.id }}" class="col-xs-8">{{ monster.current_health_point }}/{{ monster.health_point }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">공속</div>
-                  <div class="col-xs-8">{{ monster.attack_speed_per_sec }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">물리공격</div>
-                  <div class="col-xs-8">{{ monster.physical_damage }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">마법공격</div>
-                  <div class="col-xs-8">{{ monster.magic_damage }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">방어력</div>
-                  <div class="col-xs-8">{{ monster.armor }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">마법저항</div>
-                  <div class="col-xs-8">{{ monster.magic_resist }}</div>
-                </div>
-              </div>
-              <hr />
-              <buildup data-id="{{ monster.id }}" class="btn btn-block btn-default">강화</buildup>
-              <delete data-id="{{ monster.id }}" class="btn btn-block btn-danger">삭제</delete>
-            </div>
-          </div>
-        </div>
+        {% include "devil.template.monster.html" %}
       {% endfor %}
       </div>
       {% endif %}
@@ -293,50 +101,7 @@
       <h4>BARRACK</h4>
       <div class="panel-group">
       {% for monster in protomonsters %}
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#monster-{{ monster.id }}">
-                {{ monster.name }}
-                <div style="color: #BBB" class="pull-right">${{ monster.price }}</div>
-              </a>
-            </h4>
-          </div>
-          <div class="panel-collapse collapse" id="monster-{{ monster.id }}">
-            <div class="panel-body">
-              <div>
-                <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
-                <h4>STATS</h4>
-                <div class="row">
-                  <div class="col-xs-4">HP</div>
-                  <div class="col-xs-8">{{ monster.health_point }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">공속</div>
-                  <div class="col-xs-8">{{ monster.attack_speed_per_sec }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">물리공격</div>
-                  <div class="col-xs-8">{{ monster.physical_damage }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">마법공격</div>
-                  <div class="col-xs-8">{{ monster.magic_damage }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">방어력</div>
-                  <div class="col-xs-8">{{ monster.armor }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4">마법저항</div>
-                  <div class="col-xs-8">{{ monster.magic_resist }}</div>
-                </div>
-              </div>
-              <hr />
-              <train data-id="{{ monster.id }}" class="btn btn-block btn-default">훈련</train>
-            </div>
-          </div>
-        </div>
+        {% include "devil.template.protomonster.html" %}
       {% endfor %}
       </div>
       {% endif %}
@@ -371,18 +136,13 @@
         </div>
       </div>
       <div class="row">
-        <div data-floor="6f" class="col-xs-2 dungeon space">
+        {% for floor in floors %}
+        <div data-floor="{{ loop.index }}f" class="col-xs-2 dungeon space">
+          {% for monster in floor %}
+            {% include "devil.template.monster.html" %}
+          {% endfor %}
         </div>
-        <div data-floor="5f" class="col-xs-2 dungeon space">
-        </div>
-        <div data-floor="4f" class="col-xs-2 dungeon space">
-        </div>
-        <div data-floor="3f" class="col-xs-2 dungeon space">
-        </div>
-        <div data-floor="2f" class="col-xs-2 dungeon space">
-        </div>
-        <div data-floor="1f" class="col-xs-2 dungeon space">
-        </div>
+        {% endfor %}
       </div>
       <h4>LOG
         <button id="clearLog" class="btn btn-default btn-sm pull-right">로그 정리</button>
@@ -393,104 +153,10 @@
 
 
   <!-- Battle Modal -->
-  <div class="modal fade" id="battleModal" tabindex="-1" role="dialog" aria-labelledby="battle" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="battle">전투</h4>
-        </div>
-        <div class="modal-body">
-          <h5>LOG</h5>
-          <div id="battleLog" class="log"></div>
-          <hr />
-          <attack id="modalAttack" class="btn btn-block btn-primary">전투 시작</attack>
-        </div>
-        <div class="modal-footer">
-          <button id="closeBattle" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  {% include "devil.modal.battle.html" %}
 
   <!-- Levelup Modal -->
-  <div class="modal fade" id="levelModal" tabindex="-1" role="dialog" aria-labelledby="level" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="level">레벨업</h4>
-        </div>
-        <div class="modal-body">
-          <p>레벨업 하실 항목을 선택하세요.</p>
-          <table class="table">
-            <thead></thead>
-            <tbody>
-              <tr>
-                <td>HP</td>
-                <td>{{ devil.health_point }}</td>
-                <td>
-                  <button class="btn btn-default btn-sm">+</button>
-                  <button class="btn btn-default btn-sm">-</button>
-                </td>
-              </tr>
-              <tr>
-                <td>AP</td>
-                <td>{{ devil.action_point }}</td>
-                <td>
-                  <button class="btn btn-default btn-sm">+</button>
-                  <button class="btn btn-default btn-sm">-</button>
-                </td>
-              </tr>
-              <tr>
-                <td>공격속도</td>
-                <td>{{ devil.attack_speed_per_sec }}</td>
-                <td>
-                  <button class="btn btn-default btn-sm">+</button>
-                  <button class="btn btn-default btn-sm">-</button>
-                </td>
-              </tr>
-              <tr>
-                <td>물리 공격력</td>
-                <td>{{ devil.physical_damage }}</td>
-                <td>
-                  <button class="btn btn-default btn-sm">+</button>
-                  <button class="btn btn-default btn-sm">-</button>
-                </td>
-              </tr>
-              <tr>
-                <td>마법 공격력</td>
-                <td>{{ devil.magic_damage }}</td>
-                <td>
-                  <button class="btn btn-default btn-sm">+</button>
-                  <button class="btn btn-default btn-sm">-</button>
-                </td>
-              </tr>
-              <tr>
-                <td>방어력</td>
-                <td>{{ devil.armor }}</td>
-                <td>
-                  <button class="btn btn-default btn-sm">+</button>
-                  <button class="btn btn-default btn-sm">-</button>
-                </td>
-              </tr>
-              <tr>
-                <td>마법저항</td>
-                <td>{{ devil.magic_resist }}</td>
-                <td>
-                  <button class="btn btn-default btn-sm">+</button>
-                  <button class="btn btn-default btn-sm">-</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  {% include "devil.modal.level.html" %}
 
   <script type="text/javascript">
   $(document).ready(function() {
@@ -718,15 +384,39 @@
       }, 1000);
     });
 
+    var updatePosition = function (event, ui) {
+      var floor = $(this).data('floor');
+      var monster_id = ui.item.data('id');
+
+      $.ajax({
+        type: 'POST',
+        url: '/devil/monster/position',
+        data: { 'monster_id': monster_id, 'floor': floor },
+        success: function (data, status) {
+          if ( data.result === 'success' ) {
+            return;
+          }
+
+          alert(data.err_msg);
+          return;
+        },
+        error: function (error) {
+          console.log('error:', error);
+        }
+      });
+    };
+
     $('.space').sortable({
       connectWith: '.space',
-      placeholder: "placeholder btn btn-block"
+      placeholder: "placeholder btn btn-block",
+      receive: updatePosition
     });
 
     $monsters = $('[data-type="monster"]');
     $monsters.sortable({
       connectWith: '.space',
-      placeholder: "placeholder btn btn-block"
+      placeholder: "placeholder btn btn-block",
+      receive: updatePosition
     });
   });
   </script>

@@ -223,3 +223,22 @@ exports.buildup = function (req, res) {
     return;
   });
 };
+
+exports.position = function (req, res) {
+  Monster.findByIdAndUpdate(req.body.monster_id, { 'floor': req.body.floor }, function (err, monster) {
+    if (err) throw err;
+
+    if ( !monster ) {
+      errorHandler.sendErrorMessage('NO_MONSTER_FOUND', res);
+      return;
+    }
+
+    var result = {
+      'result': 'success',
+      'monster': monster
+    };
+
+    res.send(result);
+    return;
+  });
+};

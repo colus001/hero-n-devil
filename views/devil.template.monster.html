@@ -1,0 +1,46 @@
+<div data-id="{{ monster.id }}" class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a data-toggle="collapse" data-parent="#accordion" href="#monster-{{ monster.id }}">
+        {{ monster.name }}
+        [<span data-id="monster-hp-text-{{ monster.id }}">{{ monster.current_health_point }}/{{ monster.health_point }}</span>]
+        <div data-id="monster-hp-{{ monster.id }}" class="gauge-bar" style="width: {{ (monster.current_health_point/monster.health_point)* 100}}%;"></div>
+      </a>
+    </h4>
+  </div>
+  <div class="panel-collapse collapse" id="monster-{{ monster.id }}">
+    <div class="panel-body">
+      <div>
+        <img src="http://lorempixel.com/200/200" class="img-thumbnail" />
+        <h4>STATS</h4>
+        <div class="row">
+          <div class="col-xs-4">HP</div>
+          <div data-id="monster-hp-text-{{ monster.id }}" class="col-xs-8">{{ monster.current_health_point }}/{{ monster.health_point }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">공속</div>
+          <div class="col-xs-8">{{ monster.attack_speed_per_sec }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">물리공격</div>
+          <div class="col-xs-8">{{ monster.physical_damage }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">마법공격</div>
+          <div class="col-xs-8">{{ monster.magic_damage }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">방어력</div>
+          <div class="col-xs-8">{{ monster.armor }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">마법저항</div>
+          <div class="col-xs-8">{{ monster.magic_resist }}</div>
+        </div>
+      </div>
+      <hr />
+      <buildup data-id="{{ monster.id }}" class="btn btn-block btn-default">강화</buildup>
+      <delete data-id="{{ monster.id }}" class="btn btn-block btn-danger">삭제</delete>
+    </div>
+  </div>
+</div>

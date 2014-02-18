@@ -105,6 +105,7 @@ db.once('open', function callback () {
   app.post('/devil/monster/purchase', checkCurrentPlayer, devil.monster.purchase);
   app.post('/devil/monster/delete', checkCurrentPlayer, devil.monster.delete);
   app.post('/devil/monster/buildup', checkCurrentPlayer, devil.monster.buildup);
+  app.post('/devil/monster/position', checkCurrentPlayer, devil.monster.position);
 
   // ADMIN
   app.get('/admin', admin.index);

@@ -1,0 +1,77 @@
+<div class="modal fade" id="levelModal" tabindex="-1" role="dialog" aria-labelledby="level" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="level">레벨업</h4>
+      </div>
+      <div class="modal-body">
+        <p>레벨업 하실 항목을 선택하세요.</p>
+        <table class="table">
+          <thead></thead>
+          <tbody>
+            <tr>
+              <td>HP</td>
+              <td>{{ devil.health_point }}</td>
+              <td>
+                <button class="btn btn-default btn-sm">+</button>
+                <button class="btn btn-default btn-sm">-</button>
+              </td>
+            </tr>
+            <tr>
+              <td>AP</td>
+              <td>{{ devil.action_point }}</td>
+              <td>
+                <button class="btn btn-default btn-sm">+</button>
+                <button class="btn btn-default btn-sm">-</button>
+              </td>
+            </tr>
+            <tr>
+              <td>공격속도</td>
+              <td>{{ devil.attack_speed_per_sec }}</td>
+              <td>
+                <button class="btn btn-default btn-sm">+</button>
+                <button class="btn btn-default btn-sm">-</button>
+              </td>
+            </tr>
+            <tr>
+              <td>물리 공격력</td>
+              <td>{{ devil.physical_damage }}</td>
+              <td>
+                <button class="btn btn-default btn-sm">+</button>
+                <button class="btn btn-default btn-sm">-</button>
+              </td>
+            </tr>
+            <tr>
+              <td>마법 공격력</td>
+              <td>{{ devil.magic_damage }}</td>
+              <td>
+                <button class="btn btn-default btn-sm">+</button>
+                <button class="btn btn-default btn-sm">-</button>
+              </td>
+            </tr>
+            <tr>
+              <td>방어력</td>
+              <td>{{ devil.armor }}</td>
+              <td>
+                <button class="btn btn-default btn-sm">+</button>
+                <button class="btn btn-default btn-sm">-</button>
+              </td>
+            </tr>
+            <tr>
+              <td>마법저항</td>
+              <td>{{ devil.magic_resist }}</td>
+              <td>
+                <button class="btn btn-default btn-sm">+</button>
+                <button class="btn btn-default btn-sm">-</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

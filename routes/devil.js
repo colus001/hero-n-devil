@@ -108,7 +108,7 @@ exports.index = function (req, res) {
       });
     },
 
-    function getMonsters (player, devil, cities, colonies, monsters, callback) {
+    function getProtoMonsters (player, devil, cities, colonies, monsters, callback) {
       ProtoMonster.find({ 'published': true }, function (err, protomonsters) {
         if (err) throw err;
 
@@ -129,9 +129,30 @@ exports.index = function (req, res) {
         'devil': devil,
         'cities': cities,
         'colonies': colonies,
-        'monsters': monsters,
-        'protomonsters': protomonsters
+        'protomonsters': protomonsters,
+        'monsters': [],
+        'floors': {
+          '1f': [],
+          '2f': [],
+          '3f': [],
+          '4f': [],
+          '5f': [],
+          '6f': []
+        },
       };
+
+      for ( var i in monsters ) {
+        var monster = monsters[i];
+        var floor = monster.floor;
+
+        if ( floor !== 'waiting' && floor !== undefined ) {
+          result.floors[floor].push(monster);
+        } else {
+          result.monsters.push(monster);
+        }
+      }
+
+      console.log('result:', result);
 
       callback(null, result);
       return;

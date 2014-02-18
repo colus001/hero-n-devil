@@ -1,0 +1,40 @@
+<div data-id="colony-{{ colony.id }}" class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a data-toggle="collapse" data-parent="#accordion" href="#colony-{{ colony.id }}">
+        {{ colony.name }}
+        <div style="color: #BBB" class="pull-right">{{ colony.level }}</div>
+      </a>
+    </h4>
+  </div>
+  <div class="panel-collapse collapse" id="colony-{{ colony.id }}">
+    <div class="panel-body">
+      <div>
+        <img src="http://lorempixel.com/200/200/city" class="img-thumbnail" />
+        <h4>STATS</h4>
+        <div class="row">
+          <div class="col-xs-4">인구</div>
+          <div class="col-xs-8">{{ colony.population }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">경제력</div>
+          <div class="col-xs-8">{{ colony.economy_level }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">병력</div>
+          <div data-type="soldiers" class="col-xs-8">{{ colony.soldiers }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">군사력</div>
+          <div class="col-xs-8">{{ colony.army_level }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">방어도</div>
+          <div class="col-xs-8">{{ colony.defense }}</div>
+        </div>
+        <hr />
+        <collect data-id="{{ colony.id }}" class="btn btn-default btn-block">세금징수</collect>
+      </div>
+    </div>
+  </div>
+</div>
