@@ -83,6 +83,32 @@ exports.purchase = function (req, res) {
       });
     },
 
+    function payMonsterTraining (player, devil, protomonster, callback) {
+      var update = {
+        $inc: {
+          'money': -protomonster.price
+        }
+      };
+      console.log('update:', update);
+
+      if ( player.money < protomonster.price ) {
+        callback('NOT_ENOUGH_MONEY');
+        return;
+      }
+
+      Player.findByIdAndUpdate(player._id, update, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          callback('NO_PLAYER_FOUND');
+          return;
+        }
+
+        callback(null, player, devil, protomonster);
+        return;
+      });
+    },
+
     function addToMonster (player, devil, protomonster, callback) {
       var monster = JSON.parse(JSON.stringify(protomonster));
 
@@ -98,13 +124,14 @@ exports.purchase = function (req, res) {
 
         var result = {
           'result': 'success',
+          'player': player,
           'monster': monster
         };
 
         callback(null, result);
         return;
       });
-    }
+    },
   ], function (err, result) {
     if (err) {
       errorHandler.sendErrorMessage(err, res);

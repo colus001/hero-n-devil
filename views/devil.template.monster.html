@@ -4,6 +4,7 @@
       <a data-toggle="collapse" data-parent="#accordion" href="#monster-{{ monster.id }}">
         {{ monster.name }}
         [<span data-id="monster-hp-text-{{ monster.id }}">{{ monster.current_health_point }}/{{ monster.health_point }}</span>]
+        <div style="color: #BBB;" class="pull-right">Lv.{{ monster.level }}</div>
         <div data-id="monster-hp-{{ monster.id }}" class="gauge-bar" style="width: {{ (monster.current_health_point/monster.health_point)* 100}}%;"></div>
       </a>
     </h4>
