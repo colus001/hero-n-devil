@@ -137,6 +137,7 @@
           <th>Armor</th>
           <th>M.Resist</th>
           <th>Skills</th>
+          <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -153,6 +154,13 @@
           <td>{{ hero.armor }}</td>
           <td>{{ hero.magic_resist }}</td>
           <td>{{ hero.skills }}</td>
+          <td>
+            {% if hero.published %}
+            <a href="/admin/hero/publish/{{ hero.id }}" class="btn btn-xs btn-success">Published</a>
+            {% else %}
+            <a href="/admin/hero/publish/{{ hero.id }}" class="btn btn-xs btn-warning">Draft</a>
+            {% endif %}
+          </td>
           <td>
             <a href="/admin/hero/view/{{ hero.id }}" class="btn btn-xs btn-info">View</a>
             <a href="/admin/hero/edit/{{ hero.id }}" class="btn btn-xs btn-warning">Edit</a>

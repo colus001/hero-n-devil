@@ -1,0 +1,48 @@
+<div class="modal fade" id="dungeonModal" tabindex="-1" role="dialog" aria-labelledby="battle" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="battle">전투</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-2">
+            <h5>6F</h5>
+          </div>
+          <div class="col-xs-2">
+            <h5>5F</h5>
+          </div>
+          <div class="col-xs-2">
+            <h5>4F</h5>
+          </div>
+          <div class="col-xs-2">
+            <h5>3F</h5>
+          </div>
+          <div class="col-xs-2">
+            <h5>2F</h5>
+          </div>
+          <div class="col-xs-2">
+            <h5>1F</h5>
+          </div>
+        </div>
+        <div class="row">
+          {% for floor in floors %}
+          <div data-floor="{{ loop.index }}f" class="col-xs-2 dungeon space">
+            {% for monster in floor %}
+              {% include "devil.template.monster.html" %}
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+        <h5>LOG</h5>
+        <div id="battleLog" class="log"></div>
+        <hr />
+        <attack id="modalAttack" class="btn btn-block btn-primary">전투 시작</attack>
+      </div>
+      <div class="modal-footer">
+        <button id="closeBattle" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

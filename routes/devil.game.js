@@ -24,8 +24,12 @@ var ProtoSoldier = require('../lib/model').ProtoSoldier;
 // Library
 var errorHandler = require('../lib/errorHandler');
 
-// Constant
-var SECONDS_FOR_A_TURN = 30;
+// Common
+var common = require('../lib/common');
+var getPointToUpdate = common.getPointToUpdate;
+var getDamage = common.getDamage;
+var getTimeGap = common.getTimeGap;
+var SECONDS_FOR_A_TURN = common.SECONDS_FOR_A_TURN;
 
 exports.status = function (req, res) {
   async.waterfall([
@@ -93,10 +97,6 @@ exports.status = function (req, res) {
     if (err) {
       errorHandler.sendErrorMessage(err, res);
       return;
-    }
-
-    if ( result.devil ) {
-      console.log('result.devil:', result.devil);
     }
 
     res.send(result);
@@ -414,30 +414,7 @@ exports.attack = function (req, res) {
 
       console.log('city.defenders:', city.defenders);
 
-      var defender = city.defenders[0];
-
-      // DEVIL ATTACK
-      defender.current_health_point -= getDamage(devil, defender);
-      logs.push(devil.name + '이(가) ' + defender.name + '을(를) 공격하여 ' + getDamage(devil, defender) + '의 데미지를 입혔습니다.');
-
-      // CHECK DEFENDER
-      if ( defender.current_health_point <= 0 ) {
-        logs.push(devil.name + '이(가) ' + defender.name + '을(를) 무찔렀습니다.');
-        city.defenders.splice(0, 1);
-      }
-
-      // DEFENDERS ATTACK
-      if ( city.defenders.length !== 0 ) {
-        for ( var j in city.defenders ) {
-          devil.current_health_point -= getDamage(city.defenders[j], devil);
-          logs.push(city.defenders[j].name + '이(가) ' + devil.name + '을(를) 공격하여 ' + getDamage(city.defenders[j], devil) + '의 데미지를 입혔습니다.');
-        }
-      }
-
-      // CHECK DEVIL
-      if ( devil.current_health_point <= 0 ) {
-        logs.push(defender.name + '이(가) ' + devil.name + '을(를) 무찔렀습니다.');
-      }
+      getBattleResult(devil, city.defenders, logs);
 
       callback(null, devil, city);
       return;
@@ -513,11 +490,31 @@ exports.attack = function (req, res) {
   });
 };
 
-var getTimeGap = function (object) {
-  var timeGap = Math.floor(( new Date() - object.updated_at ) / 1000);
-  var multiplier = Math.floor(timeGap/SECONDS_FOR_A_TURN);
+var getBattleResult = function (attacker, defenders, battleLogs) {
+  var defender = defenders[0];
 
-  return multiplier;
+  // ATTACKER's TURN
+  defender.current_health_point -= getDamage(attacker, defender);
+  battleLogs.push(attacker.name + '이(가) ' + defender.name + '을(를) 공격하여 ' + getDamage(attacker, defender) + '의 데미지를 입혔습니다.');
+
+  // CHECK DEFENDER
+  if ( defender.current_health_point <= 0 ) {
+    battleLogs.push(attacker.name + '이(가) ' + defender.name + '을(를) 무찔렀습니다.');
+    defenders.splice(0, 1);
+  }
+
+  // DEFENDER's TURN
+  if ( defenders.length !== 0 ) {
+    for ( var j in defenders ) {
+      attacker.current_health_point -= getDamage(defenders[j], attacker);
+      battleLogs.push(defenders[j].name + '이(가) ' + attacker.name + '을(를) 공격하여 ' + getDamage(defenders[j], attacker) + '의 데미지를 입혔습니다.');
+    }
+  }
+
+  // CHECK ATTACKER
+  if ( attacker.current_health_point <= 0 ) {
+    battleLogs.push(defender.name + '이(가) ' + attacker.name + '을(를) 무찔렀습니다.');
+  }
 };
 
 var recoverDevil = function (devil, result, done) {
@@ -530,8 +527,6 @@ var recoverDevil = function (devil, result, done) {
 
   var healthPointToUpdate = getPointToUpdate(multiplier * 10, devil.current_health_point, devil.health_point);
   var actionPointToUpdate = getPointToUpdate(multiplier * 1, devil.current_action_point, devil.action_point);
-
-  console.log('devil:', devil);
 
   var update = {
     $set: {
@@ -547,8 +542,6 @@ var recoverDevil = function (devil, result, done) {
 
   Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
     if (err) throw err;
-
-    console.log('devil:', devil);
 
     result.devil = devil;
     done(null);
@@ -587,20 +580,4 @@ var recoverMonsters = function (monsters, result, done) {
     done(null);
     return;
   });
-};
-
-var getPointToUpdate = function (pointToUpdate, currentPoint, maximumPoint) {
-  if ( pointToUpdate + currentPoint > maximumPoint ) {
-    pointToUpdate =  maximumPoint - currentPoint;
-  }
-
-  return pointToUpdate;
-};
-
-var getDamage = function (attack, defense) {
-  var phy_damage = attack.physical_damage - defense.armor;
-  var mag_damage = attack.magic_damage - defense.magic_resist;
-  var totalDamage = phy_damage + mag_damage;
-
-  return ( totalDamage > 0 ) ? totalDamage : 10;
 };

@@ -90,3 +90,28 @@ exports.delete = function (req, res) {
     return;
   });
 };
+
+exports.publish = function (req, res) {
+  async.waterfall([
+    function (callback) {
+      ProtoHero.findById(req.params.id, function (err, hero) {
+        if (err) throw err;
+
+        callback(null, hero);
+        return;
+      });
+    },
+
+    function (hero, callback) {
+      ProtoHero.findByIdAndUpdate(req.params.id, { 'published': !hero.published }, function (err, hero) {
+        if (err) throw err;
+
+        callback(null);
+        return;
+      });
+    }
+  ], function (err, result) {
+    res.redirect('/admin/hero');
+    return;
+  });
+};

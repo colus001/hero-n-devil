@@ -269,3 +269,90 @@ exports.position = function (req, res) {
     return;
   });
 };
+
+exports.battle = function (req, res) {
+  async.waterfall([
+    function getPlayer (callback) {
+      Player.findById(req.session.current_player_id, function (err, player) {
+        if (err) throw err;
+
+        if ( !player ) {
+          callback('NO_PLAYER_FOUND');
+          return;
+        }
+
+        callback(null, player);
+        return;
+      });
+    },
+
+    function getDevil (player, callback) {
+      Devil.findById(player.devil_id, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          callback('NO_DEVIL_FOUND');
+          return;
+        }
+
+        callback(null, player, devil);
+        return;
+      });
+    },
+
+    function getMonsters (player, devil, callback) {
+      Monster.find({ 'player_id': player._id }, function (err, monsters) {
+        if (err) throw err;
+
+        callback(null, player, devil, monsters);
+        return;
+      });
+    },
+
+    function getProtoHero (player, devil, monsters, callback) {
+      // THIS IS ONLY FOR THE TEST PURPOSE
+      ProtoHero.find({ 'published': true }, function summonDefenders (err, protoheroes) {
+        if (err) throw err;
+
+        if ( protoheroes.length === 0 ) {
+          callback('NO_PROTOHEROES_EXIST');
+          return;
+        }
+
+        var random = Math.floor(Math.random()*protoheroes.length);
+        var intruder = JSON.parse(JSON.stringify(protoheroes[random]));
+        intruder.current_health_point = intruder.health_point;
+
+        if ( !intruder ) {
+          callback('FAILED_TO_MAKE_INTRUDER');
+          return;
+        }
+
+        callback(null, player, devil, monsters, intruder);
+        return;
+      });
+      // THIS IS ONLY FOR THE TEST PURPOSE
+    },
+
+    function testResult (player, devil, monsters, intruder, callback) {
+      var result = {
+        'result': 'success',
+        'player': player,
+        'devil': devil,
+        'monsters': monsters,
+        'intruder': intruder
+      };
+
+      callback(null, result);
+      return;
+    }
+  ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
+    res.send(result);
+    return;
+  });
+};

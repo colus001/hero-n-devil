@@ -114,7 +114,10 @@
     </div>
 
     <div class="col-md-6">
-      <h4>DUNGEON</h4>
+      <h4>
+        DUNGEON
+        <button id="dungeonIntruder" class="btn btn-default pull-right">던전 인트루더</button>
+      </h4>
       <div class="row">
         <div class="col-xs-2">
           <h5>6F</h5>
@@ -168,6 +171,29 @@
     var $gameLog = $('#gameLog');
     var $timer = $('#timer');
 
+    $('#dungeonIntruder').on('click', function () {
+      $.ajax({
+        type: 'POST',
+        url: '/devil/monster/battle',
+        // data: { 'monster_id': $(this).data('id') },
+        success: function (data, status) {
+          if ( data.result !== 'success' ) {
+            alert(data.err_msg);
+            return;
+          }
+
+          console.log('data:', data);
+          // window.location = '/devil';
+          return;
+        },
+        error: function (error) {
+          alert(error.err_msg);
+          console.log('error:', error);
+          return;
+        }
+      });
+    });
+
     $('buildup').on('click', function () {
       $.ajax({
         type: 'POST',
@@ -188,7 +214,7 @@
           console.log('error:', error);
           return;
         }
-      })
+      });
     });
 
     $('delete').on('click', function () {
@@ -210,7 +236,7 @@
           console.log('error:', error);
           return;
         }
-      })
+      });
     });
 
     $('train').on('click', function () {
@@ -232,7 +258,7 @@
           console.log('error:', error);
           return;
         }
-      })
+      });
     });
 
     $('collect').on('click', function () {
@@ -254,7 +280,7 @@
           console.log('error:', error);
           return;
         }
-      })
+      });
     });
 
     var updateDevil = function (data) {

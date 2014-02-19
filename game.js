@@ -106,6 +106,7 @@ db.once('open', function callback () {
   app.post('/devil/monster/delete', checkCurrentPlayer, devil.monster.delete);
   app.post('/devil/monster/buildup', checkCurrentPlayer, devil.monster.buildup);
   app.post('/devil/monster/position', checkCurrentPlayer, devil.monster.position);
+  app.post('/devil/monster/battle', checkCurrentPlayer, devil.monster.battle);
 
   // ADMIN
   app.get('/admin', admin.index);
@@ -117,6 +118,7 @@ db.once('open', function callback () {
   app.get('/admin/hero/edit/:id', admin.hero.edit);
   app.post('/admin/hero/edit/:id', admin.hero.create);
   app.get('/admin/hero/delete/:id', admin.hero.delete);
+  app.get('/admin/hero/publish/:id', admin.hero.publish);
 
   // ADMIN - DEVIL
   app.get('/admin/devil', admin.devil.index);
