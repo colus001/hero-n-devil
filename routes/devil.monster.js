@@ -89,13 +89,26 @@ exports.purchase = function (req, res) {
       });
     },
 
+    function payActionPoint (player, devil, protomonster, callback) {
+      Devil.findByIdAndUpdate(devil._id, { $inc: { 'current_action_point': -1 } }, function (err, devil) {
+        if (err) throw err;
+
+        if ( !devil ) {
+          callback('NO_DEVIL_FOUND');
+          return;
+        }
+
+        callback(null, player, devil, protomonster);
+        return;
+      });
+    },
+
     function payMonsterTraining (player, devil, protomonster, callback) {
       var update = {
         $inc: {
           'money': -protomonster.price
         }
       };
-      console.log('update:', update);
 
       if ( player.money < protomonster.price ) {
         callback('NOT_ENOUGH_MONEY');

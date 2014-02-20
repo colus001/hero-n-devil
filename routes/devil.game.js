@@ -201,6 +201,20 @@ exports.collect = function (req, res) {
             done(null);
             return;
           });
+        },
+
+        function updateDevil (done) {
+          Devil.findByIdAndUpdate(devil._id, { $inc: { 'current_action_point': -1 } }, function (err, devil) {
+            if (err) throw err;
+
+            if ( !devil ) {
+              callback('NO_DEVIL_FOUND');
+              return;
+            }
+
+            done(null);
+            return;
+          });
         }
       ], function (err) {
         if (err) throw err;
