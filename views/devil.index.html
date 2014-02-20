@@ -174,7 +174,7 @@
     $('#dungeonIntruder').on('click', function () {
       $.ajax({
         type: 'POST',
-        url: '/devil/monster/battle',
+        url: '/devil/monster/intrude',
         // data: { 'monster_id': $(this).data('id') },
         success: function (data, status) {
           if ( data.result !== 'success' ) {
@@ -182,7 +182,12 @@
             return;
           }
 
-          console.log('data:', data);
+          for ( var i in data.logs ) {
+            $p = $('<p></p>').text(data.logs[i]);
+            $gameLog.append($p);
+          }
+
+          updateDevil(data.devil);
           // window.location = '/devil';
           return;
         },
@@ -272,7 +277,6 @@
             return;
           }
 
-          // $('#money').text('돈: ' + data.player.money);
           window.location = '/devil';
           return;
         },

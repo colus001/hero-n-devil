@@ -43,7 +43,6 @@ exports.index = function (req, res) {
           return;
         }
 
-        console.log('player:', player);
         callback(null, player);
         return;
       });
@@ -65,7 +64,6 @@ exports.index = function (req, res) {
           return;
         }
 
-        console.log('devil:', devil);
         callback(null, player, devil);
         return;
       });
@@ -151,8 +149,6 @@ exports.index = function (req, res) {
           result.monsters.push(monster);
         }
       }
-
-      console.log('result:', result);
 
       callback(null, result);
       return;

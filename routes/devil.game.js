@@ -23,13 +23,17 @@ var ProtoSoldier = require('../lib/model').ProtoSoldier;
 
 // Library
 var errorHandler = require('../lib/errorHandler');
+var common = require('../lib/common');
 
 // Common
-var common = require('../lib/common');
+var SECONDS_FOR_A_TURN = common.SECONDS_FOR_A_TURN;
+
 var getPointToUpdate = common.getPointToUpdate;
 var getDamage = common.getDamage;
 var getTimeGap = common.getTimeGap;
-var SECONDS_FOR_A_TURN = common.SECONDS_FOR_A_TURN;
+var getBattleResult = common.getBattleResult;
+var recoverDevil = common.recoverDevil;
+var recoverMonsters = common.recoverMonsters;
 
 exports.status = function (req, res) {
   async.waterfall([
@@ -382,6 +386,7 @@ exports.attack = function (req, res) {
         for ( var i = 0; i < city.soldiers; i++ ) {
           var random = Math.floor(Math.random()*soldiers.length);
           var soldier = JSON.parse(JSON.stringify(soldiers[random]));
+
           soldier.current_health_point = soldier.health_point;
           defenders.push(soldier);
         }
@@ -414,8 +419,7 @@ exports.attack = function (req, res) {
 
       console.log('city.defenders:', city.defenders);
 
-      getBattleResult(devil, city.defenders, logs);
-
+      getBattleResult([ devil ], city.defenders, logs);
       callback(null, devil, city);
       return;
     },
@@ -486,98 +490,6 @@ exports.attack = function (req, res) {
     }
 
     res.send(result);
-    return;
-  });
-};
-
-var getBattleResult = function (attacker, defenders, battleLogs) {
-  var defender = defenders[0];
-
-  // ATTACKER's TURN
-  defender.current_health_point -= getDamage(attacker, defender);
-  battleLogs.push(attacker.name + '이(가) ' + defender.name + '을(를) 공격하여 ' + getDamage(attacker, defender) + '의 데미지를 입혔습니다.');
-
-  // CHECK DEFENDER
-  if ( defender.current_health_point <= 0 ) {
-    battleLogs.push(attacker.name + '이(가) ' + defender.name + '을(를) 무찔렀습니다.');
-    defenders.splice(0, 1);
-  }
-
-  // DEFENDER's TURN
-  if ( defenders.length !== 0 ) {
-    for ( var j in defenders ) {
-      attacker.current_health_point -= getDamage(defenders[j], attacker);
-      battleLogs.push(defenders[j].name + '이(가) ' + attacker.name + '을(를) 공격하여 ' + getDamage(defenders[j], attacker) + '의 데미지를 입혔습니다.');
-    }
-  }
-
-  // CHECK ATTACKER
-  if ( attacker.current_health_point <= 0 ) {
-    battleLogs.push(defender.name + '이(가) ' + attacker.name + '을(를) 무찔렀습니다.');
-  }
-};
-
-var recoverDevil = function (devil, result, done) {
-  var multiplier = getTimeGap(devil);
-
-  if ( multiplier <= 0 ) {
-    done('SHOULD_WAIT_MORE');
-    return;
-  }
-
-  var healthPointToUpdate = getPointToUpdate(multiplier * 10, devil.current_health_point, devil.health_point);
-  var actionPointToUpdate = getPointToUpdate(multiplier * 1, devil.current_action_point, devil.action_point);
-
-  var update = {
-    $set: {
-      'updated_at': new Date()
-    },
-    $inc: {
-      'current_health_point': healthPointToUpdate,
-      'current_action_point': actionPointToUpdate
-    }
-  };
-
-  console.log('update:', update);
-
-  Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
-    if (err) throw err;
-
-    result.devil = devil;
-    done(null);
-    return;
-  });
-};
-
-var recoverMonsters = function (monsters, result, done) {
-  async.map(monsters, function (monster, next) {
-    var multiplier = getTimeGap(monster);
-
-    if ( multiplier <= 0 ) {
-      next(null);
-      return;
-    }
-
-    var healthPointToUpdate = getPointToUpdate(multiplier * 10, monster.current_health_point, monster.health_point);
-
-    var update = {
-      $set: {
-        'updated_at': new Date()
-      },
-      $inc: {
-        'current_health_point': healthPointToUpdate
-      }
-    };
-
-    Monster.findByIdAndUpdate(monster._id, update, function (err, monster) {
-      if (err) throw err;
-
-      result.monsters.push(monster);
-      next(null, monster);
-      return;
-    });
-  }, function (err) {
-    done(null);
     return;
   });
 };

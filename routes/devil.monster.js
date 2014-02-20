@@ -24,6 +24,12 @@ var ProtoMonster = require('../lib/model').ProtoMonster;
 
 // Library
 var errorHandler = require('../lib/errorHandler');
+var common = require('../lib/common');
+
+var getBattleResult = common.getBattleResult;
+var getIntrudeResult = common.getIntrudeResult;
+var getPointToUpdate = common.getPointToUpdate;
+var getDamage = common.getDamage;
 
 exports.purchase = function (req, res) {
   async.waterfall([
@@ -270,7 +276,7 @@ exports.position = function (req, res) {
   });
 };
 
-exports.battle = function (req, res) {
+exports.intrude = function (req, res) {
   async.waterfall([
     function getPlayer (callback) {
       Player.findById(req.session.current_player_id, function (err, player) {
@@ -334,13 +340,60 @@ exports.battle = function (req, res) {
       // THIS IS ONLY FOR THE TEST PURPOSE
     },
 
-    function testResult (player, devil, monsters, intruder, callback) {
+    function battle (player, devil, monsters, intruder, callback) {
+      var logs = [];
+
+      var defenders = {
+        '1f': [],
+        '2f': [],
+        '3f': [],
+        '4f': [],
+        '5f': [],
+        '6f': []
+      };
+
+      for ( var i in monsters ) {
+        var monster = monsters[i];
+
+        if ( monster.floor !== 'waiting' && monster.floor !== undefined ) {
+          defenders[monster.floor].push(monster);
+        }
+      }
+
+      getIntrudeResult([ intruder ], defenders, devil, logs);
+
+      callback(null, player, devil, defenders, intruder, logs);
+      return;
+    },
+
+    function saveDevil (player, devil, defenders, intruder, logs, callback) {
+      var healthPointToUpdate = ( devil.current_health_point > 0 ) ? devil.current_health_point : 0;
+      var update = {
+        $set: {
+          'updated_at': new Date(),
+          'current_health_point': healthPointToUpdate
+        }
+      };
+
+      Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
+        if (err) throw err;
+
+
+        callback(null, player, devil, defenders, intruder, logs);
+        return;
+      });
+    },
+
+    function testResult (player, devil, defenders, intruder, logs, callback) {
+      console.log('defenders:', defenders);
+
       var result = {
         'result': 'success',
         'player': player,
         'devil': devil,
-        'monsters': monsters,
-        'intruder': intruder
+        'defenders': defenders,
+        'intruder': intruder,
+        'logs': logs
       };
 
       callback(null, result);

@@ -106,7 +106,7 @@ db.once('open', function callback () {
   app.post('/devil/monster/delete', checkCurrentPlayer, devil.monster.delete);
   app.post('/devil/monster/buildup', checkCurrentPlayer, devil.monster.buildup);
   app.post('/devil/monster/position', checkCurrentPlayer, devil.monster.position);
-  app.post('/devil/monster/battle', checkCurrentPlayer, devil.monster.battle);
+  app.post('/devil/monster/intrude', checkCurrentPlayer, devil.monster.intrude);
 
   // ADMIN
   app.get('/admin', admin.index);
