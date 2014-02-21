@@ -19,7 +19,7 @@
             </a>
           </h4>
         </div>
-        <div class="panel-collapse collapse in" id="form">
+        <div class="panel-collapse collapse" id="form">
           <div class="panel-body">
             <form role="form-horizontal" method="POST">
               <div class="row">
@@ -87,6 +87,12 @@
       </div>
     </div><!-- CITY FORM -->
     <hr>
+    <div class="alert alert-info">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <p>City Manager는 마왕이 점령할 수 있는 도시를 관리.</p>
+      <p>마왕을 생성할때 ProtoCity에서 Publish 되어있는 모든 도시를 City로 마왕 id와 함께 저장함.</p>
+      <p>따라서 새로운 도시를 만들면 Apply Cities 버튼을 클릭하여 현재 플레이중인 모든 Devil에게 적용해 주어야 함.</p>
+    </div class="alert alert-info">
     <h4>
       LIST
       <a href="/admin/city/apply" class="btn btn-info pull-right">APPLY CITIES</a>

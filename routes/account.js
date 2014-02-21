@@ -40,6 +40,25 @@ exports.create = function (req, res) {
   });
 };
 
+exports.password = function (req, res) {
+  Account.findOne({ 'email': req.body.email }, function (err, account) {
+    if (err) throw err;
+
+    if ( !account ) {
+      errorHandler.sendErrorMessage('NO_ACCOUNT_FOUND', res);
+      return;
+    }
+
+    if ( req.body.password.toString() !== decrypt(account.password) ) {
+      errorHandler.sendErrorMessage('PASSWORD_NOT_MATCH', res);
+      return;
+    }
+
+    res.redirect('/');
+    return;
+  });
+};
+
 exports.login = function (req, res) {
   var query = {
     'email': req.body.email

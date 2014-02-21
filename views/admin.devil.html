@@ -19,7 +19,7 @@
           </a>
         </h4>
       </div>
-      <div class="panel-collapse collapse in" id="form">
+      <div class="panel-collapse collapse" id="form">
         <div class="panel-body">
           <form role="form-horizontal" method="POST">
             <div class="row">
@@ -98,7 +98,11 @@
         </div>
       </div>
     </div>
-    <p>Devil Manager는 플레이어가 최초 마왕 플레이시에만 선택이 가능함.</p>
+    <div class="alert alert-info">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <p>Devil Manager는 플레이어가 최초 마왕 플레이시에만 선택이 가능한 프로토타입. ProtoDevil 항목으로 DB에 저장되고, 마왕 캐릭터를 생성한 후에 Devil 로 옮겨진다.</p>
+      <p>일단 한번 생성된 마왕 캐릭터는 관리자가 스탯을 변경해도 적용되지 않음.</p>
+    </div class="alert alert-info">
     <hr>
     <h4>LIST</h4>
     <table class="table table-hover">
