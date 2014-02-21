@@ -48,8 +48,15 @@
     </div>
     <hr />
     <div class="col-md-3">
-      <!-- DEVIL -->
-      <h4>KINGDOM</h4>
+      <h4>STATS</h4>
+      <button class="btn btn-block btn-warning" data-toggle="modal" data-target="#levelModal">레벨업 (테스트)</button>
+      <button id="money" class="btn btn-block btn-default">돈: {{ player.money }}</button>
+      <button id="socketTest" class="btn btn-block btn-default">소켓 테스트</button>
+
+      <h4>
+        KINGDOM
+        <a href="/admin/devil" class="btn btn-xs btn-default pull-right">Devil 관리</a>
+      </h4>
       <div class="panel-group">
         {% include "devil.template.devil.html" %}
       </div>
@@ -64,19 +71,16 @@
         </div>
         {% endif %}
       </div>
-
-      <h4>STATS</h4>
-      <button class="btn btn-block btn-warning" data-toggle="modal" data-target="#levelModal">레벨업 (테스트)</button>
-      <button id="money" class="btn btn-block btn-default">돈: {{ player.money }}</button>
-      <button id="testButton" class="btn btn-block btn-default">테스트</button>
-      <button class="btn btn-block btn-default">거주지</button>
-      <button class="btn btn-block btn-default">레벨</button>
     </div>
 
     <!-- CITIES -->
     <div class="col-md-3">
       {% if cities.length %}
-      <h4>CITIES</h4>
+      <h4>
+        CITIES
+        <a href="/admin/city" class="btn btn-xs btn-default pull-right">City 관리</a>
+        <a href="/admin/soldier" class="btn btn-xs btn-default pull-right">Soldier 관리</a>
+      </h4>
       <div class="panel-group">
       {% for city in cities %}
         {% include "devil.template.city.html" %}
@@ -87,7 +91,10 @@
 
       <!-- MONSTERS -->
       {% if cities.length %}
-      <h4>MONSTERS</h4>
+      <h4>
+        MONSTERS
+        <a href="#" class="btn btn-xs btn-default disabled pull-right">수정불가</a>
+      </h4>
       <div data-floor="waiting" class="panel-group space" style="min-height: 50px;">
       {% for monster in monsters %}
         {% include "devil.template.monster.html" %}
@@ -98,7 +105,10 @@
 
       <!-- BARRACK -->
       {% if cities.length %}
-      <h4>BARRACK</h4>
+      <h4>
+        BARRACK
+        <a href="admin/monster" class="btn btn-xs btn-default pull-right">Monster 관리</a>
+      </h4>
       <div class="panel-group">
       {% for monster in protomonsters %}
         {% include "devil.template.protomonster.html" %}
@@ -116,7 +126,8 @@
     <div class="col-md-6">
       <h4>
         DUNGEON
-        <button id="dungeonIntruder" class="btn btn-default pull-right">던전 인트루더</button>
+        <a href="/admin/city" class="btn btn-xs btn-default">Hero 관리</a>
+        <button id="dungeonIntruder" class="btn btn-danger btn-xs pull-right">던전 공략 테스트</button>
       </h4>
       <div class="row">
         <div class="col-xs-2">
@@ -374,7 +385,7 @@
       return;
     });
 
-    $('#testButton').on('click', function () {
+    $('#socketTest').on('click', function () {
       console.log('clicked');
 
       var socket = io.connect('http://localhost:3000');

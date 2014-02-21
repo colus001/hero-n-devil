@@ -29,7 +29,12 @@ var common = require('../lib/common');
 var getBattleResult = common.getBattleResult;
 var getIntrudeResult = common.getIntrudeResult;
 var getPointToUpdate = common.getPointToUpdate;
+var payMoneyAndAP = common.payMoneyAndAP;
 var getDamage = common.getDamage;
+
+// Constants
+var actionPoint = 1;
+
 
 exports.purchase = function (req, res) {
   async.waterfall([
@@ -89,60 +94,8 @@ exports.purchase = function (req, res) {
       });
     },
 
-    function payMonsterTraining (player, devil, protomonster, callback) {
-      if ( player.money < protomonster.price ) {
-        callback('NOT_ENOUGH_MONEY');
-        return;
-      }
-
-      if ( devil.current_action_point < 1 ) {
-        callback('NOT_ENOUGH_ACTION_POINT');
-        return;
-      }
-
-      async.parallel([
-        function payActionPoint (done) {
-          Devil.findByIdAndUpdate(devil._id, { $inc: { 'current_action_point': -1 } }, function (err, devil) {
-            if (err) throw err;
-
-            if ( !devil ) {
-              done('NO_DEVIL_FOUND');
-              return;
-            }
-
-            done(null);
-            return;
-          });
-        },
-
-        function payMoney (done) {
-          var update = {
-            $inc: {
-              'money': -protomonster.price
-            }
-          };
-
-          Player.findByIdAndUpdate(player._id, update, function (err, player) {
-            if (err) throw err;
-
-            if ( !player ) {
-              done('NO_PLAYER_FOUND');
-              return;
-            }
-
-            done(null);
-            return;
-          });
-        }
-      ], function (err, result) {
-        if (err) {
-          callback(err);
-          return;
-        }
-
-        callback(null, player, devil, protomonster);
-        return;
-      });
+    function payTheCost (player, devil, protomonster, callback) {
+      payMoneyAndAP(player, protomonster, devil, actionPoint, callback);
     },
 
     function addToMonster (player, devil, protomonster, callback) {
@@ -389,8 +342,8 @@ exports.intrude = function (req, res) {
           defenders[monster.floor].push(monster);
         }
       }
-
-      getIntrudeResult([ intruder ], defenders, devil, logs);
+      var experience = 0;
+      getIntrudeResult([ intruder ], defenders, devil, experience, logs);
 
       callback(null, player, devil, defenders, intruder, logs);
       return;

@@ -11,81 +11,94 @@
     <h4>DEVIL MANAGER</h4>
     <hr />
     <!-- DEVIL FORM -->
-    <form role="form-horizontal" method="POST">
-      <div class="row">
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Name</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" name="name" placeholder="지옥마왕">
-          </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#form">
+            Add New Devil
+          </a>
+        </h4>
+      </div>
+      <div class="panel-collapse collapse in" id="form">
+        <div class="panel-body">
+          <form role="form-horizontal" method="POST">
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" name="name" placeholder="지옥마왕">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Health Point</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="health_point" placeholder="750">
+                </div>
+              </div>
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Attack Speed</label>
+                <div class="col-sm-10">
+                  <input type="number" step="any" class="form-control" name="attack_speed_per_sec" placeholder="0.5">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Physical Damage</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="physical_damage" placeholder="100">
+                </div>
+              </div>
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Magic Damage</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="magic_damage" placeholder="100">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Armor</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="armor" placeholder="20">
+                </div>
+              </div>
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Magic Resist</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="magic_resist" placeholder="20">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Skill #1</label>
+                <div class="col-sm-10">
+                  <input type="name" class="form-control" name="skills[]" placeholder="Fireball">
+                </div>
+              </div>
+              <div class="form-group col-sm-6">
+                <label class="col-sm-2">Skill #2</label>
+                <div class="col-sm-10">
+                  <input type="name" class="form-control" name="skills[]" placeholder="Mirror Image">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <label class="col-sm-2">Description</label>
+                <textarea name="description" class="form-control" rows="3"></textarea>
+                <br />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+          </form>
         </div>
       </div>
-      <div class="row">
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Health Point</label>
-          <div class="col-sm-10">
-            <input type="number" class="form-control" name="health_point" placeholder="750">
-          </div>
-        </div>
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Attack Speed</label>
-          <div class="col-sm-10">
-            <input type="number" step="any" class="form-control" name="attack_speed_per_sec" placeholder="0.5">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Physical Damage</label>
-          <div class="col-sm-10">
-            <input type="number" class="form-control" name="physical_damage" placeholder="100">
-          </div>
-        </div>
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Magic Damage</label>
-          <div class="col-sm-10">
-            <input type="number" class="form-control" name="magic_damage" placeholder="100">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Armor</label>
-          <div class="col-sm-10">
-            <input type="number" class="form-control" name="armor" placeholder="20">
-          </div>
-        </div>
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Magic Resist</label>
-          <div class="col-sm-10">
-            <input type="number" class="form-control" name="magic_resist" placeholder="20">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Skill #1</label>
-          <div class="col-sm-10">
-            <input type="name" class="form-control" name="skills[]" placeholder="Fireball">
-          </div>
-        </div>
-        <div class="form-group col-sm-6">
-          <label class="col-sm-2">Skill #2</label>
-          <div class="col-sm-10">
-            <input type="name" class="form-control" name="skills[]" placeholder="Mirror Image">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <label class="col-sm-2">Description</label>
-          <textarea name="description" class="form-control" rows="3"></textarea>
-          <br />
-        </div>
-      </div>
-      <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
-    </form>
-
+    </div>
+    <p>Devil Manager는 플레이어가 최초 마왕 플레이시에만 선택이 가능함.</p>
     <hr>
     <h4>LIST</h4>
     <table class="table table-hover">

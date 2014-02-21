@@ -431,14 +431,16 @@ exports.attack = function (req, res) {
         }
       }
 
+      var experience = 0;
       console.log('city.defenders:', city.defenders);
 
-      getBattleResult([ devil ], city.defenders, logs);
-      callback(null, devil, city);
+      getBattleResult([ devil ], city.defenders, experience, logs);
+      callback(null, devil, city, experience);
       return;
     },
 
-    function finish (devil, city, callback) {
+    function finish (devil, city, experience, callback) {
+
       city = JSON.parse(JSON.stringify(city));
       var result = {
         'result': 'success',
@@ -458,12 +460,21 @@ exports.attack = function (req, res) {
             $set: {
               'updated_at': new Date(),
               'current_health_point': healthPointToUpdate
+            },
+            $inc: {
+
             }
           };
 
           if ( result.conclusion ) {
-            update.$inc = { 'current_action_point': -1 };
+            update.$inc['current_action_point'] = -1;
           }
+
+          if ( experience !== undefined ) {
+            update.$inc['current_experience'] = experience;
+          }
+
+          console.log('update:', update);
 
           Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
             if (err) throw err;
@@ -491,7 +502,7 @@ exports.attack = function (req, res) {
             done(null);
             return;
           });
-        },
+        }
       ], function (err) {
         callback(null, result);
         return;
