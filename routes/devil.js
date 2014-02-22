@@ -16,6 +16,7 @@ var Devil = require('../lib/model').Devil;
 var City = require('../lib/model').City;
 var Player = require('../lib/model').Player;
 var Monster = require('../lib/model').Monster;
+var Soldier = require('../lib/model').Soldier;
 
 // Model Prototype
 var ProtoCity = require('../lib/model').ProtoCity;
@@ -78,6 +79,26 @@ exports.index = function (req, res) {
           return;
         }
 
+        callback(null, player, devil, cities);
+        return;
+      });
+    },
+
+    function getDefenders (player, devil, cities, callback) {
+      async.map(cities, function (city, next) {
+        Soldier.find({ 'city_id': city._id }, function (err, soldiers) {
+          if (err) throw err;
+
+          if ( soldiers.length === 0 ) {
+            next(null, city);
+            return;
+          }
+
+          city.defenders = soldiers;
+          next(null, city);
+          return;
+        });
+      }, function (err, result) {
         callback(null, player, devil, cities);
         return;
       });
