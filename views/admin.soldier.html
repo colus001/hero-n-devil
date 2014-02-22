@@ -17,7 +17,7 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion" href="#form">
-              Add New Soldier
+              병사 등록
             </a>
           </h4>
         </div>
@@ -26,13 +26,13 @@
             <form role="form-horizontal" method="POST">
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Name</label>
+                  <label class="col-sm-2">이름</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="name" placeholder="박이병">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Army Level</label>
+                  <label class="col-sm-2">병사 등급</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="level" placeholder="1">
                   </div>
@@ -40,13 +40,13 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Health Point</label>
+                  <label class="col-sm-2">체력</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="health_point" placeholder="50">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Attack Speed</label>
+                  <label class="col-sm-2">초당 공격속도</label>
                   <div class="col-sm-10">
                     <input type="number" step="any" class="form-control" name="attack_speed_per_sec" placeholder="0.5">
                   </div>
@@ -54,13 +54,13 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Physical Damage</label>
+                  <label class="col-sm-2">물리 공격</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="physical_damage" placeholder="50">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Magic Damage</label>
+                  <label class="col-sm-2">마법 공격</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="magic_damage" placeholder="0">
                   </div>
@@ -68,13 +68,13 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Armor</label>
+                  <label class="col-sm-2">물리 방어</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="armor" placeholder="0">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Magic Resist</label>
+                  <label class="col-sm-2">마법 저항</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="magic_resist" placeholder="0">
                   </div>
@@ -82,19 +82,19 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Price</label>
+                  <label class="col-sm-2">훈련비용</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="price" placeholder="50">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Experience</label>
+                  <label class="col-sm-2">퇴치시 경험치</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="experience" placeholder="50">
                   </div>
                 </div>
               </div>
-              <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+              <button type="submit" class="btn btn-block btn-primary">등록하기</button>
             </form>
 
           </div>
@@ -107,23 +107,22 @@
       <p>공격하기 전 도시에는 병력이 없고 한번 전투가 시작되어 마왕이 승리하지 못했을경우 city.defenders 에 저장된다</p>
     </div class="alert alert-info">
     <hr>
-    <h4>LIST</h4>
     <table class="table table-hover">
       <thead>
         <tr>
           <th>#</th>
-          <th>Name</th>
-          <th>Level</th>
-          <th>HP</th>
-          <th>A.Speed/1s</th>
-          <th>P.Dmg</th>
-          <th>M.Dmg</th>
-          <th>Armor</th>
-          <th>M.Resist</th>
-          <th>Price</th>
-          <th>Experience</th>
-          <th>Status</th>
-          <th>Action</th>
+          <th>이름</th>
+          <th>등급</th>
+          <th>체력</th>
+          <th>초당 공격속도</th>
+          <th>물리 공격</th>
+          <th>마법 공격</th>
+          <th>물리 방어</th>
+          <th>마법 저항</th>
+          <th>훈련비용</th>
+          <th>퇴치시 경험치</th>
+          <th>상태</th>
+          <th>관리</th>
         </tr>
       </thead>
       <tbody>

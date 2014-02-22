@@ -26,44 +26,11 @@ var ProtoMonster = require('../lib/model').ProtoMonster;
 var errorHandler = require('../lib/errorHandler');
 var common = require('../lib/common');
 
-var getBattleResult = common.getBattleResult;
-var getIntrudeResult = common.getIntrudeResult;
-var getPointToUpdate = common.getPointToUpdate;
-var payMoneyAndAP = common.payMoneyAndAP;
-var getDamage = common.getDamage;
-
-// Constants
-var actionPoint = 1;
-
 
 exports.purchase = function (req, res) {
   async.waterfall([
-    function getPlayer (callback) {
-      Player.findById(req.session.current_player_id, function (err, player) {
-        if (err) throw err;
-
-        if ( !player ) {
-          callback('NO_PLAYER_FOUND');
-          return;
-        }
-
-        callback(null, player);
-        return;
-      });
-    },
-
-    function getDevil (player, callback) {
-      Devil.findById(player.devil_id, function (err, devil) {
-        if (err) throw err;
-
-        if ( !devil ) {
-          callback('NO_DEVIL_FOUND');
-          return;
-        }
-
-        callback(null, player, devil);
-        return;
-      });
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
     },
 
     function checkMonsterLimit (player, devil, callback) {
@@ -95,7 +62,7 @@ exports.purchase = function (req, res) {
     },
 
     function payTheCost (player, devil, protomonster, callback) {
-      payMoneyAndAP(player, protomonster, devil, actionPoint, callback);
+      common.payMoneyAndAP(player, protomonster, devil, common.ACTION_POINT_TO_PAY, callback);
     },
 
     function addToMonster (player, devil, protomonster, callback) {
@@ -134,32 +101,8 @@ exports.purchase = function (req, res) {
 
 exports.delete = function (req, res) {
   async.waterfall([
-    function getPlayer (callback) {
-      Player.findById(req.session.current_player_id, function (err, player) {
-        if (err) throw err;
-
-        if ( !player ) {
-          callback('NO_PLAYER_FOUND');
-          return;
-        }
-
-        callback(null, player);
-        return;
-      });
-    },
-
-    function getDevil (player, callback) {
-      Devil.findById(player.devil_id, function (err, devil) {
-        if (err) throw err;
-
-        if ( !devil ) {
-          callback('NO_DEVIL_FOUND');
-          return;
-        }
-
-        callback(null, player, devil);
-        return;
-      });
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
     },
 
     function removeMonster (player, devil, callback) {
@@ -188,32 +131,8 @@ exports.delete = function (req, res) {
 
 exports.buildup = function (req, res) {
   async.waterfall([
-    function getPlayer (callback) {
-      Player.findById(req.session.current_player_id, function (err, player) {
-        if (err) throw err;
-
-        if ( !player ) {
-          callback('NO_PLAYER_FOUND');
-          return;
-        }
-
-        callback(null, player);
-        return;
-      });
-    },
-
-    function getDevil (player, callback) {
-      Devil.findById(player.devil_id, function (err, devil) {
-        if (err) throw err;
-
-        if ( !devil ) {
-          callback('NO_DEVIL_FOUND');
-          return;
-        }
-
-        callback(null, player, devil);
-        return;
-      });
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
     },
 
     function getMonster (player, devil, callback) {
@@ -261,32 +180,8 @@ exports.position = function (req, res) {
 
 exports.intrude = function (req, res) {
   async.waterfall([
-    function getPlayer (callback) {
-      Player.findById(req.session.current_player_id, function (err, player) {
-        if (err) throw err;
-
-        if ( !player ) {
-          callback('NO_PLAYER_FOUND');
-          return;
-        }
-
-        callback(null, player);
-        return;
-      });
-    },
-
-    function getDevil (player, callback) {
-      Devil.findById(player.devil_id, function (err, devil) {
-        if (err) throw err;
-
-        if ( !devil ) {
-          callback('NO_DEVIL_FOUND');
-          return;
-        }
-
-        callback(null, player, devil);
-        return;
-      });
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
     },
 
     function getMonsters (player, devil, callback) {
@@ -345,8 +240,9 @@ exports.intrude = function (req, res) {
           defenders[monster.floor].push(monster);
         }
       }
-      var experience = 0;
-      getIntrudeResult(intruders, defenders, devil, logs);
+
+      common.getIntrudeResult(intruders, defenders, devil, logs);
+      loseColony(player);
 
       callback(null, player, devil, defenders, intruders, logs);
       return;
@@ -364,13 +260,13 @@ exports.intrude = function (req, res) {
       Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
         if (err) throw err;
 
-
         callback(null, player, devil, defenders, intruders, logs);
         return;
       });
     },
 
     function testResult (player, devil, defenders, intruders, logs, callback) {
+      if ( defenders.length === 0 )
       console.log('defenders:', defenders);
 
       var result = {

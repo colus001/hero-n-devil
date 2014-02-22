@@ -17,7 +17,7 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion" href="#form">
-              Add New Monster
+              몬스터 등록
             </a>
           </h4>
         </div>
@@ -26,7 +26,7 @@
             <form role="form-horizontal" method="POST">
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Name</label>
+                  <label class="col-sm-2">이름</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="name" placeholder="슬라임">
                   </div>
@@ -34,13 +34,13 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Health Point</label>
+                  <label class="col-sm-2">체력</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="health_point" placeholder="50">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Attack Speed</label>
+                  <label class="col-sm-2">초당 공격속도</label>
                   <div class="col-sm-10">
                     <input type="number" step="any" class="form-control" name="attack_speed_per_sec" placeholder="0.5">
                   </div>
@@ -48,13 +48,13 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Physical Damage</label>
+                  <label class="col-sm-2">물리 공격</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="physical_damage" placeholder="25">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Magic Damage</label>
+                  <label class="col-sm-2">마법 공격</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="magic_damage" placeholder="0">
                   </div>
@@ -62,13 +62,13 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Armor</label>
+                  <label class="col-sm-2">물리 방어</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="armor" placeholder="0">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Magic Resist</label>
+                  <label class="col-sm-2">마법 저항</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="magic_resist" placeholder="0">
                   </div>
@@ -76,27 +76,41 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Price</label>
+                  <label class="col-sm-2">훈련 비용</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="price" placeholder="50">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Experience</label>
+                  <label class="col-sm-2">훈련 시간</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="experience" placeholder="50">
+                    <input type="number" class="form-control" name="training_time" placeholder="10">
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Skill #1</label>
+                  <label class="col-sm-2">퇴치시 경험치</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="experience" placeholder="50">
+                  </div>
+                </div>
+                <!-- <div class="form-group col-sm-6">
+                  <label class="col-sm-2">Experience</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="experience" placeholder="50">
+                  </div>
+                </div> -->
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">스킬 #1</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="skills[]" placeholder="Thunder Grab">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Skill #2</label>
+                  <label class="col-sm-2">스킬 #2</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="skills[]" placeholder="Invincible">
                   </div>
@@ -104,12 +118,12 @@
               </div>
               <div class="row">
                 <div class="col-sm-12">
-                  <label class="col-sm-2">Description</label>
+                  <label class="col-sm-2">설명</label>
                   <textarea name="description" class="form-control" rows="3"></textarea>
                   <br />
                 </div>
               </div>
-              <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+              <button type="submit" class="btn btn-block btn-primary">등록하기</button>
             </form>
 
           </div>
@@ -128,18 +142,19 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Name</th>
-          <th>HP</th>
-          <th>A.Speed/1s</th>
-          <th>P.Dmg</th>
-          <th>M.Dmg</th>
-          <th>Armor</th>
-          <th>M.Resist</th>
-          <th>Skills</th>
-          <th>Price</th>
-          <th>Experience</th>
-          <th>Status</th>
-          <th>Action</th>
+          <th>이름</th>
+          <th>체력</th>
+          <th>초당 공격속도</th>
+          <th>물리 공격</th>
+          <th>마법 공격</th>
+          <th>물리 방어</th>
+          <th>마법 저항</th>
+          <th>스킬</th>
+          <th>훈련비용</th>
+          <th>훈련시간</th>
+          <th>경험치(퇴치시)</th>
+          <th>상태</th>
+          <th>관리</th>
         </tr>
       </thead>
       <tbody>
@@ -153,8 +168,15 @@
           <td>{{ monster.magic_damage }}</td>
           <td>{{ monster.armor }}</td>
           <td>{{ monster.magic_resist }}</td>
-          <td>{{ monster.skills }}</td>
+          <td>
+            {% if monster.skills.length > 0 %}
+            {{ monster.skills }}
+            {% else %}
+            <button class="btn btn-default btn-xs disabled">없음</button>
+            {% endif %}
+          </td>
           <td>{{ monster.price }}</td>
+          <td>{{ monster.training_time }}</td>
           <td>{{ monster.experience }}</td>
           <td>
             {% if monster.published %}

@@ -93,7 +93,7 @@
       {% if cities.length %}
       <h4>
         MONSTERS
-        <a href="#" class="btn btn-xs btn-default pull-right">Monster 직접수정불가</a>
+        <a href="/admin/monster" class="btn btn-xs btn-default pull-right">Monster 직접수정불가</a>
       </h4>
       <div data-floor="waiting" class="panel-group space" style="min-height: 50px;">
       {% for monster in monsters %}
@@ -107,7 +107,7 @@
       {% if cities.length %}
       <h4>
         BARRACK
-        <a href="admin/monster" class="btn btn-xs btn-default pull-right">Monster 관리</a>
+        <a href="/admin/monster" class="btn btn-xs btn-default pull-right">Monster 관리</a>
       </h4>
       <div class="panel-group">
       {% for monster in protomonsters %}
@@ -183,6 +183,10 @@
     var $timer = $('#timer');
 
     $('#dungeonIntruder').on('click', function () {
+      if ( !confirm('던전 침입 테스트는 현재 1~5명의 영웅이 랜덤하게 침임하도록 만들어졌습니다. 계속하시겠습니까?') ) {
+        return;
+      }
+
       $.ajax({
         type: 'POST',
         url: '/devil/monster/intrude',

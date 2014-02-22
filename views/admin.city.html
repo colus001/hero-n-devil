@@ -17,7 +17,7 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion" href="#form">
-              Add New City
+              도시 등록
             </a>
           </h4>
         </div>
@@ -26,13 +26,13 @@
             <form role="form-horizontal" method="POST">
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Name</label>
+                  <label class="col-sm-2">이름</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="name" placeholder="머나먼왕국">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Defense</label>
+                  <label class="col-sm-2">방어력</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="defense" placeholder="10">
                   </div>
@@ -40,13 +40,13 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Population</label>
+                  <label class="col-sm-2">인구</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="population" placeholder="100">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Economy Level</label>
+                  <label class="col-sm-2">경제력 등급</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="economy_level" placeholder="1">
                   </div>
@@ -54,13 +54,13 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Soldiers</label>
+                  <label class="col-sm-2">병력</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="soldiers" placeholder="1">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Army Level</label>
+                  <label class="col-sm-2">군사력 등급</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="army_level" placeholder="1">
                   </div>
@@ -68,7 +68,7 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">Time To Collect (sec)</label>
+                  <label class="col-sm-2">징수 시간(초)</label>
                   <div class="col-sm-10">
                     <input type="number" class="form-control" name="time_to_collect" placeholder="10">
                   </div>
@@ -76,12 +76,12 @@
               </div>
               <div class="row">
                 <div class="col-sm-12">
-                  <label class="col-sm-2">Description</label>
+                  <label class="col-sm-2">설명</label>
                   <textarea name="description" class="form-control" rows="3"></textarea>
                   <br />
                 </div>
               </div>
-              <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+              <button type="submit" class="btn btn-block btn-primary">등록하기</button>
             </form>
 
           </div>
@@ -95,22 +95,19 @@
       <p>마왕을 생성할때 ProtoCity에서 Publish 되어있는 모든 도시를 City로 마왕 id와 함께 저장함.</p>
       <p>따라서 새로운 도시를 만들면 Apply Cities 버튼을 클릭하여 현재 플레이중인 모든 Devil에게 적용해 주어야 함.</p>
     </div class="alert alert-info">
-    <h4>
-      LIST
-      <a href="/admin/city/apply" class="btn btn-info pull-right">APPLY CITIES</a>
-    </h4>
+    <hr />
     <table class="table table-hover">
       <thead>
         <tr>
           <th>#</th>
-          <th>Name</th>
-          <th>Defense</th>
-          <th>Population</th>
-          <th>Economy Level</th>
-          <th>Soliders</th>
-          <th>Army Level</th>
-          <th>Status</th>
-          <th>Action</th>
+          <th>이름</th>
+          <th>방어력</th>
+          <th>인구</th>
+          <th>경제력 등급</th>
+          <th>병력</th>
+          <th>군사력 등급</th>
+          <th>상태</th>
+          <th>관리</th>
         </tr>
       </thead>
       <tbody>
@@ -141,6 +138,7 @@
     </table>
 
     <div class="col-sm-12">
+      <a href="/admin/city/apply" class="btn btn-info pull-right">도시 적용</a>
       <ul class="pagination">
         <li><a href="#">&laquo;</a></li>
         <li><a href="#">1</a></li>

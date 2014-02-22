@@ -236,7 +236,7 @@ exports.select = function (req, res) {
 
 exports.selectDevil = function (req, res) {
   async.waterfall([
-    function getPlayerAndCheckDevil (callback) {
+    function getPlayer (callback) {
       Player.findById(req.session.current_player_id, function (err, player) {
         if (err) throw err;
 
@@ -250,7 +250,7 @@ exports.selectDevil = function (req, res) {
       });
     },
 
-    function checkDevil (player, callback) {
+    function getDevil (player, callback) {
       Devil.findById(player.devil_id, function (err, devil) {
         if (err) throw err;
 

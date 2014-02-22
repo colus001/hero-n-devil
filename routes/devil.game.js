@@ -25,50 +25,14 @@ var ProtoSoldier = require('../lib/model').ProtoSoldier;
 var errorHandler = require('../lib/errorHandler');
 var common = require('../lib/common');
 
-// Common
-var SECONDS_FOR_A_TURN = common.SECONDS_FOR_A_TURN;
-
-var getPointToUpdate = common.getPointToUpdate;
-var getDamage = common.getDamage;
-var getTimeGap = common.getTimeGap;
-var getBattleResult = common.getBattleResult;
-var getDefenders = common.getDefenders;
-var recoverDevil = common.recoverDevil;
-var recoverMonsters = common.recoverMonsters;
-var recoverSoldiers = common.recoverSoldiers;
-var clearDeadObjects = common.clearDeadObjects;
 
 exports.status = function (req, res) {
   async.waterfall([
-    function getPlayer (callback) {
-      Player.findById(req.session.current_player_id, function (err, player) {
-        if (err) throw err;
-
-        if ( !player ) {
-          callback('NO_PLAYER_FOUND');
-          return;
-        }
-
-        callback(null, player);
-        return;
-      });
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
     },
 
-    function getDevil (player, callback) {
-      Devil.findById(player.devil_id, function (err, devil) {
-        if (err) throw err;
-
-        if ( !devil ) {
-          callback('NO_DEVIL_FOUND');
-          return;
-        }
-
-        callback(null, player, devil);
-        return;
-      });
-    },
-
-    function getDevil (player, devil, callback) {
+    function getMonsters (player, devil, callback) {
       Monster.find({ 'player_id': player._id }, function (err, monsters) {
         if (err) throw err;
 
@@ -85,10 +49,10 @@ exports.status = function (req, res) {
 
       async.parallel([
         function DEVIL (done) {
-          recoverDevil(devil, result, done);
+          common.recoverDevil(devil, result, done);
         },
         function MONSTER (done) {
-          recoverMonsters(monsters, result, done);
+          common.recoverMonsters(monsters, result, done);
         }
       ], function (err) {
         if (err) {
@@ -113,32 +77,8 @@ exports.status = function (req, res) {
 
 exports.collect = function (req, res) {
   async.waterfall([
-    function getPlayer (callback) {
-      Player.findById(req.session.current_player_id, function (err, player) {
-        if (err) throw err;
-
-        if ( !player ) {
-          callback('NO_PLAYER_FOUND');
-          return;
-        }
-
-        callback(null, player);
-        return;
-      });
-    },
-
-    function getDevil (player, callback) {
-      Devil.findById(player.devil_id, function (err, devil) {
-        if (err) throw err;
-
-        if ( !devil ) {
-          callback('NO_DEVIL_FOUND');
-          return;
-        }
-
-        callback(null, player, devil);
-        return;
-      });
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
     },
 
     function getColonies (player, devil, callback) {
@@ -332,42 +272,23 @@ exports.battle = function (req, res) {
 
   // player & devil -> city -> heros -> battle
   async.waterfall([
-    function getPlayer (callback) {
-      Player.findById(req.session.current_player_id, function (err, player) {
-        if (err) throw err;
-
-        if ( !player ) {
-          callback('NO_PLAYER_FOUND', res);
-          return;
-        }
-
-        callback(null, player);
-        return;
-      });
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
     },
 
-    function getDevil (player, callback) {
-      Devil.findById(player.devil_id, function (err, devil) {
-        if (err) throw err;
-
-        if ( !devil ) {
-          callback('NO_DEVIL_FOUND');
-          return;
-        }
-
-        if ( devil.current_health_point === 0 ) {
-          callback('NOT_ENOUGH_HEALTH_POINT');
-          return;
-        }
-
-        if ( devil.current_action_point === 0 ) {
-          callback('NOT_ENOUGH_ACTION_POINT');
-          return;
-        }
-
-        callback(null, player, devil);
+    function checkDevil (player, devil, callback) {
+      if ( devil.current_health_point === 0 ) {
+        callback('NOT_ENOUGH_HEALTH_POINT');
         return;
-      });
+      }
+
+      if ( devil.current_action_point === 0 ) {
+        callback('NOT_ENOUGH_ACTION_POINT');
+        return;
+      }
+
+      callback(null, player, devil);
+      return;
     },
 
     function getCity (player, devil, callback) {
@@ -387,7 +308,7 @@ exports.battle = function (req, res) {
     function prepareForBattle (player, devil, city, callback) {
       async.waterfall([
         function waiting (next) {
-          getDefenders(city, next);
+          common.getDefenders(city, next);
         }
       ], function (err, defenders) {
         if (err) {
@@ -401,8 +322,8 @@ exports.battle = function (req, res) {
     },
 
     function startBattle (devil, city, defenders, callback) {
-      getBattleResult([ devil ], defenders, logs);
-      clearDeadObjects(defenders);
+      common.getBattleResult([ devil ], defenders, logs);
+      common.clearDeadObjects(defenders);
 
       callback(null, devil, city, defenders);
       return;
