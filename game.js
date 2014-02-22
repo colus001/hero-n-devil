@@ -156,7 +156,6 @@ db.once('open', function callback () {
   app.get('/admin/soldier/delete/:id', admin.soldier.delete);
   app.get('/admin/soldier/publish/:id', admin.soldier.publish);
 
-
   var server = http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
   });
