@@ -55,7 +55,7 @@
 
       <h4>
         KINGDOM
-        <a href="/admin/devil" class="btn btn-xs btn-default pull-right">Devil 관리</a>
+        <a href="/admin/devil" class="btn btn-xs btn-default pull-right">Devil 직접수정불가</a>
       </h4>
       <div class="panel-group">
         {% include "devil.template.devil.html" %}
@@ -78,7 +78,7 @@
       {% if cities.length %}
       <h4>
         CITIES
-        <a href="/admin/city" class="btn btn-xs btn-default pull-right">City 관리</a>
+        <a href="/admin/city" class="btn btn-xs btn-default pull-right">City 직접수정불가</a>
         <a href="/admin/soldier" class="btn btn-xs btn-default pull-right">Soldier 관리</a>
       </h4>
       <div class="panel-group">
@@ -93,7 +93,7 @@
       {% if cities.length %}
       <h4>
         MONSTERS
-        <a href="#" class="btn btn-xs btn-default disabled pull-right">수정불가</a>
+        <a href="#" class="btn btn-xs btn-default pull-right">Monster 직접수정불가</a>
       </h4>
       <div data-floor="waiting" class="panel-group space" style="min-height: 50px;">
       {% for monster in monsters %}
@@ -159,7 +159,7 @@
         {% endfor %}
       </div>
       <h4>LOG
-        <button id="clearLog" class="btn btn-default btn-sm pull-right">로그 정리</button>
+        <button id="clearLog" class="btn btn-default btn-xs pull-right">로그 정리</button>
       </h4>
       <div id="gameLog" class="log"></div>
     </div>

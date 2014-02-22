@@ -98,7 +98,7 @@ db.once('open', function callback () {
 
   // DEVIL - GAME
   app.post('/devil/status', checkCurrentPlayer, devil.game.status);
-  app.post('/devil/attack', checkCurrentPlayer, devil.game.attack);
+  app.post('/devil/attack', checkCurrentPlayer, devil.game.battle);
   app.post('/devil/collect', checkCurrentPlayer, devil.game.collect);
 
   // DEVIL - MONSTER

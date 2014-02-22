@@ -19,6 +19,10 @@
           <div data-id="monster-hp-text-{{ monster.id }}" class="col-xs-8">{{ monster.current_health_point }}/{{ monster.health_point }}</div>
         </div>
         <div class="row">
+          <div class="col-xs-4">경험치</div>
+          <div class="col-xs-8">{{ monster.current_experience }}/{{ monster.target_experience }}</div>
+        </div>
+        <div class="row">
           <div class="col-xs-4">공속</div>
           <div class="col-xs-8">{{ monster.attack_speed_per_sec }}</div>
         </div>

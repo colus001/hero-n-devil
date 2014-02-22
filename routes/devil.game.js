@@ -32,8 +32,11 @@ var getPointToUpdate = common.getPointToUpdate;
 var getDamage = common.getDamage;
 var getTimeGap = common.getTimeGap;
 var getBattleResult = common.getBattleResult;
+var getDefenders = common.getDefenders;
 var recoverDevil = common.recoverDevil;
 var recoverMonsters = common.recoverMonsters;
+var recoverSoldiers = common.recoverSoldiers;
+var clearDeadObjects = common.clearDeadObjects;
 
 exports.status = function (req, res) {
   async.waterfall([
@@ -323,7 +326,7 @@ exports.levelUp = function (req, res) {
   });
 };
 
-exports.attack = function (req, res) {
+exports.battle = function (req, res) {
   var logs = [];
   console.log('started');
 
@@ -381,65 +384,31 @@ exports.attack = function (req, res) {
       });
     },
 
-    function getDefenders (player, devil, city, callback) {
-      if ( city.defenders.length > 0 ) {
-        callback(null, devil, city);
+    function prepareForBattle (player, devil, city, callback) {
+      async.waterfall([
+        function waiting (next) {
+          getDefenders(city, next);
+        }
+      ], function (err, defenders) {
+        if (err) {
+          errorHandler.sendErrorMessage(err, res);
+          return;
+        }
+
+        callback(null, devil, city, defenders);
         return;
-      }
-
-      ProtoSoldier.find({ 'published': true }, function summonDefenders (err, soldiers) {
-        if (err) throw err;
-
-        if ( soldiers.length === 0 ) {
-          callback('NO_SOLDIERS_EXIST');
-          return;
-        }
-
-        var defenders = [];
-
-        for ( var i = 0; i < city.soldiers; i++ ) {
-          var random = Math.floor(Math.random()*soldiers.length);
-          var soldier = JSON.parse(JSON.stringify(soldiers[random]));
-
-          soldier.current_health_point = soldier.health_point;
-          defenders.push(soldier);
-        }
-
-        City.findByIdAndUpdate(city._id, { 'updated_at': new Date(), 'defenders': defenders }, function (err, city) {
-          if (err) throw err;
-
-          callback(null, devil, city);
-          return;
-        });
       });
     },
 
-    function startBattle (devil, city, callback) {
-      city = JSON.parse(JSON.stringify(city));
+    function startBattle (devil, city, defenders, callback) {
+      getBattleResult([ devil ], defenders, logs);
+      clearDeadObjects(defenders);
 
-      // RECOVER CITY DEFENDERS
-      var timeGap = Math.floor(( new Date() - city.updated_at ) / 1000);
-      console.log('city:', city);
-      if ( timeGap > SECONDS_FOR_A_TURN ) {
-        for ( var i in city.defenders ) {
-          city.defenders[i].current_health_point += 10 * Math.floor(timeGap/SECONDS_FOR_A_TURN);
-
-          if ( city.defenders[i].current_health_point > city.defenders[i].health_point ) {
-            city.defenders[i].current_health_point = city.defenders[i].health_point;
-          }
-          console.log(city.defenders[i], 'Recovered');
-        }
-      }
-
-      var experience = 0;
-      console.log('city.defenders:', city.defenders);
-
-      getBattleResult([ devil ], city.defenders, experience, logs);
-      callback(null, devil, city, experience);
+      callback(null, devil, city, defenders);
       return;
     },
 
-    function finish (devil, city, experience, callback) {
+    function finish (devil, city, defenders, callback) {
 
       city = JSON.parse(JSON.stringify(city));
       var result = {
@@ -449,13 +418,14 @@ exports.attack = function (req, res) {
 
       if ( devil.current_health_point <= 0 ) {
         result.conclusion = 'win';
-      } else if ( city.defenders.length === 0 ) {
+      } else if ( defenders.length === 0 ) {
         result.conclusion = 'lose';
       }
 
       async.parallel([
-        function saveDevil (done) {
+        function updateDevil (done) {
           var healthPointToUpdate = ( devil.current_health_point > 0 ) ? devil.current_health_point : 0;
+
           var update = {
             $set: {
               'updated_at': new Date(),
@@ -468,10 +438,6 @@ exports.attack = function (req, res) {
 
           if ( result.conclusion ) {
             update.$inc['current_action_point'] = -1;
-          }
-
-          if ( experience !== undefined ) {
-            update.$inc['current_experience'] = experience;
           }
 
           console.log('update:', update);
@@ -487,11 +453,10 @@ exports.attack = function (req, res) {
 
         function updateCity (done) {
           var update = {
-            'updated_at': new Date(),
-            'defenders': city.defenders
+            'updated_at': new Date()
           };
 
-          if ( city.defenders.length === 0 ) {
+          if ( defenders.length === 0 ) {
             update.isCaptured = true;
           }
 

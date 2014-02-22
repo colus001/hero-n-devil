@@ -299,6 +299,8 @@ exports.intrude = function (req, res) {
     },
 
     function getProtoHero (player, devil, monsters, callback) {
+      var intruders = [];
+
       // THIS IS ONLY FOR THE TEST PURPOSE
       ProtoHero.find({ 'published': true }, function summonDefenders (err, protoheroes) {
         if (err) throw err;
@@ -308,22 +310,23 @@ exports.intrude = function (req, res) {
           return;
         }
 
-        var random = Math.floor(Math.random()*protoheroes.length);
-        var intruder = JSON.parse(JSON.stringify(protoheroes[random]));
-        intruder.current_health_point = intruder.health_point;
+        for ( var i = 0; i < Math.floor(Math.random()*4)+1; i++ ) {
+          var random = Math.floor(Math.random()*protoheroes.length);
+          var intruder = JSON.parse(JSON.stringify(protoheroes[random]));
+          intruder.current_health_point = intruder.health_point;
 
-        if ( !intruder ) {
-          callback('FAILED_TO_MAKE_INTRUDER');
-          return;
+          intruders.push(intruder);
         }
 
-        callback(null, player, devil, monsters, intruder);
+        console.log('intruders:', intruders.length);
+
+        callback(null, player, devil, monsters, intruders);
         return;
       });
       // THIS IS ONLY FOR THE TEST PURPOSE
     },
 
-    function battle (player, devil, monsters, intruder, callback) {
+    function battle (player, devil, monsters, intruders, callback) {
       var logs = [];
 
       var defenders = {
@@ -343,13 +346,13 @@ exports.intrude = function (req, res) {
         }
       }
       var experience = 0;
-      getIntrudeResult([ intruder ], defenders, devil, experience, logs);
+      getIntrudeResult(intruders, defenders, devil, logs);
 
-      callback(null, player, devil, defenders, intruder, logs);
+      callback(null, player, devil, defenders, intruders, logs);
       return;
     },
 
-    function saveDevil (player, devil, defenders, intruder, logs, callback) {
+    function saveDevil (player, devil, defenders, intruders, logs, callback) {
       var healthPointToUpdate = ( devil.current_health_point > 0 ) ? devil.current_health_point : 0;
       var update = {
         $set: {
@@ -362,12 +365,12 @@ exports.intrude = function (req, res) {
         if (err) throw err;
 
 
-        callback(null, player, devil, defenders, intruder, logs);
+        callback(null, player, devil, defenders, intruders, logs);
         return;
       });
     },
 
-    function testResult (player, devil, defenders, intruder, logs, callback) {
+    function testResult (player, devil, defenders, intruders, logs, callback) {
       console.log('defenders:', defenders);
 
       var result = {
@@ -375,7 +378,7 @@ exports.intrude = function (req, res) {
         'player': player,
         'devil': devil,
         'defenders': defenders,
-        'intruder': intruder,
+        'intruders': intruders,
         'logs': logs
       };
 
