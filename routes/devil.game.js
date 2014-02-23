@@ -270,7 +270,6 @@ exports.battle = function (req, res) {
   var logs = [];
   console.log('started');
 
-  // player & devil -> city -> heros -> battle
   async.waterfall([
     function getPlayerAndDevil (callback) {
       common.getPlayerAndDevil(req.session.current_player_id, callback);
