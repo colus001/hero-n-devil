@@ -155,7 +155,7 @@ exports.index = function (req, res) {
             princesse_ids.push({ '_id': kingdom.princess_ids[i] });
           }
 
-          ProtoPrincess.find({ $or: princesse_ids }, function (err, princesses) {
+          ProtoPrincess.find({ 'published': true , $or: princesse_ids }, function (err, princesses) {
             if (err) throw err;
 
             if ( princesses.length > 0 ) {
