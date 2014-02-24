@@ -136,7 +136,12 @@ exports.index = function (req, res) {
     },
 
     function getKingdoms (player, devil, cities, colonies, monsters, protomonsters, callback) {
-      Kingdom.find({ 'player_id': current_player_id }, function (err, kingdoms) {
+      var findQuery = {
+        'player_id': current_player_id,
+        'level_limit': { $lte: devil.level }
+      };
+
+      Kingdom.find(findQuery, function (err, kingdoms) {
         if (err) throw err;
 
         if ( !kingdoms ) {
