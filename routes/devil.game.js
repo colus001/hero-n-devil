@@ -216,7 +216,7 @@ exports.levelup = function (req, res) {
     function updateLevelUp (player, devil, totalLevelUpCounts, callback) {
       var update = {
         $inc: {
-          'level': totalLevelUpCounts,
+          'level': common.getLevelFromPoints(totalLevelUpCounts),
           'target_experience': common.getExperienceCount(devil.target_experience, totalLevelUpCounts),
           'health_point': 0,
           'action_point': 0,
