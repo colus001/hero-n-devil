@@ -4,11 +4,7 @@
       <a data-toggle="collapse" data-parent="#accordion" href="#city-{{ city.id }}">
         {{ city.name }}
         <div style="color: #BBB;" class="pull-right">
-          {% if city.defenders.length > 0 %}
-          현병력: {{ city.defenders.length }}명
-          {% else %}
-          병력불명
-          {% endif %}
+          현병력: {% if city.defenders.length %}{{ city.defenders.length }}{% else %}?{% endif %}/{{ city.soldiers }}명
         </div>
       </a>
     </h4>

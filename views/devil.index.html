@@ -74,6 +74,20 @@
     </div>
 
     <div class="col-md-3">
+      <!-- KINGDOMS -->
+      {% if kingdoms.length > 0 %}
+      <h4>
+        KINGDOMS
+        <a href="/admin/kingdom" class="btn btn-xs btn-default pull-right">Kingdom 직접수정불가</a>
+      </h4>
+      <div class="panel-group">
+      {% for kingdom in kingdoms %}
+        {% include "devil.template.kingdom.html" %}
+      {% endfor %}
+      </div>
+      {% endif %}
+      <!-- KINGDOMS -->
+
       <!-- CITIES -->
       {% if cities.length > 0 %}
       <h4>
@@ -88,20 +102,6 @@
       </div>
       {% endif %}
       <!-- CITIES -->
-
-      <!-- KINGDOMS -->
-      {% if kingdoms.length > 0 %}
-      <h4>
-        KINGDOMS
-        <a href="/admin/kingdom" class="btn btn-xs btn-default pull-right">Kingdom 직접수정불가</a>
-      </h4>
-      <div class="panel-group">
-      {% for kingdom in kingdoms %}
-        {% include "devil.template.kingdom.html" %}
-      {% endfor %}
-      </div>
-      {% endif %}
-      <!-- KINGDOMS -->
 
       <!-- MONSTERS -->
       {% if cities.length > 0 %}

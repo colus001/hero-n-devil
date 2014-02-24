@@ -167,6 +167,15 @@ db.once('open', function callback () {
   app.get('/admin/soldier/delete/:id', admin.soldier.delete);
   app.get('/admin/soldier/publish/:id', admin.soldier.publish);
 
+    // ADMIN - PRINCESS
+  app.get('/admin/princess', admin.princess.index);
+  app.post('/admin/princess', admin.princess.create);
+  app.get('/admin/princess/view/:id', admin.princess.view);
+  app.get('/admin/princess/edit/:id', admin.princess.edit);
+  // app.post('/admin/princess/edit/:id', admin.princess.create);
+  app.get('/admin/princess/delete/:id', admin.princess.delete);
+  app.get('/admin/princess/publish/:id', admin.princess.publish);
+
   var server = http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
   });

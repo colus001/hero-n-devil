@@ -13,6 +13,7 @@ exports.city = require('./admin/city');
 exports.monster = require('./admin/monster');
 exports.soldier = require('./admin/soldier');
 exports.kingdom = require('./admin/kingdom');
+exports.princess = require('./admin/princess');
 
 exports.index = function (req, res) {
   res.render('admin.index.html');

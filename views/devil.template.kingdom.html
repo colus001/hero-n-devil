@@ -4,11 +4,7 @@
       <a data-toggle="collapse" data-parent="#accordion" href="#kingdom-{{ kingdom.id }}">
         {{ kingdom.name }}
         <div style="color: #BBB;" class="pull-right">
-          {% if kingdom.defenders.length > 0 %}
-          현병력: {{ kingdom.defenders.length }}명
-          {% else %}
-          병력불명
-          {% endif %}
+          현병력: {% if kingdom.defenders.length %}{{ kingdom.defenders.length }}{% else %}?{% endif %}/{{ kingdom.soldiers }}명
         </div>
       </a>
     </h4>
@@ -39,8 +35,13 @@
           <div class="col-xs-8">{{ kingdom.defense }}</div>
         </div>
       </div>
+      {% if kingdom.princesses.length > 0 %}
       <hr />
-      <attack class="btn btn-block btn-primary" data-kingdom="{{ kingdom.id }}" data-toggle="modal" data-target="#battleModal">공격(Modal)</attack>
+      {% for princess in kingdom.princesses %}
+      <button class="btn btn-block btn-default">{{ princess.name }}</button>
+      {% endfor %}
+      {% endif %}
+      <!-- <attack class="btn btn-block btn-primary" data-kingdom="{{ kingdom.id }}" data-toggle="modal" data-target="#battleModal">공격(Modal)</attack> -->
     </div>
   </div>
 </div>

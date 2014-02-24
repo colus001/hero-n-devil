@@ -16,19 +16,36 @@ var Kingdom = require('../../lib/model').Kingdom;
 
 // Model - Prototype
 var ProtoKingdom = require('../../lib/model').ProtoKingdom;
+var ProtoPrincess = require('../../lib/model').ProtoPrincess;
 
 // Library
 var errorHandler = require('../../lib/errorHandler');
 
 exports.index = function (req, res) {
-  ProtoKingdom.find({}, function (err, kingdoms) {
-    if (err) throw err;
+  async.waterfall([
+    function getKingdoms (callback) {
+      ProtoKingdom.find({}, function (err, kingdoms) {
+        if (err) throw err;
 
-    var result = {
-      'result': 'success',
-      'kingdoms': kingdoms
-    };
+        callback(null, kingdoms);
+        return;
+      });
+    },
 
+    function getPrincesses (kingdoms, callback) {
+      ProtoPrincess.find({}, function (err, princesses) {
+        if (err) throw err;
+
+        var result = {
+          'result': 'success',
+          'kingdoms': kingdoms,
+          'princesses': princesses
+        };
+
+        callback(null, result);
+      });
+    }
+  ], function (err, result) {
     res.render('admin.kingdom.html', result);
     return;
   });

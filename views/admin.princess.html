@@ -1,0 +1,121 @@
+{% extends 'layout.html' %}
+
+{% block title %} PRINCESS {% endblock %}
+
+{% block head %}
+  {% parent %}
+{% endblock %}
+
+{% block content %}
+  {% include 'admin.back.html' %}
+
+  <div class="col-md-12">
+    <h4>PRINCESS MANAGER</h4>
+    <!-- PRINCESS FORM -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#form">
+              공주 등록
+            </a>
+          </h4>
+        </div>
+        <div class="panel-collapse collapse" id="form">
+          <div class="panel-body">
+            <form role="form-horizontal" method="POST">
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">이름</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="name" placeholder="안나">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">미모</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="beauty" placeholder="10">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">효과 #1</label>
+                  <div class="col-sm-10">
+                    <input type="name" class="form-control" name="effects[]" placeholder="Bless">
+                  </div>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label class="col-sm-2">효과 #2</label>
+                  <div class="col-sm-10">
+                    <input type="name" class="form-control" name="effects[]" placeholder="Rich Girl">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <label class="col-sm-2">설명</label>
+                  <textarea name="description" class="form-control" rows="3"></textarea>
+                  <br />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-block btn-primary">등록하기</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div><!-- PRINCESS FORM -->
+    <div class="alert alert-info">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <p>Princess Manager는 왕국이 가지고 있는 공주를 관리한다. ProtoPrincess로 저장되고, 실제 마왕이 납치에 성공한 경우에만 Princess DB로 옮겨짐.</p>
+      <p>일단 한번 생성된 공주는 관리자가 스탯을 변경해도 실제 유저에게는 적용되지 않음. 새로 납치한 경우에만 적용됨.</p>
+    </div class="alert alert-info">
+    <hr>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>이름</th>
+          <th>미모</th>
+          <th>효과</th>
+          <th>상태</th>
+          <th>관리</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for princess in princesses %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ princess.name }}</td>
+          <td>{{ princess.beauty }}</td>
+          <td>{{ princess.effects }}</td>
+          <td>
+            {% if princess.published %}
+            <a href="/admin/princess/publish/{{ princess.id }}" class="btn btn-xs btn-success">Published</a>
+            {% else %}
+            <a href="/admin/princess/publish/{{ princess.id }}" class="btn btn-xs btn-warning">Draft</a>
+            {% endif %}
+          </td>
+          <td>
+            <a href="/admin/princess/view/{{ princess.id }}" class="btn btn-xs btn-info">View</a>
+            <a href="/admin/princess/edit/{{ princess.id }}" class="btn btn-xs btn-primary">Edit</a>
+            <a href="/admin/princess/delete/{{ princess.id }}" class="btn btn-xs btn-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="col-sm-12">
+      <ul class="pagination">
+        <li><a href="#">&laquo;</a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">&raquo;</a></li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

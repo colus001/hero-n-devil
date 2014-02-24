@@ -23,6 +23,7 @@ var Kingdom = require('../lib/model').Kingdom;
 var ProtoCity = require('../lib/model').ProtoCity;
 var ProtoDevil = require('../lib/model').ProtoDevil;
 var ProtoMonster = require('../lib/model').ProtoMonster;
+var ProtoPrincess = require('../lib/model').ProtoPrincess;
 
 // Library
 var errorHandler = require('../lib/errorHandler');
@@ -39,8 +40,6 @@ exports.index = function (req, res) {
         if (err) throw err;
 
         if ( !player ) {
-          console.log('NO_PLAYER_FOUND');
-          callback('NO_PLAYER_FOUND');
           res.redirect('/player');
           return;
         }
@@ -62,7 +61,6 @@ exports.index = function (req, res) {
 
         if ( !devil ) {
           res.redirect('/devil/select');
-          callback('NO_DEVIL_FOUND');
           return;
         }
 
@@ -76,7 +74,7 @@ exports.index = function (req, res) {
         if (err) throw err;
 
         if ( !cities ) {
-          errorHandler.sendErrorMessage('NO_CITIES_FOUND', res);
+          callback('NO_CITIES_FOUND');
           return;
         }
 
@@ -109,11 +107,6 @@ exports.index = function (req, res) {
       City.find({ 'player_id': current_player_id, 'isCaptured': true }, function (err, colonies) {
         if (err) throw err;
 
-        if ( !colonies ) {
-          errorHandler.sendErrorMessage('NO_COLONIES_FOUND', res);
-          return;
-        }
-
         callback(null, player, devil, cities, colonies);
         return;
       });
@@ -133,7 +126,7 @@ exports.index = function (req, res) {
         if (err) throw err;
 
         if ( !protomonsters ) {
-          errorHandler.sendErrorMessage('NO_MONSTER_PROTOTYPE_FOUND', res);
+          callback('NO_MONSTER_PROTOTYPE_FOUND');
           return;
         }
 
@@ -147,12 +140,36 @@ exports.index = function (req, res) {
         if (err) throw err;
 
         if ( !kingdoms ) {
-          errorHandler.sendErrorMessage('NO_KINGDOMS_FOUND', res);
+          callback('NO_KINGDOMS_FOUND');
           return;
         }
 
-        callback(null, player, devil, cities, colonies, monsters, protomonsters, kingdoms);
-        return;
+        async.map(kingdoms, function getPrincesses (kingdom, next) {
+          if ( kingdom.princess_ids.length === 0 || !kingdom.princess_ids ) {
+            next(null, kingdom);
+          }
+
+          var princesse_ids = [];
+
+          for ( var i = 0; i < kingdom.princess_ids.length; i++ ) {
+            princesse_ids.push({ '_id': kingdom.princess_ids[i] });
+          }
+
+          ProtoPrincess.find({ $or: princesse_ids }, function (err, princesses) {
+            if (err) throw err;
+
+            if ( princesses.length > 0 ) {
+              kingdom.princesses = princesses;
+            }
+            console.log('princesses:', princesses);
+
+            next(null, kingdom);
+            return;
+          });
+        }, function (err, result) {
+          callback(null, player, devil, cities, colonies, monsters, protomonsters, kingdoms);
+          return;
+        });
       });
     },
 
@@ -191,6 +208,11 @@ exports.index = function (req, res) {
       return;
     }
   ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
     res.render('devil.index.html', result);
     return;
   });
