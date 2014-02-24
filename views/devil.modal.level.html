@@ -8,70 +8,231 @@
       <div class="modal-body">
         <p>레벨업 하실 항목을 선택하세요.</p>
         <table class="table">
-          <thead></thead>
+          <thead>
+            <tr>
+              <th>항목</th>
+              <th>수치</th>
+              <th>추가 포인트
+                <span id="pointLeft" class="badge pull-right"></span>
+              </div>
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td>HP</td>
-              <td>{{ devil.health_point }}</td>
+              <td id="level_health_point" class="point"></td>
               <td>
-                <button class="btn btn-default btn-sm">+</button>
-                <button class="btn btn-default btn-sm">-</button>
+                <pointup class="btn btn-default btn-sm">+</pointup>
               </td>
             </tr>
             <tr>
               <td>AP</td>
-              <td>{{ devil.action_point }}</td>
+              <td id="level_action_point" class="point"></td>
               <td>
-                <button class="btn btn-default btn-sm">+</button>
-                <button class="btn btn-default btn-sm">-</button>
+                <pointup class="btn btn-default btn-sm">+</pointup>
               </td>
             </tr>
             <tr>
               <td>공격속도</td>
-              <td>{{ devil.attack_speed_per_sec }}</td>
+              <td id="level_attack_speed_per_sec" class="point"></td>
               <td>
-                <button class="btn btn-default btn-sm">+</button>
-                <button class="btn btn-default btn-sm">-</button>
+                <pointup class="btn btn-default btn-sm">+</pointup>
               </td>
             </tr>
             <tr>
               <td>물리 공격력</td>
-              <td>{{ devil.physical_damage }}</td>
+              <td id="level_physical_damage" class="point"></td>
               <td>
-                <button class="btn btn-default btn-sm">+</button>
-                <button class="btn btn-default btn-sm">-</button>
+                <pointup class="btn btn-default btn-sm">+</pointup>
               </td>
             </tr>
             <tr>
               <td>마법 공격력</td>
-              <td>{{ devil.magic_damage }}</td>
+              <td id="level_magic_damage" class="point"></td>
               <td>
-                <button class="btn btn-default btn-sm">+</button>
-                <button class="btn btn-default btn-sm">-</button>
+                <pointup class="btn btn-default btn-sm">+</pointup>
               </td>
             </tr>
             <tr>
               <td>방어력</td>
-              <td>{{ devil.armor }}</td>
+              <td id="level_armor" class="point"></td>
               <td>
-                <button class="btn btn-default btn-sm">+</button>
-                <button class="btn btn-default btn-sm">-</button>
+                <pointup class="btn btn-default btn-sm">+</pointup>
               </td>
             </tr>
             <tr>
               <td>마법저항</td>
-              <td>{{ devil.magic_resist }}</td>
+              <td id="level_magic_resist" class="point"></td>
               <td>
-                <button class="btn btn-default btn-sm">+</button>
-                <button class="btn btn-default btn-sm">-</button>
+                <pointup class="btn btn-default btn-sm">+</pointup>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
+        <button id="levelSubmit" class="btn btn-success">레벨업</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  var level_data = {};
+  var pointUps = [];
+  var availablePoints = 0;
+
+  var getLevelUpCount = function (current_experience, target_experience) {
+    var level = Math.floor(current_experience / target_experience);
+
+    if ( level === 1 ) {
+      return 3;
+    } else {
+      return 3 + getLevelUpCount(current_experience, target_experience*2);
+    }
+  };
+
+  $('#levelModal').on('show.bs.modal', function (e) {
+    console.log('called');
+    $.ajax({
+      type: 'GET',
+      url: '/devil/stats',
+      success: function (data, status) {
+        if ( data.result !== 'success' ) {
+          alert('알 수 없는 에러가 발생하였습니다.');
+          return;
+        }
+
+        level_data = data.devil;
+
+        for ( var i in data.devil ) {
+          $('#level_' + i).text(data.devil[i]);
+        }
+
+        availablePoints = getLevelUpCount(data.devil.current_experience, data.devil.target_experience);
+        $('#pointLeft').text(availablePoints);
+
+        return;
+      },
+      error: function (error) {
+        console.log(error);
+        return;
+      }
+    })
+  });
+
+  $('#levelModal').on('hide.bs.modal', function (e) {
+    pointUps = [];
+  });
+
+  var addPoint = function (stat) {
+    pointUps.push(stat);
+    level_data[stat] *= 1.1;
+
+    $('#pointLeft').text( availablePoints-pointUps.length );
+
+    if ( stat === 'attack_speed_per_sec' ) {
+      $('#level_'+stat).text( level_data[stat].toFixed(2) );
+    } else {
+      $('#level_'+stat).text( Math.floor(level_data[stat]));
+    }
+  }
+
+  var getAndRemoveElementFromArray = function (array, value) {
+    var i;
+    if ( array.indexOf ) { // IE9+,  다른 모든 브라우져
+      while((i = array.indexOf(value)) !== -1) {
+        return array.splice(i, 1)[0];
+      }
+    } else { // IE8 이하
+      for (i = array.length; i--;) {  //뒤에서부터 배열을 탐색
+        if (array[i] === value) {
+          return array.splice(i, 1)[0];
+        }
+      }
+    }
+  }
+
+  var subtractPoint = function (stat) {
+    if ( getAndRemoveElementFromArray(pointUps, stat) === undefined ) {
+      return;
+    }
+
+    level_data[stat] /= 1.1;
+
+    var needToRemoveDownButton = true;
+
+    for ( var i in pointUps ) {
+      if ( pointUps[i] === stat ) {
+        needToRemoveDownButton = false;
+      }
+    }
+
+    if ( needToRemoveDownButton ) {
+      $('#level_'+stat).parent().find('pointdown').remove();
+    }
+
+    $('#pointLeft').text( availablePoints-pointUps.length );
+    if ( stat === 'attack_speed_per_sec' ) {
+      $('#level_'+stat).text( level_data[stat].toFixed(2) );
+    } else {
+      $('#level_'+stat).text( Math.floor(level_data[stat]));
+    }
+  }
+
+  $('pointup').on('click', function () {
+    if ( pointUps.length > availablePoints-1 ) {
+      alert('더이상 추가할 수 없습니다.');
+      return;
+    }
+
+    var $currentButton = $(this).parent().parent().find('.point');
+    var currentStat = $currentButton.attr('id').slice(6);
+
+    if ( $(this).parent().find('pointdown').length === 0 ) {
+      var $pointDownButton = $('<pointdown class="btn btn-default btn-sm">-</pointdown>');
+    }
+
+    $(this).parent().append($pointDownButton);
+
+    addPoint(currentStat);
+  });
+
+  $(document).on('click', 'pointdown', function () {
+    if ( pointUps.length <= 0 ) {
+      alert('더이상 삭제할 수 없습니다.');
+      return;
+    }
+
+    var $currentButton = $(this).parent().parent().find('.point');
+    var currentStat = $currentButton.attr('id').slice(6);
+
+    subtractPoint(currentStat);
+  });
+
+  $('#levelSubmit').on('click', function () {
+    var pointCount = availablePoints - pointUps.length;
+    if ( pointCount !== 0 ) {
+      if ( !confirm('아직 ' + pointCount + '만큼 더 포인트를 성장시킬 수 있습니다. 그만하시겠습니까?') ) {
+        return;
+      }
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: '/devil/levelup',
+      data: { 'points': pointUps },
+      success: function (data, status) {
+
+      },
+      error: function (error) {
+
+      }
+    });
+
+    console.log('pointUps:', pointUps);
+    return;
+  });
+</script>

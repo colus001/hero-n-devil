@@ -100,6 +100,8 @@ db.once('open', function callback () {
   app.post('/devil/status', checkCurrentPlayer, devil.game.status);
   app.post('/devil/attack', checkCurrentPlayer, devil.game.battle);
   app.post('/devil/collect', checkCurrentPlayer, devil.game.collect);
+  app.post('/devil/levelup', checkCurrentPlayer, devil.game.levelup);
+  app.get('/devil/stats', checkCurrentPlayer, devil.game.stats);
 
   // DEVIL - MONSTER
   app.post('/devil/monster/purchase', checkCurrentPlayer, devil.monster.purchase);

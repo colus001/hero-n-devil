@@ -64,6 +64,10 @@ exports.index = function (req, res) {
           return;
         }
 
+        if ( devil.current_experience >= devil.target_experience ) {
+          devil.level_up_available = true;
+        }
+
         callback(null, player, devil);
         return;
       });

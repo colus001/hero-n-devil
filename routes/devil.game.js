@@ -60,6 +60,10 @@ exports.status = function (req, res) {
           return;
         }
 
+        if ( devil.current_experience >= devil.target_experience ) {
+          devil.level_up_available = true;
+        }
+
         callback(null, result);
         return;
       });
@@ -184,54 +188,49 @@ exports.collect = function (req, res) {
   });
 };
 
-exports.levelUp = function (req, res) {
+exports.levelup = function (req, res) {
   async.waterfall([
-    function checkReqeust (callback) {
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
+    },
+
+    function checkRequest (player, devil, callback) {
       var totalPoint = 0;
 
-      for ( var i in req.body ) {
-        totalPoint += req.body[i];
-      }
-
-      if ( totalPoint > 3 ) {
-        callback('POINT_EXCEEDED_TO_LEVEL_UP');
+      if ( devil.current_experience < devil.target_experience ) {
+        callback('NOT_ENOUGH_EXPERIENCE');
         return;
       }
-    },
 
-    function getPlayer (callback) {
-      Player.findById(req.session.current_player_id, function (err, player) {
-        if (err) throw err;
+      var totalLevelUpCounts = common.getLevelUpCount(devil.current_experience, devil.target_experience);
 
-        if ( !player ) {
-          callback('NO_PLAYER_FOUND');
-          return;
-        }
-
-        callback(null, player);
+      if ( req.body.points.length > totalLevelUpCounts ) {
+        callback('TOO_MANY_POINTS');
         return;
-      });
+      }
+
+      callback(null, player, devil, totalLevelUpCounts);
+      return;
     },
 
-    function getDevil (player, callback) {
-      Devil.findById(player.devil_id, function (err, devil) {
-        if (err) throw err;
-
-        if ( !devil ) {
-          callback('NO_DEVIL_FOUND');
-          return;
+    function updateLevelUp (player, devil, totalLevelUpCounts, callback) {
+      var update = {
+        $inc: {
+          'level': totalLevelUpCounts,
+          'target_experience': common.getExperienceCount(devil.target_experience, totalLevelUpCounts),
+          'health_point': 0,
+          'action_point': 0,
+          'attack_speed_per_sec': 0,
+          'physical_damage': 0,
+          'magic_damage': 0,
+          'armor': 0,
+          'magic_resist': 0
         }
+      };
 
-        callback(null, devil);
-        return;
-      });
-    },
-
-    function updateLevelUp (devil, callback) {
-      var update;
-
-      for ( var i in req.body ) {
-        update[i] = devil[i] * 1.1;
+      for ( var i in req.body.points ) {
+        var stat = req.body.points[i];
+        update.$inc[stat] += common.getPointUp(stat);
       }
 
       if ( update.health_point ) {
@@ -392,6 +391,32 @@ exports.battle = function (req, res) {
         callback(null, result);
         return;
       });
+    }
+  ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
+    res.send(result);
+    return;
+  });
+};
+
+exports.stats = function (req, res) {
+  async.waterfall([
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
+    },
+
+    function getResult (player, devil, callback) {
+      var result = {
+        'result': 'success',
+        'devil': devil
+      };
+
+      callback(null, result);
+      return;
     }
   ], function (err, result) {
     if (err) {

@@ -49,7 +49,11 @@
     <hr />
     <div class="col-md-3">
       <h4>STATS</h4>
-      <button class="btn btn-block btn-warning" data-toggle="modal" data-target="#levelModal">레벨업 (테스트)</button>
+      {% if devil.level_up_available == true %}
+      <button id="levelup" class="btn btn-block btn-success" data-toggle="modal" data-target="#levelModal">레벨업 가능</button>
+      {% else %}
+      <button id="levelup" class="btn btn-block btn-default disabled" data-toggle="modal" data-target="#levelModal">레벨업 불가</button>
+      {% endif %}
       <button id="money" class="btn btn-block btn-default">돈: {{ player.money }}</button>
       <button id="socketTest" class="btn btn-block btn-default">소켓 테스트</button>
 
@@ -317,12 +321,15 @@
     });
 
     var updateDevil = function (data) {
-      if ( data.current_health_point !== data.health_point ) {
+      var curentHp = Number($('#hp').text().split(':')[1].split('/')[0]);
+      var curentAp = Number($('#ap').text().split(':')[1].split('/')[0]);
+
+      if ( data.current_health_point !== data.health_point && curentHp !== data.current_health_point ) {
         $p = $('<p></p>').text('HP가 ' + data.current_health_point + '으로 회복되었습니다.');
         $gameLog.append($p);
       }
 
-      if ( data.current_action_point !== data.action_point ) {
+      if ( data.current_action_point !== data.action_point && curentAp !== data.current_action_point ) {
         $p = $('<p></p>').text('AP가 ' + data.current_action_point + '으로 회복되었습니다.');
         $gameLog.append($p);
       }
@@ -378,6 +385,12 @@
 
           if ( data.devil ) {
             updateDevil(data.devil);
+          }
+
+          if ( data.devil.level_up_available ) {
+            $('#levelup').removeClass('disabled btn-default').addClass('btn-success').text('레벨업 가능');
+          } else {
+            $('#levelup').removeClass('btn-success').addClass('disabled btn-default').text('레벨업 불가');
           }
 
           if ( data.monsters.length !== 0 ) {
