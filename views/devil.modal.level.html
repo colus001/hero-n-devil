@@ -84,16 +84,6 @@
   var pointUps = [];
   var availablePoints = 0;
 
-  var getLevelUpCount = function (current_experience, target_experience) {
-    var level = Math.floor(current_experience / target_experience);
-
-    if ( level === 1 ) {
-      return 3;
-    } else {
-      return 3 + getLevelUpCount(current_experience, target_experience*2);
-    }
-  };
-
   $('#levelModal').on('show.bs.modal', function (e) {
     console.log('called');
     $.ajax({
@@ -129,7 +119,7 @@
 
   var addPoint = function (stat) {
     pointUps.push(stat);
-    level_data[stat] *= 1.1;
+    level_data[stat] += getPointUp(stat);
 
     $('#pointLeft').text( availablePoints-pointUps.length );
 
@@ -140,27 +130,12 @@
     }
   }
 
-  var getAndRemoveElementFromArray = function (array, value) {
-    var i;
-    if ( array.indexOf ) { // IE9+,  다른 모든 브라우져
-      while((i = array.indexOf(value)) !== -1) {
-        return array.splice(i, 1)[0];
-      }
-    } else { // IE8 이하
-      for (i = array.length; i--;) {  //뒤에서부터 배열을 탐색
-        if (array[i] === value) {
-          return array.splice(i, 1)[0];
-        }
-      }
-    }
-  }
-
   var subtractPoint = function (stat) {
     if ( getAndRemoveElementFromArray(pointUps, stat) === undefined ) {
       return;
     }
 
-    level_data[stat] /= 1.1;
+    level_data[stat] -= getPointUp(stat);
 
     var needToRemoveDownButton = true;
 
