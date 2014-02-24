@@ -135,7 +135,7 @@ db.once('open', function callback () {
   app.get('/admin/kingdom/view/:id', admin.kingdom.view);
   app.get('/admin/kingdom/publish/:id', admin.kingdom.publish);
   app.get('/admin/kingdom/edit/:id', admin.kingdom.edit);
-  // app.post('/admin/kingdom/edit/:id', admin.kingdom.create);
+  app.post('/admin/kingdom/edit/:id', admin.kingdom.create);
   app.get('/admin/kingdom/delete/:id', admin.kingdom.delete);
   app.get('/admin/kingdom/apply', admin.kingdom.apply);
 
@@ -145,7 +145,7 @@ db.once('open', function callback () {
   app.get('/admin/city/view/:id', admin.city.view);
   app.get('/admin/city/publish/:id', admin.city.publish);
   app.get('/admin/city/edit/:id', admin.city.edit);
-  // app.post('/admin/city/edit/:id', admin.city.create);
+  app.post('/admin/city/edit/:id', admin.city.create);
   app.get('/admin/city/delete/:id', admin.city.delete);
   app.get('/admin/city/apply', admin.city.apply);
 
@@ -154,7 +154,7 @@ db.once('open', function callback () {
   app.post('/admin/monster', admin.monster.create);
   app.get('/admin/monster/view/:id', admin.monster.view);
   app.get('/admin/monster/edit/:id', admin.monster.edit);
-  // app.post('/admin/monster/edit/:id', admin.monster.create);
+  app.post('/admin/monster/edit/:id', admin.monster.create);
   app.get('/admin/monster/delete/:id', admin.monster.delete);
   app.get('/admin/monster/publish/:id', admin.monster.publish);
 
@@ -163,7 +163,7 @@ db.once('open', function callback () {
   app.post('/admin/soldier', admin.soldier.create);
   app.get('/admin/soldier/view/:id', admin.soldier.view);
   app.get('/admin/soldier/edit/:id', admin.soldier.edit);
-  // app.post('/admin/soldier/edit/:id', admin.soldier.create);
+  app.post('/admin/soldier/edit/:id', admin.soldier.create);
   app.get('/admin/soldier/delete/:id', admin.soldier.delete);
   app.get('/admin/soldier/publish/:id', admin.soldier.publish);
 
@@ -172,7 +172,7 @@ db.once('open', function callback () {
   app.post('/admin/princess', admin.princess.create);
   app.get('/admin/princess/view/:id', admin.princess.view);
   app.get('/admin/princess/edit/:id', admin.princess.edit);
-  // app.post('/admin/princess/edit/:id', admin.princess.create);
+  app.post('/admin/princess/edit/:id', admin.princess.create);
   app.get('/admin/princess/delete/:id', admin.princess.delete);
   app.get('/admin/princess/publish/:id', admin.princess.publish);
 
