@@ -10,14 +10,14 @@
   {% include 'admin.back.html' %}
 
   <div class="col-md-12">
-    <h4>CITY MANAGER</h4>
-    <!-- CITY FORM -->
+    <h4>KINGDOM MANAGER</h4>
+    <!-- KINGDOM FORM -->
     <div class="panel-group">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion" href="#form">
-              도시 등록
+              왕국 등록
             </a>
           </h4>
         </div>
@@ -26,20 +26,15 @@
             <form role="form-horizontal" method="POST">
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">도시명</label>
+                  <label class="col-sm-2">왕국명</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="name" placeholder="미녀들의 도시">
+                    <input type="text" class="form-control" name="name" placeholder="머나먼 왕국">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">소속 왕국</label>
+                  <label class="col-sm-2">방어력</label>
                   <div class="col-sm-10">
-                    <select name="kingdom_id" class="form-control">
-                      <option value="NO_KINGDOM">소속없음</option>
-                      {% for kingdom in kingdoms %}
-                      <option value="{{ kingdom.id }}">{{ kingdom.name }}</option>
-                      {% endfor %}
-                    </select>
+                    <input type="number" class="form-control" name="defense" placeholder="100">
                   </div>
                 </div>
               </div>
@@ -47,13 +42,13 @@
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">인구</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="population" placeholder="100">
+                    <input type="number" class="form-control" name="population" placeholder="10000">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">경제력 등급</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="economy_level" placeholder="1">
+                    <input type="number" class="form-control" name="economy_level" placeholder="5">
                   </div>
                 </div>
               </div>
@@ -61,27 +56,21 @@
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">병력</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="soldiers" placeholder="1">
+                    <input type="number" class="form-control" name="soldiers" placeholder="10">
                   </div>
                 </div>
                 <div class="form-group col-sm-6">
                   <label class="col-sm-2">군사력 등급</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="army_level" placeholder="1">
+                    <input type="number" class="form-control" name="army_level" placeholder="5">
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label class="col-sm-2">방어력</label>
-                  <div class="col-sm-10">
-                    <input type="number" class="form-control" name="defense" placeholder="10">
-                  </div>
-                </div>
-                <div class="form-group col-sm-6">
                   <label class="col-sm-2">징수 시간(초)</label>
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" name="time_to_collect" placeholder="10">
+                    <input type="number" class="form-control" name="time_to_collect" placeholder="600">
                   </div>
                 </div>
               </div>
@@ -98,20 +87,20 @@
           </div>
         </div>
       </div>
-    </div><!-- CITY FORM -->
+    </div><!-- KINGDOM FORM -->
     <hr>
     <div class="alert alert-info">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      <p>City Manager는 마왕이 점령할 수 있는 도시를 관리.</p>
-      <p>마왕을 생성할때 ProtoCity에서 Publish 되어있는 모든 도시를 City로 마왕 id와 함께 저장함.</p>
-      <p>따라서 새로운 도시를 만들면  <button class="btn btn-info btn-xs">도시 적용</button> 버튼을 클릭하여 현재 플레이중인 모든 Devil에게 적용해 주어야 함.</p>
+      <p>Kingdom Manager는 마왕이 점령할 수 있는 왕국을 관리.</p>
+      <p>마왕을 생성할때 ProtoKingdom에서 Publish 되어있는 모든 왕국을 Kingdom로 마왕 id와 함께 저장함.</p>
+      <p>따라서 새로운 왕국을 만들면 <button class="btn btn-info btn-xs">왕국 적용</button> 버튼을 클릭하여 현재 플레이중인 모든 Devil에게 적용해 주어야 함.</p>
     </div class="alert alert-info">
     <hr />
     <table class="table table-hover">
       <thead>
         <tr>
           <th>#</th>
-          <th>도시명</th>
+          <th>왕국명</th>
           <th>방어력</th>
           <th>인구</th>
           <th>경제력 등급</th>
@@ -123,27 +112,27 @@
         </tr>
       </thead>
       <tbody>
-        {% for city in cities %}
+        {% for kingdom in kingdoms %}
         <tr>
           <td>{{ loop.index }}</td>
-          <td>{{ city.name }}</td>
-          <td>{{ city.defense }}</td>
-          <td>{{ city.population }}</td>
-          <td>{{ city.economy_level }}</td>
-          <td>{{ city.soldiers }}</td>
-          <td>{{ city.army_level }}</td>
-          <td>{{ city.time_to_collect }}</td>
+          <td>{{ kingdom.name }}</td>
+          <td>{{ kingdom.defense }}</td>
+          <td>{{ kingdom.population }}</td>
+          <td>{{ kingdom.economy_level }}</td>
+          <td>{{ kingdom.soldiers }}</td>
+          <td>{{ kingdom.army_level }}</td>
+          <td>{{ kingdom.time_to_collect }}</td>
           <td>
-            {% if city.published %}
-            <a href="/admin/city/publish/{{ city.id }}" class="btn btn-xs btn-success">Published</a>
+            {% if kingdom.published %}
+            <a href="/admin/kingdom/publish/{{ kingdom.id }}" class="btn btn-xs btn-success">Published</a>
             {% else %}
-            <a href="/admin/city/publish/{{ city.id }}" class="btn btn-xs btn-warning">Draft</a>
+            <a href="/admin/kingdom/publish/{{ kingdom.id }}" class="btn btn-xs btn-warning">Draft</a>
             {% endif %}
           </td>
           <td>
-            <a href="/admin/city/view/{{ city.id }}" class="btn btn-xs btn-info">View</a>
-            <a href="/admin/city/edit/{{ city.id }}" class="btn btn-xs btn-primary">Edit</a>
-            <a href="/admin/city/delete/{{ city.id }}" class="btn btn-xs btn-danger">Delete</a>
+            <a href="/admin/kingdom/view/{{ kingdom.id }}" class="btn btn-xs btn-info">View</a>
+            <a href="/admin/kingdom/edit/{{ kingdom.id }}" class="btn btn-xs btn-primary">Edit</a>
+            <a href="/admin/kingdom/delete/{{ kingdom.id }}" class="btn btn-xs btn-danger">Delete</a>
           </td>
         </tr>
         {% endfor %}
@@ -151,7 +140,7 @@
     </table>
 
     <div class="col-sm-12">
-      <a href="/admin/city/apply" class="btn btn-info pull-right">도시 적용</a>
+      <a href="/admin/kingdom/apply" class="btn btn-info pull-right">왕국 적용</a>
       <ul class="pagination">
         <li><a href="#">&laquo;</a></li>
         <li><a href="#">1</a></li>

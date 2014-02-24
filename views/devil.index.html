@@ -54,7 +54,7 @@
       <button id="socketTest" class="btn btn-block btn-default">소켓 테스트</button>
 
       <h4>
-        KINGDOM
+        NEST
         <a href="/admin/devil" class="btn btn-xs btn-default pull-right">Devil 직접수정불가</a>
       </h4>
       <div class="panel-group">
@@ -63,7 +63,7 @@
 
       <div id="colonies" class="panel-group">
         <h4>COLONIES</h4>
-        {% if colonies.length %}
+        {% if colonies.length > 0 %}
         <div class="panel-group">
         {% for colony in colonies %}
           {% include "devil.template.colony.html" %}
@@ -73,9 +73,9 @@
       </div>
     </div>
 
-    <!-- CITIES -->
     <div class="col-md-3">
-      {% if cities.length %}
+      <!-- CITIES -->
+      {% if cities.length > 0 %}
       <h4>
         CITIES
         <a href="/admin/city" class="btn btn-xs btn-default pull-right">City 직접수정불가</a>
@@ -89,8 +89,22 @@
       {% endif %}
       <!-- CITIES -->
 
+      <!-- KINGDOMS -->
+      {% if kingdoms.length > 0 %}
+      <h4>
+        KINGDOMS
+        <a href="/admin/kingdom" class="btn btn-xs btn-default pull-right">Kingdom 직접수정불가</a>
+      </h4>
+      <div class="panel-group">
+      {% for kingdom in kingdoms %}
+        {% include "devil.template.kingdom.html" %}
+      {% endfor %}
+      </div>
+      {% endif %}
+      <!-- KINGDOMS -->
+
       <!-- MONSTERS -->
-      {% if cities.length %}
+      {% if cities.length > 0 %}
       <h4>
         MONSTERS
         <a href="/admin/monster" class="btn btn-xs btn-default pull-right">Monster 직접수정불가</a>
@@ -104,7 +118,7 @@
       <!-- MONSTERS -->
 
       <!-- BARRACK -->
-      {% if cities.length %}
+      {% if cities.length > 0 %}
       <h4>
         BARRACK
         <a href="/admin/monster" class="btn btn-xs btn-default pull-right">Monster 관리</a>

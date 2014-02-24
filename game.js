@@ -129,10 +129,21 @@ db.once('open', function callback () {
   app.get('/admin/devil/delete/:id', admin.devil.delete);
   app.get('/admin/devil/publish/:id', admin.devil.publish);
 
+  // ADMIN - KINGDOM
+  app.get('/admin/kingdom', admin.kingdom.index);
+  app.post('/admin/kingdom', admin.kingdom.create);
+  app.get('/admin/kingdom/view/:id', admin.kingdom.view);
+  app.get('/admin/kingdom/publish/:id', admin.kingdom.publish);
+  app.get('/admin/kingdom/edit/:id', admin.kingdom.edit);
+  // app.post('/admin/kingdom/edit/:id', admin.kingdom.create);
+  app.get('/admin/kingdom/delete/:id', admin.kingdom.delete);
+  app.get('/admin/kingdom/apply', admin.kingdom.apply);
+
   // ADMIN - CITY
   app.get('/admin/city', admin.city.index);
   app.post('/admin/city', admin.city.create);
   app.get('/admin/city/view/:id', admin.city.view);
+  app.get('/admin/city/publish/:id', admin.city.publish);
   app.get('/admin/city/edit/:id', admin.city.edit);
   // app.post('/admin/city/edit/:id', admin.city.create);
   app.get('/admin/city/delete/:id', admin.city.delete);

@@ -17,6 +17,7 @@ var City = require('../lib/model').City;
 var Player = require('../lib/model').Player;
 var Monster = require('../lib/model').Monster;
 var Soldier = require('../lib/model').Soldier;
+var Kingdom = require('../lib/model').Kingdom;
 
 // Model Prototype
 var ProtoCity = require('../lib/model').ProtoCity;
@@ -141,7 +142,21 @@ exports.index = function (req, res) {
       });
     },
 
-    function getResult (player, devil, cities, colonies, monsters, protomonsters, callback) {
+    function getKingdoms (player, devil, cities, colonies, monsters, protomonsters, callback) {
+      Kingdom.find({ 'player_id': current_player_id }, function (err, kingdoms) {
+        if (err) throw err;
+
+        if ( !kingdoms ) {
+          errorHandler.sendErrorMessage('NO_KINGDOMS_FOUND', res);
+          return;
+        }
+
+        callback(null, player, devil, cities, colonies, monsters, protomonsters, kingdoms);
+        return;
+      });
+    },
+
+    function getResult (player, devil, cities, colonies, monsters, protomonsters, kingdoms, callback) {
       var result = {
         'result': 'success',
         'player': player,
@@ -149,6 +164,7 @@ exports.index = function (req, res) {
         'cities': cities,
         'colonies': colonies,
         'protomonsters': protomonsters,
+        'kingdoms': kingdoms,
         'monsters': [],
         'floors': {
           '1f': [],

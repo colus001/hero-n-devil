@@ -1,0 +1,46 @@
+<div data-id="kingdom-{{ kingdom.id }}" class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a data-toggle="collapse" data-parent="#accordion" href="#kingdom-{{ kingdom.id }}">
+        {{ kingdom.name }}
+        <div style="color: #BBB;" class="pull-right">
+          {% if kingdom.defenders.length > 0 %}
+          현병력: {{ kingdom.defenders.length }}명
+          {% else %}
+          병력불명
+          {% endif %}
+        </div>
+      </a>
+    </h4>
+  </div>
+  <div class="panel-collapse collapse" id="kingdom-{{ kingdom.id }}">
+    <div class="panel-body">
+      <div>
+        <img src="http://lorempixel.com/200/200/city" class="img-thumbnail" />
+        <h4>STATS</h4>
+        <div class="row">
+          <div class="col-xs-4">인구</div>
+          <div class="col-xs-8">{{ kingdom.population }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">경제력</div>
+          <div class="col-xs-8">{{ kingdom.economy_level }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">병력</div>
+          <div data-type="soldiers" class="col-xs-8">{{ kingdom.soldiers }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">군사력</div>
+          <div class="col-xs-8">{{ kingdom.army_level }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4">방어도</div>
+          <div class="col-xs-8">{{ kingdom.defense }}</div>
+        </div>
+      </div>
+      <hr />
+      <attack class="btn btn-block btn-primary" data-kingdom="{{ kingdom.id }}" data-toggle="modal" data-target="#battleModal">공격(Modal)</attack>
+    </div>
+  </div>
+</div>

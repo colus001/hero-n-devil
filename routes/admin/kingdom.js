@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////
 //
-//  grouple - admin/city.js
+//  grouple - admin/kingdom.js
 //
 //  Purpose: Utliities
 //  Created: 2013.12.03
@@ -12,79 +12,52 @@ var async = require('async');
 
 // Model
 var Player = require('../../lib/model').Player;
-var City = require('../../lib/model').City;
+var Kingdom = require('../../lib/model').Kingdom;
 
 // Model - Prototype
-var ProtoCity = require('../../lib/model').ProtoCity;
 var ProtoKingdom = require('../../lib/model').ProtoKingdom;
 
 // Library
 var errorHandler = require('../../lib/errorHandler');
 
 exports.index = function (req, res) {
-  async.waterfall([
-    function getProtoCities (callback) {
-      ProtoCity.find({}, function (err, cities) {
-        if (err) throw err;
+  ProtoKingdom.find({}, function (err, kingdoms) {
+    if (err) throw err;
 
-        callback(null, cities);
-        return;
-      });
-    },
+    var result = {
+      'result': 'success',
+      'kingdoms': kingdoms
+    };
 
-    function getKingdoms (cities, callback) {
-      ProtoKingdom.find({}, function (err, kingdoms) {
-        if (err) throw err;
-
-        var result = {
-          'result': 'success',
-          'cities': cities,
-          'kingdoms': kingdoms
-        };
-
-        callback(null, result);
-        return;
-      });
-    }
-  ], function (err, result) {
-    if (err) {
-      errorHandler.sendErrorMessage(err, res);
-      return;
-    }
-
-    res.render('admin.city.html', result);
+    res.render('admin.kingdom.html', result);
     return;
   });
 };
 
 exports.create = function (req, res) {
-  if ( req.body.kingdom_id === 'NO_KINGDOM' ) {
-    delete req.body.kingdom_id;
-  }
-
-  ProtoCity(req.body).save(function (err, city) {
+  ProtoKingdom(req.body).save(function (err, kingdom) {
     if (err) throw err;
 
     var result = {
       'result': 'success',
-      'city': city
+      'kingdom': kingdom
     };
 
-    res.redirect('/admin/city');
+    res.redirect('/admin/kingdom');
     return;
   });
 };
 
 exports.edit = function (req, res) {
-  ProtoCity.findById(req.params.id, function (err, city) {
+  ProtoKingdom.findById(req.params.id, function (err, kingdom) {
     if (err) throw err;
 
     var result = {
       'result': 'success',
-      'city': city
+      'kingdom': kingdom
     };
 
-    res.render('admin.city.edit.html', result);
+    res.render('admin.kingdom.edit.html', result);
     return;
   });
 };
@@ -92,21 +65,21 @@ exports.edit = function (req, res) {
 exports.publish = function (req, res) {
   async.waterfall([
     function getProtoKingdom (callback) {
-      ProtoCity.findById(req.params.id, function (err, city) {
+      ProtoKingdom.findById(req.params.id, function (err, kingdom) {
         if (err) throw err;
 
-        if ( !city ) {
-          callback('NO_CITY_FOUND');
+        if ( !kingdom ) {
+          callback('NO_KINGDOM_FOUND');
           return;
         }
 
-        callback(null, city);
+        callback(null, kingdom);
         return;
       });
     },
 
-    function updateProtoCity (city, callback) {
-      ProtoCity.findByIdAndUpdate(req.params.id, { 'published': !city.published }, function (err, city) {
+    function updateProtoKingdom (kingdom, callback) {
+      ProtoKingdom.findByIdAndUpdate(req.params.id, { 'published': !kingdom.published }, function (err, kingdom) {
         if (err) throw err;
 
         callback(null);
@@ -119,42 +92,42 @@ exports.publish = function (req, res) {
       return;
     }
 
-    res.redirect('/admin/city');
+    res.redirect('/admin/kingdom');
     return;
   });
 };
 
 exports.view = function (req, res) {
-  ProtoCity.findById(req.params.id, function (err, city) {
+  ProtoKingdom.findById(req.params.id, function (err, kingdom) {
     if (err) throw err;
 
-    res.json(city);
+    res.json(kingdom);
     return;
   });
 };
 
 exports.delete = function (req, res) {
-  ProtoCity.findByIdAndRemove(req.params.id, function (err, city) {
+  ProtoKingdom.findByIdAndRemove(req.params.id, function (err, kingdom) {
     if (err) throw err;
 
-    res.redirect('/admin/city');
+    res.redirect('/admin/kingdom');
     return;
   });
 };
 
 exports.apply = function (req, res) {
   async.waterfall([
-    function getProtocities (callback) {
-      ProtoCity.find({ 'published': false }, function (err, cities) {
+    function getProtokingdoms (callback) {
+      ProtoKingdom.find({ 'published': false }, function (err, kingdoms) {
         if (err) throw err;
 
-        if ( cities.length === 0 ) {
+        if ( kingdoms.length === 0 ) {
           errorHandler.sendErrorMessage('NO_CIITES_TO_UPDATE', res);
           callback('NO_CIITES_TO_UPDATE');
           return;
         }
 
-        ProtoCity.update({ 'published': false }, { 'published': true }, function (err, updated) {
+        ProtoKingdom.update({ 'published': false }, { 'published': true }, function (err, updated) {
           if (err) throw err;
 
           if ( updated === 0 ) {
@@ -162,13 +135,13 @@ exports.apply = function (req, res) {
             return;
           }
 
-          callback(null, cities);
+          callback(null, kingdoms);
           return;
         });
       });
     },
 
-    function getPlayers (cities, callback) {
+    function getPlayers (kingdoms, callback) {
       Player.find({}, function (err, players) {
         if (err) throw err;
 
@@ -178,25 +151,25 @@ exports.apply = function (req, res) {
           return;
         }
 
-        callback(null, cities, players);
+        callback(null, kingdoms, players);
         return;
       });
     },
 
-    function updateCities (cities, players, callback) {
+    function updatekingdoms (kingdoms, players, callback) {
       async.forEach(players, function (player, done) {
-        async.map(cities, function (protocity, next) {
-          var city = JSON.parse(JSON.stringify(protocity));
-          city.player_id = player._id;
+        async.map(kingdoms, function (protokingdom, next) {
+          var kingdom = JSON.parse(JSON.stringify(protokingdom));
+          kingdom.player_id = player._id;
 
-          delete city.created_at;
-          delete city.updated_at;
-          delete city._id;
+          delete kingdom.created_at;
+          delete kingdom.updated_at;
+          delete kingdom._id;
 
-          City(city).save(function (err, city) {
+          Kingdom(kingdom).save(function (err, kingdom) {
             if (err) throw err;
 
-            next(null, city);
+            next(null, kingdom);
             return;
           });
         }, function (err, results) {
@@ -206,7 +179,7 @@ exports.apply = function (req, res) {
       }, function (err) {
         var result = {
           'result': 'success',
-          'cities': cities,
+          'kingdoms': kingdoms,
           'players': players,
         };
 
@@ -215,7 +188,7 @@ exports.apply = function (req, res) {
       });
     }
   ], function (err, result) {
-    res.redirect('/admin/city');
+    res.redirect('/admin/kingdom');
     return;
   });
 
