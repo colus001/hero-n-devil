@@ -242,7 +242,6 @@ exports.intrude = function (req, res) {
       }
 
       common.getIntrudeResult(intruders, defenders, devil, logs);
-      loseColony(player);
 
       callback(null, player, devil, defenders, intruders, logs);
       return;
@@ -265,7 +264,28 @@ exports.intrude = function (req, res) {
       });
     },
 
-    function testResult (player, devil, defenders, intruders, logs, callback) {
+    function checkLostColony (player, devil, defenders, intruders, logs, callback) {
+      if ( devil.current_health_point > 0 ) {
+        callback(null, player, devil, defenders, intruders, logs);
+        return;
+      }
+
+      async.waterfall([
+        function (next) {
+          common.loseRandomColony(player, next);
+        }
+      ], function (err, result) {
+        if (err) {
+          errorHandler.sendErrorMessage(err, res);
+          return;
+        }
+
+        callback(null, player, devil, defenders, intruders, logs);
+        return;
+      });
+    },
+
+    function finalResult (player, devil, defenders, intruders, logs, callback) {
       if ( defenders.length === 0 )
       console.log('defenders:', defenders);
 
