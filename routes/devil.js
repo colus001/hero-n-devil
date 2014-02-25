@@ -117,7 +117,7 @@ exports.index = function (req, res) {
     },
 
     function getMonsters (player, devil, cities, colonies, callback) {
-      Monster.find({ 'player_id': current_player_id }, function (err, monsters) {
+      Monster.find({ 'player_id': current_player_id, 'ready': true }, function (err, monsters) {
         if (err) throw err;
 
         callback(null, player, devil, cities, colonies, monsters);
@@ -125,7 +125,16 @@ exports.index = function (req, res) {
       });
     },
 
-    function getProtoMonsters (player, devil, cities, colonies, monsters, callback) {
+    function getMonsters (player, devil, cities, colonies, monsters, callback) {
+      Monster.find({ 'player_id': current_player_id, 'ready': false }, function (err, trainings) {
+        if (err) throw err;
+
+        callback(null, player, devil, cities, colonies, monsters, trainings);
+        return;
+      });
+    },
+
+    function getProtoMonsters (player, devil, cities, colonies, monsters, trainings, callback) {
       ProtoMonster.find({ 'published': true }, function (err, protomonsters) {
         if (err) throw err;
 
@@ -134,12 +143,12 @@ exports.index = function (req, res) {
           return;
         }
 
-        callback(null, player, devil, cities, colonies, monsters, protomonsters);
+        callback(null, player, devil, cities, colonies, monsters, trainings, protomonsters);
         return;
       });
     },
 
-    function getKingdoms (player, devil, cities, colonies, monsters, protomonsters, callback) {
+    function getKingdoms (player, devil, cities, colonies, monsters, trainings, protomonsters, callback) {
       var findQuery = {
         'player_id': current_player_id,
         'level_limit': { $lte: devil.level }
@@ -176,13 +185,13 @@ exports.index = function (req, res) {
             return;
           });
         }, function (err, result) {
-          callback(null, player, devil, cities, colonies, monsters, protomonsters, kingdoms);
+          callback(null, player, devil, cities, colonies, monsters, trainings, protomonsters, kingdoms);
           return;
         });
       });
     },
 
-    function getResult (player, devil, cities, colonies, monsters, protomonsters, kingdoms, callback) {
+    function getResult (player, devil, cities, colonies, monsters, trainings, protomonsters, kingdoms, callback) {
       var result = {
         'result': 'success',
         'player': player,
@@ -191,6 +200,7 @@ exports.index = function (req, res) {
         'colonies': colonies,
         'protomonsters': protomonsters,
         'kingdoms': kingdoms,
+        'trainings': trainings,
         'monsters': [],
         'floors': {
           '1f': [],

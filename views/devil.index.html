@@ -108,7 +108,7 @@
       <!-- CITIES -->
 
       <!-- MONSTERS -->
-      {% if cities.length > 0 %}
+      {% if monsters.length > 0 %}
       <h4>
         MONSTERS
         <a href="/admin/monster" class="btn btn-xs btn-default pull-right">Monster 직접수정불가</a>
@@ -120,6 +120,19 @@
       </div>
       {% endif %}
       <!-- MONSTERS -->
+
+      <!-- TRAINING -->
+      {% if trainings.length > 0 %}
+      <h4>
+        MONSTER TRAINING
+      </h4>
+      <div class="panel-group" style="min-height: 50px;">
+      {% for monster in trainings %}
+        {% include "devil.template.monster.html" %}
+      {% endfor %}
+      </div>
+      {% endif %}
+      <!-- TRAINING -->
 
       <!-- BARRACK -->
       {% if cities.length > 0 %}
