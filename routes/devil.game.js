@@ -41,6 +41,40 @@ exports.status = function (req, res) {
       });
     },
 
+    function updateMonsterTrainigStatus (player, devil, monsters, callback) {
+      async.map(monsters, function (monster, next) {
+        if ( monster.ready ) {
+          next(null, monster);
+          return;
+        }
+
+        var spentTimeAfterCreation = Math.floor(( new Date() - monster.created_at ) / 1000);
+        console.log('spentTimeAfterCreation:', spentTimeAfterCreation);
+
+        if ( monster.training_time > spentTimeAfterCreation ) {
+          next(null, monster);
+          return;
+        }
+
+        var update = { 'updated_at': new Date(), 'ready': true };
+
+        Monster.findByIdAndUpdate(monster._id, update, function (err, monster) {
+          if (err) throw err;
+
+          next(null, monster);
+          return;
+        });
+      }, function (err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        callback(null, player, devil, monsters);
+        return;
+      });
+    },
+
     function updateStatus (player, devil, monsters, callback) {
       var result = {
         'result': 'success',

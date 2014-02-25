@@ -27,7 +27,7 @@ var errorHandler = require('../lib/errorHandler');
 var common = require('../lib/common');
 
 
-exports.purchase = function (req, res) {
+exports.train = function (req, res) {
   async.waterfall([
     function getPlayerAndDevil (callback) {
       common.getPlayerAndDevil(req.session.current_player_id, callback);
@@ -185,7 +185,7 @@ exports.intrude = function (req, res) {
     },
 
     function getMonsters (player, devil, callback) {
-      Monster.find({ 'player_id': player._id }, function (err, monsters) {
+      Monster.find({ 'player_id': player._id, 'ready': true }, function (err, monsters) {
         if (err) throw err;
 
         callback(null, player, devil, monsters);
@@ -264,7 +264,7 @@ exports.intrude = function (req, res) {
       });
     },
 
-    function checkLostColony (player, devil, defenders, intruders, logs, callback) {
+    function loseColonyWhenTheDevilIsDefeated (player, devil, defenders, intruders, logs, callback) {
       if ( devil.current_health_point > 0 ) {
         callback(null, player, devil, defenders, intruders, logs);
         return;
