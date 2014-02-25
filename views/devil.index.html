@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} DEVIL {% endblock %}
+{% block title %} DEVIL {{ player.name }} {% endblock %}
 
 {% block head %}
   {% parent %}
@@ -374,7 +374,18 @@
         $monster.css('width', (percentage+'%'));
         $monsterText.text(text);
       }
+    };
 
+    var trainingCheck = function () {
+      $('remainSeconds').each(function () {
+        var number = Number($(this).text());
+        if ( number !== 0 ) {
+          number--;
+          $(this).text(number);
+        } else {
+          $(this).parent().replaceWith( $('<button class="btn btn-block btn-success">훈련완료 (새로고침 필요)</button>') );
+        }
+      });
     };
 
     var globalTurn = setInterval(function () {
@@ -382,6 +393,8 @@
         console.log('전투중');
         return;
       }
+
+      trainingCheck();
 
       currentTurn++;
       if ( currentTurn >= 60 ) {

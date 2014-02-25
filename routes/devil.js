@@ -125,9 +125,13 @@ exports.index = function (req, res) {
       });
     },
 
-    function getMonsters (player, devil, cities, colonies, monsters, callback) {
+    function getTrainingMonsters (player, devil, cities, colonies, monsters, callback) {
       Monster.find({ 'player_id': current_player_id, 'ready': false }, function (err, trainings) {
         if (err) throw err;
+
+        for ( var i in trainings ) {
+          trainings[i].remainSeconds = trainings[i].training_time - Math.floor((new Date() - trainings[i].created_at)/1000);
+        }
 
         callback(null, player, devil, cities, colonies, monsters, trainings);
         return;
