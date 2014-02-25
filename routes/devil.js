@@ -111,6 +111,10 @@ exports.index = function (req, res) {
       City.find({ 'player_id': current_player_id, 'isCaptured': true }, function (err, colonies) {
         if (err) throw err;
 
+        for ( var i in colonies ) {
+          colonies[i].remainSeconds = colonies[i].time_to_collect - Math.floor((new Date() - colonies[i].updated_at)/1000);
+        }
+
         callback(null, player, devil, cities, colonies);
         return;
       });

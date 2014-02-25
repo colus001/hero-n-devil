@@ -3,6 +3,13 @@
     <h4 class="panel-title">
       <a data-toggle="collapse" data-parent="#accordion" href="#colony-{{ colony.id }}">
         {{ colony.name }}
+        <remainSecondsColony class="pull-right">
+          {% if colony.remainSeconds <= 0 %}
+          <button class="btn btn-xs btn-success">징수가능</button>
+          {% else %}
+          {{ colony.remainSeconds }}
+          {% endif %}
+        </remainSecondsColony>
         <div style="color: #BBB" class="pull-right">{{ colony.level }}</div>
       </a>
     </h4>

@@ -377,13 +377,25 @@
     };
 
     var trainingCheck = function () {
-      $('remainSeconds').each(function () {
+      $('remainSecondsTraining').each(function () {
         var number = Number($(this).text());
         if ( number !== 0 ) {
           number--;
           $(this).text(number);
         } else {
           $(this).parent().replaceWith( $('<button class="btn btn-block btn-success">훈련완료 (새로고침 필요)</button>') );
+        }
+      });
+    };
+
+    var colonyCheck = function () {
+      $('remainSecondsColony').each(function () {
+        var number = Number($(this).text());
+        if ( number !== 0 && !isNaN(number) ) {
+          number--;
+          $(this).text(number);
+        } else {
+          $(this).html( $('<button class="btn btn-xs btn-success">징수가능</button>') );
         }
       });
     };
@@ -395,6 +407,7 @@
       }
 
       trainingCheck();
+      colonyCheck();
 
       currentTurn++;
       if ( currentTurn >= 60 ) {
@@ -412,12 +425,12 @@
 
           if ( data.devil ) {
             updateDevil(data.devil);
-          }
 
-          if ( data.devil.level_up_available ) {
-            $('#levelup').removeClass('disabled btn-default').addClass('btn-success').text('레벨업 가능');
-          } else {
-            $('#levelup').removeClass('btn-success').addClass('disabled btn-default').text('레벨업 불가');
+            if ( data.devil.level_up_available ) {
+              $('#levelup').removeClass('disabled btn-default').addClass('btn-success').text('레벨업 가능');
+            } else {
+              $('#levelup').removeClass('btn-success').addClass('disabled btn-default').text('레벨업 불가');
+            }
           }
 
           if ( data.monsters.length !== 0 ) {
