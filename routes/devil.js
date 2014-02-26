@@ -30,6 +30,7 @@ var errorHandler = require('../lib/errorHandler');
 
 exports.game = require('./devil.game');
 exports.monster = require('./devil.monster');
+exports.socket = require('./devil.socket');
 
 exports.index = function (req, res) {
   var current_player_id = req.session.current_player_id;

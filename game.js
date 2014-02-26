@@ -5,6 +5,7 @@ var path = require('path');
 var swig = require('swig');
 var mongoose = require('mongoose');
 var socketio = require('socket.io');
+var sessionSocket = require('session.socket.io');
 
 // Routes
 var routes = require('./routes');
@@ -19,6 +20,10 @@ var config = require('./config');
 
 var app = express();
 
+// Session for Socket.io
+var sessionStore = new express.session.MemoryStore();
+var cookieParser = express.cookieParser('cookie-for-hero-n-devil');
+
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.engine('html', swig.renderFile);
@@ -31,7 +36,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('cookie-for-hero-n-devil'));
 app.use(express.bodyParser());
-app.use(express.session());
+app.use(express.session({ store: sessionStore }));
 app.use(app.router);
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -183,11 +188,7 @@ db.once('open', function callback () {
   });
 
   var io = socketio.listen(server);
-  io.sockets.on('connection', function (socket) {
-    socket.on('attack', function (data) {
-      console.log('data:', data);
-      console.log('session:', socket);
-    });
-  });
+  var sio = new sessionSocket(io, sessionStore, cookieParser);
 
+  sio.on('connection', devil.socket.connection);
 });

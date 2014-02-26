@@ -362,7 +362,6 @@ exports.battle = function (req, res) {
     },
 
     function finish (devil, city, defenders, callback) {
-
       city = JSON.parse(JSON.stringify(city));
       var result = {
         'result': 'success',
@@ -376,32 +375,8 @@ exports.battle = function (req, res) {
       }
 
       async.parallel([
-        function updateDevil (done) {
-          var healthPointToUpdate = ( devil.current_health_point > 0 ) ? devil.current_health_point : 0;
-
-          var update = {
-            $set: {
-              'updated_at': new Date(),
-              'current_health_point': healthPointToUpdate
-            },
-            $inc: {
-
-            }
-          };
-
-          if ( result.conclusion ) {
-            update.$inc['current_action_point'] = -1;
-          }
-
-          console.log('update:', update);
-
-          Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
-            if (err) throw err;
-
-            result.devil = devil;
-            done(null);
-            return;
-          });
+        function (done) {
+          common.updateDevil (devil, result.conclusion, result, done);
         },
 
         function updateCity (done) {
