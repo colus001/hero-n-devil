@@ -25,7 +25,7 @@ var sessionStore = new express.session.MemoryStore();
 var cookieParser = express.cookieParser('cookie-for-hero-n-devil');
 
 // all environments
-app.set('port', config.option.port);
+app.set('port', process.env.PORT || config.option.port);
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'));
@@ -34,7 +34,7 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(express.cookieParser('cookie-for-hero-n-devil'));
+app.use(express.cookieParser(config.option.cookieSecret));
 app.use(express.bodyParser());
 app.use(express.session({ store: sessionStore }));
 app.use(app.router);
