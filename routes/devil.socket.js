@@ -88,22 +88,41 @@ exports.connection =  function (err, socket, session) {
           'result': 'success',
           'devil': devil,
           'city': city,
-          'defenders': defenders
+          'defenders': defenders,
+          'logs': []
         };
 
         async.each(defenders, function (defender, next) {
+          var intervalTime = common.getIntervalFromAtackSpeed(defender.attack_speed_per_sec);
           defender.interval = setInterval(function () {
-            Soldier.findById(defender._id, function (err, soldier) {
-              soldier.current_health_point -= 10*Math.floor(Math.random()*2)*10;
-              console.log('defender.current_health_point:', soldier.current_health_point);
+            var random = Math.floor(Math.random()*100+1) / 100;
+            setTimeout(null, intervalTime*random);
 
-              if ( soldier.current_health_point <= 0 ) {
+            Soldier.findById(defender._id, function (err, soldier) {
+              if (err) throw err;
+
+              if ( !soldier || soldier.current_health_point <= 0 ) {
                 clearInterval(defender.interval);
+                return;
               }
 
+              var logs = [];
+              var conclusion = '';
+              var result = { 'devil': devil, 'logs': logs };
+
+              if ( devil.current_health_point <= 0 ) {
+                conclusion = 'lose';
+                clearInterval(defender.interval);
+                return;
+              }
+
+              common.attackByTime(defender, devil, logs);
+              common.updateDevil (devil, conclusion, result);
+              socket.emit('defenderAttack', result);
               return;
             });
-          }, 1000);
+          }, intervalTime);
+
           next(null);
           return;
         }, function (err) {
@@ -118,46 +137,6 @@ exports.connection =  function (err, socket, session) {
       return;
     });
   });
-
-  // var attackDevil = function (soldier, devil) {
-  //   async.waterfall([
-  //     function checkDevil (callback) {
-  //       if ( devil.current_health_point === 0 ) {
-  //         callback('NOT_ENOUGH_HEALTH_POINT');
-  //         return;
-  //       }
-
-  //       callback(null, devil);
-  //       return;
-  //     },
-
-  //     function applyDamage (devil, callback) {
-  //       var damage = common.getDamage(soldier, devil);
-
-  //       var update = {
-  //         $set: {
-  //           'updated_at': new Date()
-  //         },
-  //         $inc: {
-  //           'current_health_point': -damage
-  //         }
-  //       };
-
-  //       Devil.findByIdAndUpdate(devil._id, update, function (err, devil) {
-  //         if (err) throw err;
-
-  //         var result = {
-  //           'devil': devil
-  //         };
-
-  //         callback(null, result);
-  //       });
-  //     }
-  //   ], function (err, result) {
-  //     socket.emit('attackPlayer', result);
-  //     return;
-  //   });
-  // };
 
   socket.on('attackBegin', function (data) {
     async.waterfall([
@@ -191,7 +170,7 @@ exports.connection =  function (err, socket, session) {
 
       function updateDamage (devil, soldier, callback) {
         var logs = [];
-        common.getBattleResult([ devil ], [ soldier ], logs);
+        common.attackByTime(devil, soldier, logs);
         common.clearDeadObjects([ soldier ]);
 
         callback(null, devil, soldier, logs);

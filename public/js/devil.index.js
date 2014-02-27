@@ -347,7 +347,7 @@ $(document).ready(function() {
     socket.emit('attackBegin', { 'defender_id': defender_id });
   });
 
-  socket.on('attackPlayer', function (data) {
+  socket.on('defenderAttack', function (data) {
     console.log('attacked');
 
     var $battleDevil = $('#battleDevil');
@@ -360,12 +360,12 @@ $(document).ready(function() {
 
     if ( devil.current_health_point <= 0 ) {
       healthText = '패배';
+      $battleDevil.removeClass('btn-default').addClass('btn-danger disabled');
     } else {
       healthText = devil.current_health_point+'/'+devil.health_point;
     }
 
     $battleDevil.find('.health').css('width', healthPercent).text(healthText);
-    $battleDevil.removeClass('btn-default').addClass('btn-danger disabled');
 
     for ( var i in data.logs ) {
       $p = $('<p></p>').text(data.logs[i]);
