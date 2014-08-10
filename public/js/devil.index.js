@@ -249,54 +249,54 @@ $(document).ready(function() {
     return;
   });
 
-  $(document).on('click', 'attack', function () {
-    var isModalOpenButton = ( $(this).data('toggle') ) ? true : false;
+  // $(document).on('click', 'attack', function () {
+  //   var isModalOpenButton = ( $(this).data('toggle') ) ? true : false;
 
-    if ( isModalOpenButton ) {
-      cityId = $(this).data('city');
-      console.log('cityId:', cityId);
-      return;
-    }
+  //   if ( isModalOpenButton ) {
+  //     cityId = $(this).data('city');
+  //     console.log('cityId:', cityId);
+  //     return;
+  //   }
 
-    $p = $('<p></p>').text('전투시작');
-    $battleLog.html('').append($p);
+  //   $p = $('<p></p>').text('전투시작');
+  //   $battleLog.html('').append($p);
 
-    var battleTurn = setInterval(function () {
-      isBattle = true;
+  //   var battleTurn = setInterval(function () {
+  //     isBattle = true;
 
-      $.ajax({
-        type: 'POST',
-        url: '/devil/attack',
-        data: { 'city_id': cityId },
-        success: function (data, status) {
-          console.log('data:', data);
-          if ( data.result === 'error' || data.result === 'fail' ) {
-            alert(data.err_msg);
-            $('#battleModal').modal('hide');
-            window.location = '/devil';
-            return;
-          }
+  //     $.ajax({
+  //       type: 'POST',
+  //       url: '/devil/battle',
+  //       data: { 'city_id': cityId },
+  //       success: function (data, status) {
+  //         console.log('data:', data);
+  //         if ( data.result === 'error' || data.result === 'fail' ) {
+  //           alert(data.err_msg);
+  //           $('#battleModal').modal('hide');
+  //           window.location = '/devil';
+  //           return;
+  //         }
 
-          for ( var i in data.logs ) {
-            $p = $('<p></p>').text(data.logs[i]);
-            $battleLog.append($p);
-          }
+  //         for ( var i in data.logs ) {
+  //           $p = $('<p></p>').text(data.logs[i]);
+  //           $battleLog.append($p);
+  //         }
 
-          if ( data.conclusion ) {
-            clearInterval(battleTurn);
-            $p = $('<p></p>').text('전투종료');
-            $battleLog.append($p);
-            isBattle = false;
-          }
-        },
-        error: function (error) {
-          console.log('error:', error);
-          isBattle = false;
-          alert('오류');
-        }
-      });
-    }, 1000);
-  });
+  //         if ( data.conclusion ) {
+  //           clearInterval(battleTurn);
+  //           $p = $('<p></p>').text('전투종료');
+  //           $battleLog.append($p);
+  //           isBattle = false;
+  //         }
+  //       },
+  //       error: function (error) {
+  //         console.log('error:', error);
+  //         isBattle = false;
+  //         alert('오류');
+  //       }
+  //     });
+  //   }, 1000);
+  // });
 
   var updatePosition = function (event, ui) {
     var floor = $(this).data('floor');
@@ -342,10 +342,10 @@ $(document).ready(function() {
     socket.emit('BattleBegin', { 'cityId': cityId });
   });
 
-  $(document).on('click', 'defender', function () {
-    var defender_id = $(this).data('id');
-    socket.emit('attackBegin', { 'defender_id': defender_id });
-  });
+  // $(document).on('click', 'defender', function () {
+  //   var defender_id = $(this).data('id');
+  //   socket.emit('attackBegin', { 'defender_id': defender_id });
+  // });
 
   socket.on('defenderAttack', function (data) {
     console.log('attacked');

@@ -299,6 +299,74 @@ exports.levelup = function (req, res) {
   });
 };
 
+exports.frontBattle = function (req, res) {
+  async.waterfall([
+    function getPlayerAndDevil (callback) {
+      common.getPlayerAndDevil(req.session.current_player_id, callback);
+    },
+
+    function checkDevil (player, devil, callback) {
+      if ( devil.current_health_point === 0 ) {
+        callback('NOT_ENOUGH_HEALTH_POINT');
+        return;
+      }
+
+      if ( devil.current_action_point === 0 ) {
+        callback('NOT_ENOUGH_ACTION_POINT');
+        return;
+      }
+
+      callback(null, player, devil);
+      return;
+    },
+
+    function getCity (player, devil, callback) {
+      City.findById(req.body.city_id, function (err, city) {
+        if (err) throw err;
+
+        if ( !city ) {
+          callback('NO_CITY_FOUND');
+          return;
+        }
+
+        callback(null, player, devil, city);
+        return;
+      });
+    },
+
+    function prepareForBattle (player, devil, city, callback) {
+      async.waterfall([
+        function waiting (next) {
+          common.getDefenders(city, next);
+        }
+      ], function (err, defenders) {
+        if (err) {
+          errorHandler.sendErrorMessage(err, res);
+          return;
+        }
+
+        var result = {
+          'result': 'success',
+          'city': city,
+          'devil': devil,
+          'defenders': defenders
+        };
+
+        callback(null, result);
+        return;
+      });
+    }
+  ], function (err, result) {
+    if (err) {
+      errorHandler.sendErrorMessage(err, res);
+      return;
+    }
+
+    res.send(result);
+    return;
+  });
+};
+
 exports.battle = function (req, res) {
   var logs = [];
   console.log('started');

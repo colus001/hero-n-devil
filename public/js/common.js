@@ -52,3 +52,42 @@ var getAndRemoveElementFromArray = function (array, value) {
     }
   }
 };
+
+var getIntervalFromAtackSpeed = function (attackSpeed) {
+  return Math.floor(1/attackSpeed*1000);
+};
+
+var getDamage = function (attack, defense) {
+  var phy_damage = attack.physical_damage - defense.armor;
+  var mag_damage = attack.magic_damage - defense.magic_resist;
+  var totalDamage = phy_damage + mag_damage;
+
+  return ( totalDamage > 10 ) ? totalDamage : 10;
+};
+
+var attack = function (attacker, defender, $battleLog) {
+  // ATTACKER's TURN
+  if ( attacker.current_health_point > 0 ) {
+    defender.current_health_point -= getDamage(attacker, defender);
+    log = attacker.name + '이(가) ' + defender.name + '을(를) 공격하여 ' + getDamage(attacker, defender) + '의 데미지를 입혔습니다.';
+    $battleLog.append($('<p></p>').text(log));
+  }
+
+  // CHECK DEFENDER
+  if ( defender.current_health_point <= 0 ) {
+    log = attacker.name + '이(가) ' + defender.name + '을(를) 무찔렀습니다.';
+    $battleLog.append($('<p></p>').text(log));
+  }
+};
+
+var getObjectLength = function (object) {
+  var count = 0;
+
+  for ( var i in object ) {
+    if ( object[i] !== undefined ) {
+      count++;
+    }
+  }
+
+  return count;
+};

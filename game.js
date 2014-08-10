@@ -108,6 +108,12 @@ db.once('open', function callback () {
   app.post('/devil/levelup', checkCurrentPlayer, devil.game.levelup);
   app.get('/devil/stats', checkCurrentPlayer, devil.game.stats);
 
+  app.post('/devil/battle', checkCurrentPlayer, devil.game.frontBattle);
+
+
+
+
+
   // DEVIL - MONSTER
   app.post('/devil/monster/purchase', checkCurrentPlayer, devil.monster.train);
   app.post('/devil/monster/delete', checkCurrentPlayer, devil.monster.delete);
